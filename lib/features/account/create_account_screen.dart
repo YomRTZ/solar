@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/widgets/app_text_field.dart';
+import '../../core/widgets/app_header.dart';
+import '../../core/widgets/app_continue_button.dart';
 import '../plan/choose_plan_screen.dart';
 
 class CreateAccountScreen extends StatefulWidget {
@@ -49,70 +50,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final screenWidth = constraints.maxWidth;
-                final headerWidth = screenWidth < 327 ? screenWidth : 327.0;
                 final screenHeight = MediaQuery.sizeOf(context).height;
 
                 return Column(
                   children: [
-                    Center(
-                      child: SizedBox(
-                        width: screenWidth,
-                        height: 192,
-                        child: DecoratedBox(
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [Color(0xFF003A8A), Color(0xFF000F24)],
-                            ),
-                          ),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                top: 68,
-                                left: (screenWidth - headerWidth) / 2,
-                                width: headerWidth,
-                                height: 90,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: 24,
-                                      height: 24,
-                                      child: IconButton(
-                                        icon: const Icon(
-                                          Icons.arrow_back,
-                                          color: Color(0xFFEEEEEE),
-                                          size: 24,
-                                        ),
-                                        onPressed: () => Navigator.pop(context),
-                                        padding: EdgeInsets.zero,
-                                        constraints: const BoxConstraints(),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 24),
-                                    SizedBox(
-                                      width: headerWidth,
-                                      height: 42,
-                                      child: Text(
-                                        'Create Account',
-                                        maxLines: 1,
-                                        style: GoogleFonts.inter(
-                                          fontSize: 32,
-                                          height: 1.3,
-                                          letterSpacing: -0.64,
-                                          fontWeight: FontWeight.w700,
-                                          color: const Color(0xFFEEEEEE),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                    // Reusable header widget
+                    const AppHeader(
+                      title: 'Create Account',
                     ),
                     const SizedBox(height: 16),
                     Expanded(
@@ -169,47 +113,17 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                     ],
                                   ),
                                   const SizedBox(height: 24),
-                                  SizedBox(
-                                    height: 48,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const ChoosePlanScreen(),
-                                          ),
-                                        );
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(
-                                          0xFF003D82,
+                                  AppContinueButton(
+                                    text: 'Continue',
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ChoosePlanScreen(),
                                         ),
-                                        foregroundColor: Colors.white,
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                        ),
-                                        textStyle: GoogleFonts.inter(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      child: const Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text('Continue'),
-                                          SizedBox(width: 8),
-                                          Icon(
-                                            Icons.arrow_forward_rounded,
-                                            size: 18,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                      );
+                                    },
                                   ),
                                   SizedBox(height: screenHeight * 0.02),
                                 ],

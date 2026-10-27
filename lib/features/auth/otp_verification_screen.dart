@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants/app_colors.dart';
-import '../account/create_account_screen.dart';
+import '../company/company_details_screen.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   final String mobileNumber;
@@ -33,7 +33,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   void _continue() {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const CreateAccountScreen()),
+      MaterialPageRoute(builder: (context) => const CompanyDetailsScreen()),
     );
   }
 
