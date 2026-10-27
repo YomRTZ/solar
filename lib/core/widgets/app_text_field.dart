@@ -10,7 +10,7 @@ class AppTextField extends StatelessWidget {
   final bool obscureText;
   final Widget? suffixIcon;
   final String? Function(String?)? validator;
-  
+
   const AppTextField({
     super.key,
     required this.label,
@@ -24,50 +24,65 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: GoogleFonts.roboto(
-            fontSize: screenWidth * 0.035,
-            fontWeight: FontWeight.w500,
-            color: AppColors.textGrey,
+        SizedBox(
+          height: 21,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              label,
+              maxLines: 1,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 12,
+                height: 1.6,
+                fontWeight: FontWeight.w500,
+                letterSpacing: -0.24,
+                color: const Color(0xFF6C7278),
+              ),
+            ),
           ),
         ),
-        SizedBox(height: screenHeight * 0.01),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: AppColors.borderGrey,
-              width: 1,
+        const SizedBox(height: 2),
+        SizedBox(
+          height: 46,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: const Color(0xFFEDF1F3), width: 1),
             ),
-          ),
-          child: TextField(
-            controller: controller,
-            keyboardType: keyboardType,
-            obscureText: obscureText,
-            style: GoogleFonts.roboto(
-              fontSize: screenWidth * 0.04,
-              fontWeight: FontWeight.w500,
-            ),
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: GoogleFonts.roboto(
-                fontSize: screenWidth * 0.04,
-                color: AppColors.textGreyLight,
+            child: TextField(
+              controller: controller,
+              keyboardType: keyboardType,
+              obscureText: obscureText,
+              textAlignVertical: TextAlignVertical.center,
+              style: GoogleFonts.roboto(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
               ),
-              border: InputBorder.none,
-              suffixIcon: suffixIcon,
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.04,
-                vertical: screenHeight * 0.018,
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: GoogleFonts.inter(
+                  fontSize: 16,
+                  color: AppColors.textGreyLight,
+                ),
+                filled: false,
+                fillColor: Colors.white,
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                suffixIcon: suffixIcon,
+                isDense: true,
+                constraints: const BoxConstraints(minHeight: 46),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 11,
+                ),
               ),
+              maxLines: 1,
             ),
           ),
         ),

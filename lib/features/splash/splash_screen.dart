@@ -13,8 +13,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Navigate to login page after 3 seconds
-    Future.delayed(const Duration(seconds: 3), () {
+    // Navigate to login page after 8 seconds
+    Future.delayed(const Duration(seconds: 8), () {
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -27,25 +27,10 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    
-    // Reference canvas width from design specs
-    const referenceWidth = 361.0;
-    const referenceHeight = 800.0;
-    
-    // Calculate scaling factors for responsive design
-    final widthScale = screenWidth / referenceWidth;
-    final heightScale = screenHeight / referenceHeight;
-    
-    // Use the smaller scale factor to maintain aspect ratio
-    final scaleFactor = widthScale < heightScale ? widthScale : widthScale;
-    
-    // Calculate responsive logo size (between 100-160px depending on screen)
-    final logoSize = screenWidth * 0.36;
-    
+
     // Calculate responsive font sizes
     final mainTextSize = screenWidth * 0.061; // 24px base scaled
-    final subtitleSize = screenWidth * 0.038; // 15px base scaled
-    
+
     return Scaffold(
       body: Stack(
         children: [
@@ -56,26 +41,87 @@ class _SplashScreenState extends State<SplashScreen> {
               fit: BoxFit.cover,
             ),
           ),
-          
-          // Dark-Light-Dark-Transparent gradient overlay
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.6),      // Dark at top
-                    Colors.black.withOpacity(0.2),      // Light in upper-middle
-                    Colors.black.withOpacity(0.5),      // Dark again in middle
-                    Colors.transparent,                  // Transparent at bottom
-                  ],
-                  stops: const [0.0, 0.25, 0.55, 0.85],
+
+          Positioned(
+            top: 59,
+            left: 75,
+            child: Image.asset(
+              'assets/images/a_clean_high_resolution_vector_like_logo_image_on.png',
+              width: 220,
+              height: 244,
+              fit: BoxFit.contain,
+            ),
+          ),
+
+          Positioned(
+            top: 297,
+            left: 119,
+            child: SizedBox(
+              width: 123,
+              height: 28,
+              child: Center(
+                child: Text(
+                  'Connecting',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.roboto(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 24,
+                    height: 1.0,
+                    letterSpacing: 0,
+                    color: const Color(0xFFFFFFFF),
+                  ),
                 ),
               ),
             ),
           ),
-          
+
+          Positioned(
+            top: 335,
+            left: 57,
+            child: SizedBox(
+              width: 256,
+              height: 28,
+              child: Center(
+                child: Text(
+                  'Solar Supplier & Vendor',
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: GoogleFonts.roboto(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 24,
+                    height: 1.0,
+                    letterSpacing: 0,
+                    color: const Color(0xFFFFFFFF),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          Positioned(
+            top: 373,
+            left: 48,
+            child: SizedBox(
+              width: 274,
+              height: 36,
+              child: Center(
+                child: Text(
+                  'A Trusted B2B Marketplace For\nTransforming Trade Through Technology',
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  style: GoogleFonts.roboto(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                    height: 1.0,
+                    letterSpacing: 0,
+                    color: const Color(0xFFFFFFFF),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
           // Main content with absolute positioning
           SafeArea(
             child: LayoutBuilder(
@@ -85,84 +131,28 @@ class _SplashScreenState extends State<SplashScreen> {
                   height: constraints.maxHeight,
                   child: Stack(
                     children: [
-                      // Logo section positioned in upper area
-                      Positioned(
-                        top: constraints.maxHeight * 0.08,
-                        left: 0,
-                        right: 0,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Complete logo with brand name and tagline (PNG with transparency)
-                            Container(
-                              width: logoSize * 1.3, // Larger for the complete logo
-                              height: logoSize * 1.3,
-                              decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/a_clean_high_resolution_vector_like_logo_image_on.png'),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      
                       // Text section - positioned relative to screen height
                       Positioned(
-                        top: constraints.maxHeight * 0.40, // 40% from top for better compatibility
+                        top:
+                            constraints.maxHeight *
+                            0.40, // 40% from top for better compatibility
                         left: 0,
                         right: 0,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             // Text element 1: "Connecting"
-                            Text(
-                              'Connecting',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.roboto(
-                                fontWeight: FontWeight.w600,
-                                fontSize: mainTextSize,
-                                height: 1.0,
-                                letterSpacing: 0,
-                                color: Colors.white,
-                              ),
-                            ),
-                            
+                            SizedBox(height: mainTextSize),
+
                             SizedBox(height: screenHeight * 0.012),
-                            
+
                             // Text element 2: "Solar Supplier & Vendor"
-                            Text(
-                              'Solar Supplier & Vendor',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.roboto(
-                                fontWeight: FontWeight.w600,
-                                fontSize: mainTextSize,
-                                height: 1.0,
-                                letterSpacing: 0,
-                                color: Colors.white,
-                              ),
-                            ),
-                            
+                            const SizedBox(height: 28),
+
                             SizedBox(height: screenHeight * 0.025),
-                            
+
                             // Text element 3: Subtitle
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-                              child: Text(
-                                'A Trusted B2B Marketplace For Transforming Trade Through Technology',
-                                textAlign: TextAlign.center,
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.roboto(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: subtitleSize,
-                                  height: 1.2,
-                                  letterSpacing: 0,
-                                  color: Colors.white.withOpacity(0.95),
-                                ),
-                              ),
-                            ),
+                            const SizedBox(height: 36),
                           ],
                         ),
                       ),

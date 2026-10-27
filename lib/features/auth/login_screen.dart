@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants/app_colors.dart';
 import 'otp_verification_screen.dart';
@@ -11,251 +12,330 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String selectedRole = 'Supplier';
-  final TextEditingController mobileController = TextEditingController();
+  static const _roleButtonBorderRadius = BorderRadius.all(Radius.circular(24));
+
+  final _formKey = GlobalKey<FormState>();
+  final _mobileController = TextEditingController();
+  String _selectedRole = 'Supplier';
 
   @override
   void dispose() {
-    mobileController.dispose();
+    _mobileController.dispose();
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+  void _continue() {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.08,
-                    vertical: screenHeight * 0.04,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Logo
-                      Container(
-                        width: screenWidth * 0.5,
-                        height: screenWidth * 0.5,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/photo_5979016740496674893_x.jpg'),
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => OtpVerificationScreen(
+          mobileNumber: '+91 ${_mobileController.text.trim()}',
+        ),
+      ),
+    );
+  }
 
-                      SizedBox(height: screenHeight * 0.02),
+  Widget _buildRoleButton(String role) {
+    final isSelected = _selectedRole == role;
 
-                      // Welcome Back! heading
-                      Text(
-                        'Welcome Back!',
-                        style: GoogleFonts.roboto(
-                          fontSize: screenWidth * 0.065,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primaryBlue,
-                        ),
-                      ),
-
-                      SizedBox(height: screenHeight * 0.01),
-
-                      // Subtitle
-                      Text(
-                        'Login to your Solar TradeXHub account',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.roboto(
-                          fontSize: screenWidth * 0.035,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.textGrey,
-                        ),
-                      ),
-
-                      SizedBox(height: screenHeight * 0.03),
-
-                      // Supplier / Vendor toggle buttons
-                      Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selectedRole = 'Supplier';
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: screenHeight * 0.015,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: selectedRole == 'Supplier'
-                                      ? AppColors.primaryBlue
-                                      : Colors.white,
-                                  borderRadius: BorderRadius.circular(25),
-                                  border: Border.all(
-                                    color: AppColors.primaryBlue,
-                                    width: 1.5,
-                                  ),
-                                ),
-                                child: Text(
-                                  'Supplier',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.roboto(
-                                    fontSize: screenWidth * 0.04,
-                                    fontWeight: FontWeight.w600,
-                                    color: selectedRole == 'Supplier'
-                                        ? Colors.white
-                                        : AppColors.primaryBlue,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: screenWidth * 0.04),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selectedRole = 'Vendor';
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: screenHeight * 0.015,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: selectedRole == 'Vendor'
-                                      ? AppColors.primaryBlue
-                                      : Colors.white,
-                                  borderRadius: BorderRadius.circular(25),
-                                  border: Border.all(
-                                    color: AppColors.primaryBlue,
-                                    width: 1.5,
-                                  ),
-                                ),
-                                child: Text(
-                                  'Vendor',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.roboto(
-                                    fontSize: screenWidth * 0.04,
-                                    fontWeight: FontWeight.w600,
-                                    color: selectedRole == 'Vendor'
-                                        ? Colors.white
-                                        : AppColors.primaryBlue,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: screenHeight * 0.03),
-
-                      // Mobile Number label
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Mobile Number',
-                          style: GoogleFonts.roboto(
-                            fontSize: screenWidth * 0.035,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.textGrey,
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(height: screenHeight * 0.01),
-
-                      // Mobile Number input field
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.inputBackground,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: AppColors.borderGrey,
-                            width: 1,
-                          ),
-                        ),
-                        child: TextField(
-                          controller: mobileController,
-                          keyboardType: TextInputType.phone,
-                          style: GoogleFonts.roboto(
-                            fontSize: screenWidth * 0.04,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          decoration: InputDecoration(
-                            hintText: '+91 9899 333 112',
-                            hintStyle: GoogleFonts.roboto(
-                              fontSize: screenWidth * 0.04,
-                              color: AppColors.textGreyLight,
-                            ),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: screenWidth * 0.04,
-                              vertical: screenHeight * 0.018,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(height: screenHeight * 0.04),
-
-                      // Continue button
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => OtpVerificationScreen(
-                                  mobileNumber: mobileController.text.isEmpty 
-                                    ? '+91 9899 333 112' 
-                                    : mobileController.text,
-                                ),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryBlue,
-                            padding: EdgeInsets.symmetric(
-                              vertical: screenHeight * 0.02,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: Text(
-                            'Continue',
-                            style: GoogleFonts.roboto(
-                              fontSize: screenWidth * 0.045,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(height: screenHeight * 0.02),
-                    ],
+    return Expanded(
+      child: SizedBox(
+        height: 34,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0xFF003A8A) : Colors.transparent,
+            border: isSelected
+                ? Border.all(color: const Color(0x80003A8A))
+                : null,
+            borderRadius: _roleButtonBorderRadius,
+            boxShadow: isSelected
+                ? const [
+                    BoxShadow(
+                      color: Color(0x08000000),
+                      offset: Offset(0, -2),
+                      blurRadius: 2,
+                      blurStyle: BlurStyle.inner,
+                    ),
+                    BoxShadow(
+                      color: Color(0x3DE4E5E7),
+                      offset: Offset(0, 1),
+                      blurRadius: 2,
+                    ),
+                  ]
+                : null,
+          ),
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: _roleButtonBorderRadius,
+            child: InkWell(
+              borderRadius: _roleButtonBorderRadius,
+              onTap: () => setState(() => _selectedRole = role),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Center(
+                  child: Text(
+                    role,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: isSelected
+                          ? Colors.white
+                          : const Color(0xFF3D4348),
+                    ),
                   ),
                 ),
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
+        systemNavigationBarDividerColor: Colors.white,
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final contentWidth = constraints.maxWidth < 359
+                  ? constraints.maxWidth - 32
+                  : 327.0;
+
+              return SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 77, 16, 24),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: SizedBox(
+                    width: contentWidth,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(minHeight: 469),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Center(
+                              child: Image.asset(
+                                'assets/images/photo_5979016740496674893_x.jpg',
+                                width: 182,
+                                height: 148,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Welcome Back!',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: -0.56,
+                                    color: AppColors.primaryBlue,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Log in to your Solar TradeXHub account',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    height: 1.5,
+                                    color: const Color(0xFF6C7278),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+                            SizedBox(
+                              height: 42,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF5F6F9),
+                                  borderRadius: _roleButtonBorderRadius,
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(0x05000000),
+                                      offset: Offset(0, 3),
+                                      blurRadius: 6,
+                                      blurStyle: BlurStyle.inner,
+                                    ),
+                                  ],
+                                ),
+                                foregroundDecoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: const Color(0xFFF5F6F9),
+                                  ),
+                                  borderRadius: _roleButtonBorderRadius,
+                                ),
+                                padding: const EdgeInsets.all(4),
+                                child: Row(
+                                  children: [
+                                    _buildRoleButton('Supplier'),
+                                    const SizedBox(width: 2),
+                                    _buildRoleButton('Vendor'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  'Mobile number',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF3D4348),
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: const Color(0xFFEDF1F3),
+                                    ),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Color(0x3DE4E5E7),
+                                        offset: Offset(0, 1),
+                                        blurRadius: 2,
+                                      ),
+                                    ],
+                                  ),
+                                  child: TextFormField(
+                                    controller: _mobileController,
+                                    keyboardType: TextInputType.phone,
+                                    textInputAction: TextInputAction.done,
+                                    onFieldSubmitted: (_) => _continue(),
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      LengthLimitingTextInputFormatter(10),
+                                    ],
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: const Color(0xFF1A1C1E),
+                                    ),
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      constraints: const BoxConstraints(
+                                        minHeight: 46,
+                                      ),
+                                      hintText: 'Enter your mobile number',
+                                      hintStyle: GoogleFonts.inter(
+                                        fontSize: 14,
+                                        color: const Color(0xFFACB5BB),
+                                      ),
+                                      prefixText: '+91  ',
+                                      prefixStyle: GoogleFonts.inter(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        color: const Color(0xFF1A1C1E),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.transparent,
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            horizontal: 14,
+                                            vertical: 11,
+                                          ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: const BorderSide(
+                                          color: AppColors.primaryBlue,
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: const BorderSide(
+                                          color: Color(0xFFBA1A1A),
+                                        ),
+                                      ),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: const BorderSide(
+                                          color: Color(0xFFBA1A1A),
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                    ),
+                                    validator: (value) {
+                                      final number = value?.trim() ?? '';
+                                      if (number.isEmpty) {
+                                        return 'Enter your mobile number';
+                                      }
+                                      if (!RegExp(
+                                        r'^[6-9]\d{9}$',
+                                      ).hasMatch(number)) {
+                                        return 'Enter a valid 10-digit mobile number';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+                            SizedBox(
+                              height: 48,
+                              child: ElevatedButton(
+                                onPressed: _continue,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primaryBlue,
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  textStyle: GoogleFonts.inter(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Continue'),
+                                    SizedBox(width: 8),
+                                    Icon(Icons.arrow_forward_rounded, size: 18),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),
