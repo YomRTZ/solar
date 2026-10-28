@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/widgets/widgets.dart';
 import '../bank/bank_details_screen.dart';
@@ -15,7 +16,8 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
   final TextEditingController companyNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
-  final TextEditingController dispatchLocationController = TextEditingController();
+  final TextEditingController dispatchLocationController =
+      TextEditingController();
   final TextEditingController gstNumberController = TextEditingController();
   final TextEditingController panNumberController = TextEditingController();
 
@@ -62,9 +64,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
     // Navigate to Bank Details screen
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const BankDetailsScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const BankDetailsScreen()),
     );
   }
 
@@ -83,7 +83,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
           children: [
             // Header
             _buildHeader(context),
-            
+
             // Form Content
             Expanded(
               child: SingleChildScrollView(
@@ -96,7 +96,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
                       controller: companyNameController,
                     ),
                     const SizedBox(height: 24),
-                    
+
                     AppTextField(
                       label: 'Email Address',
                       hint: 'Solar@gmail.com',
@@ -104,35 +104,35 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
                       keyboardType: TextInputType.emailAddress,
                     ),
                     const SizedBox(height: 24),
-                    
+
                     AppTextField(
                       label: 'Address',
                       hint: '12-223 Salest, New Delhi',
                       controller: addressController,
                     ),
                     const SizedBox(height: 24),
-                    
+
                     AppTextField(
                       label: 'Dispatch Location',
                       hint: '12-223 Salest, New Delhi',
                       controller: dispatchLocationController,
                     ),
                     const SizedBox(height: 24),
-                    
+
                     AppTextField(
                       label: 'Gst Number',
                       hint: '08TGC45879',
                       controller: gstNumberController,
                     ),
                     const SizedBox(height: 24),
-                    
+
                     AppTextField(
                       label: 'Pan Number',
                       hint: '123456789',
                       controller: panNumberController,
                     ),
                     const SizedBox(height: 32),
-                    
+
                     // Continue Button
                     AppContinueButton(
                       text: 'Continue',
@@ -150,10 +150,9 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
 
   /// Build header with back button and title
   Widget _buildHeader(BuildContext context) {
-    final top = MediaQuery.of(context).padding.top;
     return Container(
       width: double.infinity,
-      height: top + 133,
+      height: 192,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -162,32 +161,39 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(16, top + 16, 16, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-                size: 24,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: SvgPicture.asset(
+                  'assets/images/icons/arrow-narrow-left.svg',
+                  width: 24,
+                  height: 24,
+                ),
+                onPressed: () => Navigator.pop(context),
+                tooltip: 'Back',
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints.tightFor(
+                  width: 24,
+                  height: 24,
+                ),
               ),
-              onPressed: () => Navigator.pop(context),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-              alignment: Alignment.centerLeft,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Company Details',
-              style: GoogleFonts.inter(
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-                height: 1.2,
+              const SizedBox(width: 8),
+              Text(
+                'Company Details',
+                style: GoogleFonts.inter(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  height: 1.2,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
