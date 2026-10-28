@@ -1,0 +1,450 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../core/widgets/tender_category_card.dart';
+import '../../core/widgets/tender_product_card.dart';
+import '../../data/tender_data.dart';
+import '../../models/catalog_product.dart';
+import 'advtender_supplier_details_screen.dart';
+import 'tender_all_categories_screen.dart';
+import 'tender_all_products_screen.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Tender Home Screen
+// Mirrors the layout of home_screen.dart:
+//  • Dark-gradient header (logo + bell)
+//  • Search bar
+//  • Quick-access category row
+//  • Second category row (same items, demonstrating scroll)
+//  • Promo banner
+//  • "All Products" section heading + 2-col product grid
+// ─────────────────────────────────────────────────────────────────────────────
+class TenderHomeScreen extends StatefulWidget {
+  const TenderHomeScreen({super.key});
+
+  @override
+  State<TenderHomeScreen> createState() => _TenderHomeScreenState();
+}
+
+class _TenderHomeScreenState extends State<TenderHomeScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  // RFQ cart: productId → quantity
+  final Map<String, int> _rfqCart = {};
+
+  List<CatalogProduct> get _filteredProducts {
+    if (_searchQuery.isEmpty) return TenderData.products;
+    final q = _searchQuery.toLowerCase();
+    return TenderData.products
+        .where((p) => p.name.toLowerCase().contains(q))
+        .toList();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _add(String id) =>
+      setState(() => _rfqCart[id] = (_rfqCart[id] ?? 0) + 1);
+
+  void _increment(String id) =>
+      setState(() => _rfqCart[id] = (_rfqCart[id] ?? 0) + 1);
+
+  void _decrement(String id) {
+    setState(() {
+      final current = _rfqCart[id] ?? 0;
+      if (current <= 1) {
+        _rfqCart.remove(id);
+      } else {
+        _rfqCart[id] = current - 1;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF2F4F7),
+        body: Column(
+          children: [
+            _buildHeader(context),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ── Search bar ────────────────────────────
+                    _buildSearchBar(),
+                    const SizedBox(height: 18),
+
+                    // ── Category row 1 ────────────────────────
+                    _buildCategoryRow(),
+                    const SizedBox(height: 12),
+
+                    // ── Category row 2 (same items, shows scroll UX) ──
+                    _buildCategoryRow(),
+                    const SizedBox(height: 18),
+
+                    // ── Promo banner ──────────────────────────
+                    _buildBanner(context),
+                    const SizedBox(height: 20),
+
+                    // ── "All Products" heading ────────────────
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'All Products',
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF202020),
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const TenderAllProductsScreen(),
+                            ),
+                          ),
+                          child: Text(
+                            'See all',
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF003A8A),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+
+                    // ── 2-col product grid ────────────────────
+                    _buildProductGrid(),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Header: same dark gradient as home_screen ──────────────
+  Widget _buildHeader(BuildContext context) {
+    final top = MediaQuery.of(context).padding.top;
+    return Container(
+      width: double.infinity,
+      height: top + 100,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
+        ),
+      ),
+      child: Stack(
+        children: [
+          // Logo centred in the visible 100 px area
+          Positioned(
+            top: top + 18,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Image.asset(
+                'assets/images/a_clean_high_resolution_vector_like_logo_image_on.png',
+                width: 56,
+                height: 56,
+                fit: BoxFit.contain,
+                errorBuilder: (ctx, err, st) => const Icon(
+                  Icons.wb_sunny_rounded,
+                  color: Colors.amber,
+                  size: 48,
+                ),
+              ),
+            ),
+          ),
+
+          // Notification bell
+          Positioned(
+            top: top + 30,
+            right: 16,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Image.asset(
+                  'assets/images/icons/image_1374.png',
+                  width: 28,
+                  height: 28,
+                  errorBuilder: (ctx, err, st) => const Icon(
+                    Icons.notifications_outlined,
+                    color: Colors.white,
+                    size: 26,
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFFF3B30),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Search bar ────────────────────────────────────────────
+  Widget _buildSearchBar() {
+    return Container(
+      height: 44,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFE0E0E0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          const SizedBox(width: 12),
+          const Icon(Icons.search, color: Color(0xFF9E9E9E), size: 20),
+          const SizedBox(width: 10),
+          Expanded(
+            child: TextField(
+              controller: _searchController,
+              onChanged: (v) => setState(() => _searchQuery = v),
+              style: GoogleFonts.roboto(
+                  fontSize: 14, color: const Color(0xFF202020)),
+              decoration: InputDecoration(
+                hintText: 'Search Product...',
+                hintStyle: GoogleFonts.roboto(
+                    fontSize: 14, color: const Color(0xFF9E9E9E)),
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+          ),
+          if (_searchQuery.isNotEmpty)
+            GestureDetector(
+              onTap: () => setState(() {
+                _searchController.clear();
+                _searchQuery = '';
+              }),
+              child: const Padding(
+                padding: EdgeInsets.only(right: 12),
+                child: Icon(Icons.clear, color: Color(0xFF9E9E9E), size: 18),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  // ── Horizontally scrollable category row ─────────────────
+  Widget _buildCategoryRow() {
+    return SizedBox(
+      height: 90,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: TenderData.homeCategories.length,
+        separatorBuilder: (context, i) => const SizedBox(width: 10),
+        itemBuilder: (context, i) {
+          final cat = TenderData.homeCategories[i];
+          return SizedBox(
+            width: 68,
+            child: TenderCategoryCard(
+              iconPath: cat.iconPath,
+              label: cat.name,
+              iconContainerSize: 42,
+              onTap: () {
+                if (cat.id == 'cat_more') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const TenderAllCategoriesScreen(),
+                    ),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const TenderAllProductsScreen(),
+                    ),
+                  );
+                }
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // ── Promo banner ─────────────────────────────────────────
+  Widget _buildBanner(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const TenderAllProductsScreen()),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Stack(
+          children: [
+            // Background image
+            SizedBox(
+              width: double.infinity,
+              height: 120,
+              child: Image.asset(
+                TenderData.bannerImage,
+                fit: BoxFit.cover,
+                errorBuilder: (ctx, err, st) => Container(
+                  height: 120,
+                  color: const Color(0xFF003A8A),
+                ),
+              ),
+            ),
+
+            // Dark overlay
+            Container(
+              height: 120,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Colors.black.withValues(alpha: 0.65),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+
+            // Text
+            Positioned(
+              left: 16,
+              top: 0,
+              bottom: 0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Premium!',
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                  Text(
+                    'Solar Panels',
+                    style: GoogleFonts.inter(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      letterSpacing: -0.4,
+                    ),
+                  ),
+                  Text(
+                    'For a cleaner tomorrow',
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white.withValues(alpha: 0.85),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── 2-column product grid ────────────────────────────────
+  Widget _buildProductGrid() {
+    final products = _filteredProducts;
+
+    if (products.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 32),
+          child: Text(
+            'No products found',
+            style: GoogleFonts.roboto(
+                fontSize: 15, color: Colors.grey[400]),
+          ),
+        ),
+      );
+    }
+
+    // Use a GridView inside a ShrinkWrap so it plays nicely inside
+    // the outer SingleChildScrollView.
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: 156 / 220,
+      ),
+      itemCount: products.length,
+      itemBuilder: (context, i) {
+        final product = products[i];
+        final qty = _rfqCart[product.id] ?? 0;
+
+        return TenderProductCard(
+          imagePath: product.imagePath,
+          name: product.name,
+          price: product.price,
+          quantity: qty,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const AdvTenderSupplierDetailsScreen(),
+            ),
+          ),
+          onAdd: () => _add(product.id),
+          onIncrement: () => _increment(product.id),
+          onDecrement: () => _decrement(product.id),
+        );
+      },
+    );
+  }
+}
