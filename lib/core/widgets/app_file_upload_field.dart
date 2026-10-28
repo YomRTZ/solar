@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// Reusable file upload field widget with dashed border and file picker
@@ -76,10 +77,6 @@ class AppFileUploadField extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: const Color(0x40000000), // #00000040
-                  width: 1,
-                ),
               ),
               child: CustomPaint(
                 painter: DashedBorderPainter(
@@ -97,21 +94,10 @@ class AppFileUploadField extends StatelessWidget {
                   child: Row(
                     children: [
                       // Upload icon
-                      Container(
+                      SvgPicture.asset(
+                        'assets/images/icons/cloud_upload_icon.svg',
                         width: 26,
                         height: 26,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: const Color(0x66000000), // #00000066
-                            width: 2,
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.cloud_upload_outlined,
-                          size: 16,
-                          color: Color(0x66000000),
-                        ),
                       ),
                       const SizedBox(width: 13),
                       

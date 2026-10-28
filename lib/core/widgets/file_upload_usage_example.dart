@@ -2,6 +2,7 @@
 /// 
 /// This file demonstrates how to use the AppFileUploadField widget
 /// DO NOT import this file - it's just for reference!
+library;
 
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';

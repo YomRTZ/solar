@@ -45,10 +45,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         controller: otpControllers[index],
         focusNode: otpFocusNodes[index],
         textAlign: TextAlign.center,
+        textAlignVertical: TextAlignVertical.center,
         keyboardType: TextInputType.number,
-        textInputAction: index == 5
-            ? TextInputAction.done
-            : TextInputAction.next,
+        textInputAction:
+            index == 5 ? TextInputAction.done : TextInputAction.next,
         maxLength: 1,
         inputFormatters: [
           FilteringTextInputFormatter.digitsOnly,
@@ -62,14 +62,18 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         decoration: InputDecoration(
           counterText: '',
           contentPadding: EdgeInsets.zero,
+          isDense: false,
           filled: true,
           fillColor: Colors.white,
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Color(0xFFEDF1F3)),
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(
+              color: Color(0x66B8B8B8),
+              width: 1,
+            ),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(8),
             borderSide: const BorderSide(
               color: AppColors.primaryBlue,
               width: 1.5,
@@ -188,20 +192,15 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                 SizedBox(
                                   height: 45,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      for (
-                                        var index = 0;
-                                        index < 6;
-                                        index++
-                                      ) ...[
-                                        if (index > 0) const SizedBox(width: 6),
+                                      for (var index = 0; index < 6; index++) ...[
                                         _buildOtpField(index),
                                       ],
                                     ],
                                   ),
                                 ),
-                                const Spacer(),
+                                const SizedBox(height: 17),
                                 SizedBox(
                                   height: 16,
                                   child: Text(

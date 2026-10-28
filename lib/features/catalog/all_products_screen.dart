@@ -61,7 +61,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
-        statusBarColor: Color(0xFF003A8A),
+        statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
         systemNavigationBarColor: Colors.white,
@@ -69,6 +69,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
       ),
       child: Scaffold(
         backgroundColor: Colors.white,
+        extendBodyBehindAppBar: true,
         body: Column(
           children: [
             _buildHeader(context),
@@ -83,8 +84,10 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
 
   // ── Header ─────────────────────────────────────────────────
   Widget _buildHeader(BuildContext context) {
+    final top = MediaQuery.of(context).padding.top;
     return Container(
       width: double.infinity,
+      height: top + 133,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -92,80 +95,77 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
           colors: [Color(0xFF003A8A), Color(0xFF000F24)],
         ),
       ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-          child: Row(
-            children: [
-              // Back button
-              GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: const Icon(Icons.arrow_back,
-                    color: Colors.white, size: 24),
-              ),
-              const SizedBox(width: 12),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16, top + 16, 16, 0),
+        child: Row(
+          children: [
+            // Back button
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: const Icon(Icons.arrow_back,
+                  color: Colors.white, size: 24),
+            ),
+            const SizedBox(width: 12),
 
-              // Title
-              Expanded(
-                child: Text(
-                  'All Products',
-                  style: GoogleFonts.inter(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    letterSpacing: -0.4,
-                  ),
+            // Title
+            Expanded(
+              child: Text(
+                'All Products',
+                style: GoogleFonts.inter(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  letterSpacing: -0.4,
                 ),
               ),
+            ),
 
-              // Cart icon with badge
-              GestureDetector(
-                onTap: _cartCount > 0 ? () => _showCartSummary(context) : null,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.shopping_cart_outlined,
-                        color: Colors.white,
-                        size: 22,
-                      ),
+            // Cart icon with badge
+            GestureDetector(
+              onTap: _cartCount > 0 ? () => _showCartSummary(context) : null,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    if (_cartCount > 0)
-                      Positioned(
-                        top: -6,
-                        right: -6,
-                        child: Container(
-                          width: 18,
-                          height: 18,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFFF3B30),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: Text(
-                              _cartCount > 99 ? '99+' : '$_cartCount',
-                              style: const TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
+                    child: const Icon(
+                      Icons.shopping_cart_outlined,
+                      color: Colors.white,
+                      size: 22,
+                    ),
+                  ),
+                  if (_cartCount > 0)
+                    Positioned(
+                      top: -6,
+                      right: -6,
+                      child: Container(
+                        width: 18,
+                        height: 18,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFFF3B30),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            _cartCount > 99 ? '99+' : '$_cartCount',
+                            style: const TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
                             ),
                           ),
                         ),
                       ),
-                  ],
-                ),
+                    ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

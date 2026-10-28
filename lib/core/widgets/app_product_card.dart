@@ -6,36 +6,39 @@ import 'package:google_fonts/google_fonts.dart';
 class AppProductCard extends StatelessWidget {
   /// Path to the product image (can be asset path or network URL)
   final String imagePath;
-  
+
   /// Product title/name
   final String title;
-  
+
   /// RFQ/Reference number
   final String rfqNumber;
-  
+
   /// Product price (will be displayed with "Rs." prefix)
   final String price;
-  
+
   /// Status badge text (e.g., "New", "Open", "Closed")
   final String statusText;
-  
+
   /// Status badge background color
   final Color statusBackgroundColor;
-  
+
   /// Status badge text color
   final Color statusTextColor;
-  
+
   /// Whether the image is from network or assets (default: false for assets)
   final bool isNetworkImage;
-  
+
   /// Callback when the card is tapped
   final VoidCallback? onTap;
-  
+
   /// Maximum width of the card (default: 327)
   final double maxWidth;
-  
+
   /// Height of the card (default: 103)
   final double height;
+
+  /// Vertical offset for the status badge
+  final double statusBadgeOffsetY;
 
   const AppProductCard({
     super.key,
@@ -50,6 +53,7 @@ class AppProductCard extends StatelessWidget {
     this.onTap,
     this.maxWidth = 327,
     this.height = 103,
+    this.statusBadgeOffsetY = 0,
   });
 
   /// Factory constructor for "New" status
@@ -116,10 +120,7 @@ class AppProductCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: const Color(0xFFE0E0E0),
-            width: 1,
-          ),
+          border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
         ),
         child: Row(
           children: [
@@ -149,7 +150,7 @@ class AppProductCard extends StatelessWidget {
                     ),
             ),
             const SizedBox(width: 15),
-            
+
             // Product Details
             Expanded(
               child: Column(
@@ -175,26 +176,31 @@ class AppProductCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      
+
                       // Status Badge
-                      Container(
-                        height: 22,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: statusBackgroundColor,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Center(
-                          child: Text(
-                            statusText,
-                            style: GoogleFonts.roboto(
-                              fontSize: 12,
-                              height: 18 / 12,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: -0.14,
-                              color: statusTextColor,
+                      Transform.translate(
+                        offset: Offset(0, statusBadgeOffsetY),
+                        child: Container(
+                          height: 22,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: statusBackgroundColor,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Center(
+                            child: Text(
+                              statusText,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.roboto(
+                                fontSize: 12,
+                                height: 18 / 12,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: -0.14,
+                                color: statusTextColor,
+                              ),
                             ),
                           ),
                         ),
@@ -202,7 +208,7 @@ class AppProductCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 3),
-                  
+
                   // RFQ Number
                   Text(
                     rfqNumber,
@@ -217,7 +223,7 @@ class AppProductCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 1),
-                  
+
                   // Price
                   Text(
                     'Rs. $price',

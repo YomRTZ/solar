@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/widgets/app_product_card.dart';
+import '../../core/widgets/app_expandable_card.dart';
 import '../../data/rfq_data.dart';
 import '../../models/rfq.dart';
 import 'rfq_detail_screen.dart';
@@ -43,26 +43,23 @@ class _RFQRequestsScreenState extends State<RFQRequestsScreen> {
               child: _filtered.isEmpty
                   ? _buildEmpty()
                   : ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
                       itemCount: _filtered.length,
                       itemBuilder: (context, index) {
                         final rfq = _filtered[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: AppProductCard(
-                            imagePath: rfq.imagePath,
-                            title: rfq.productTitle,
-                            rfqNumber: rfq.rfqNumber,
-                            price: rfq.price,
-                            statusText: rfq.status.displayName,
-                            statusBackgroundColor: rfq.status.backgroundColor,
-                            statusTextColor: rfq.status.textColor,
-                            maxWidth: double.infinity,
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => RFQDetailScreen(rfq: rfq),
-                              ),
+                        return AppExpandableCard(
+                          imagePath: rfq.imagePath,
+                          title: rfq.productTitle,
+                          idNumber: rfq.rfqNumber,
+                          price: rfq.price,
+                          statusText: rfq.status.displayName,
+                          statusBackgroundColor: rfq.status.backgroundColor,
+                          statusTextColor: rfq.status.textColor,
+                          maxWidth: double.infinity,
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => RFQDetailScreen(rfq: rfq),
                             ),
                           ),
                         );
@@ -92,28 +89,33 @@ class _RFQRequestsScreenState extends State<RFQRequestsScreen> {
         padding: EdgeInsets.fromLTRB(16, top + 16, 16, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            // Back arrow — always shown
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-                size: 24,
-              ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'RFQ Requests',
+                  style: GoogleFonts.inter(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    letterSpacing: -0.5,
+                    height: 1.2,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
-            // Title
-            Text(
-              'RFQ Requests',
-              style: GoogleFonts.inter(
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-                letterSpacing: -0.5,
-                height: 1.2,
-              ),
-            ),
           ],
         ),
       ),
@@ -122,17 +124,20 @@ class _RFQRequestsScreenState extends State<RFQRequestsScreen> {
 
   // ── Filter Tabs ────────────────────────────────────────────
   Widget _buildFilterTabs() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _tab(label: 'All', value: null),
-          const SizedBox(width: 10),
-          _tab(label: 'New', value: RFQStatus.newRequest),
-          const SizedBox(width: 10),
-          _tab(label: 'Open', value: RFQStatus.open),
-        ],
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _tab(label: 'All', value: null),
+            const SizedBox(width: 12.85),
+            _tab(label: 'New', value: RFQStatus.newRequest),
+            const SizedBox(width: 12.86),
+            _tab(label: 'Open', value: RFQStatus.open),
+          ],
+        ),
       ),
     );
   }
@@ -142,25 +147,23 @@ class _RFQRequestsScreenState extends State<RFQRequestsScreen> {
     return GestureDetector(
       onTap: () => setState(() => _activeFilter = value),
       child: Container(
-        height: 32,
-        padding: const EdgeInsets.symmetric(horizontal: 28),
+        width: 72.43,
+        height: 27,
         decoration: BoxDecoration(
-          color: isActive ? const Color(0xFF003D82) : Colors.white,
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(
-            color: isActive
-                ? const Color(0xFF003D82)
-                : const Color(0xFFE0E0E0),
-          ),
+          color: isActive ? const Color(0xFF003A8A) : Colors.white,
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: const Color(0xFF003A8A), width: 1),
         ),
-        child: Center(
-          child: Text(
-            label,
-            style: GoogleFonts.roboto(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              color: isActive ? Colors.white : const Color(0xFF6C7278),
-            ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.roboto(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: isActive ? Colors.white : const Color(0xFF003A8A),
+            height: 18 / 12,
+            letterSpacing: -0.14,
           ),
         ),
       ),

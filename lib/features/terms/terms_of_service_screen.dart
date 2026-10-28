@@ -71,7 +71,7 @@ class TermsOfServiceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
-        statusBarColor: Color(0xFF003A8A),
+        statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
         systemNavigationBarColor: Colors.white,
@@ -79,10 +79,11 @@ class TermsOfServiceScreen extends StatelessWidget {
       ),
       child: Scaffold(
         backgroundColor: Colors.white,
+        extendBodyBehindAppBar: true,
         body: Column(
           children: [
             // ── Reusable gradient header ──────────────────────
-            const AppHeader(title: 'Terms of Service'),
+            const AppHeader(title: 'Terms of Service', height: 133),
 
             // ── Scrollable content ────────────────────────────
             Expanded(

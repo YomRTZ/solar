@@ -57,6 +57,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     // Reusable header widget
                     const AppHeader(
                       title: 'Create Account',
+                      height: 133,
                     ),
                     const SizedBox(height: 16),
                     Expanded(

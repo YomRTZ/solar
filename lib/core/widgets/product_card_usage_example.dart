@@ -2,6 +2,7 @@
 /// 
 /// This file demonstrates how to use the AppProductCard widget
 /// DO NOT import this file - it's just for reference!
+library;
 
 import 'package:flutter/material.dart';
 import 'app_product_card.dart';

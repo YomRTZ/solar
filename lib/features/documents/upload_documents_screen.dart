@@ -10,8 +10,7 @@ class UploadDocumentsScreen extends StatefulWidget {
   const UploadDocumentsScreen({super.key});
 
   @override
-  State<UploadDocumentsScreen> createState() =>
-      _UploadDocumentsScreenState();
+  State<UploadDocumentsScreen> createState() => _UploadDocumentsScreenState();
 }
 
 class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
@@ -75,16 +74,21 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
-        statusBarColor: Color(0xFF003A8A),
+        statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
       ),
       child: Scaffold(
         backgroundColor: Colors.white,
+        extendBodyBehindAppBar: true,
         body: Column(
           children: [
             // ── Reusable gradient header ─────────────────────
-            const AppHeader(title: 'Upload Documents'),
+            const AppHeader(
+              title: 'Upload Documents',
+              height: 133,
+              titleBelowBackButton: true,
+            ),
 
             // ── Scrollable form body ─────────────────────────
             Expanded(
@@ -112,9 +116,8 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                       helperText:
                           'JPG, PNG or PDF, file size no more than 10MB',
                       selectedFileName: _panCardFile,
-                      onTap: () => _pickFile(
-                        (f) => setState(() => _panCardFile = f),
-                      ),
+                      onTap: () =>
+                          _pickFile((f) => setState(() => _panCardFile = f)),
                     ),
                     const SizedBox(height: 24),
 
@@ -126,8 +129,7 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                           'JPG, PNG or PDF, file size no more than 10MB',
                       selectedFileName: _businessRegistrationFile,
                       onTap: () => _pickFile(
-                        (f) =>
-                            setState(() => _businessRegistrationFile = f),
+                        (f) => setState(() => _businessRegistrationFile = f),
                       ),
                     ),
                     const SizedBox(height: 24),

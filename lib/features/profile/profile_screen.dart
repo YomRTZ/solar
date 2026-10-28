@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/widgets/app_continue_button.dart';
 import '../auth/login_screen.dart';
+import 'update_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -11,97 +11,35 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
-        statusBarColor: Color(0xFF003A8A),
+        statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
         backgroundColor: Colors.white,
+        extendBodyBehindAppBar: true,
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildHeader(),
+            _ProfileHeader(),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
+                padding: const EdgeInsets.fromLTRB(20, 28, 20, 32),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // ── Avatar ───────────────────────────────
-                    _buildAvatar(),
-                    const SizedBox(height: 24),
+                    // ── Avatar + name ────────────────────────
+                    _buildAvatarSection(),
+                    const SizedBox(height: 28),
 
-                    // ── Info tiles ───────────────────────────
-                    _buildInfoTile(
-                        icon: Icons.business_rounded,
-                        label: 'Company',
-                        value: 'Solar Trade'),
-                    _buildDivider(),
-                    _buildInfoTile(
-                        icon: Icons.email_outlined,
-                        label: 'Email',
-                        value: 'Solar@gmail.com'),
-                    _buildDivider(),
-                    _buildInfoTile(
-                        icon: Icons.phone_outlined,
-                        label: 'Mobile',
-                        value: '+91 9876543210'),
-                    _buildDivider(),
-                    _buildInfoTile(
-                        icon: Icons.location_on_outlined,
-                        label: 'Address',
-                        value: '12-223 Saket, New Delhi'),
-                    _buildDivider(),
-                    _buildInfoTile(
-                        icon: Icons.receipt_long_outlined,
-                        label: 'GST Number',
-                        value: '08TGC45879'),
-                    _buildDivider(),
-                    _buildInfoTile(
-                        icon: Icons.credit_card_outlined,
-                        label: 'PAN Number',
-                        value: '123456789'),
+                    // ── Business Information card ─────────────
+                    _buildBusinessCard(context),
                     const SizedBox(height: 32),
 
-                    // ── Menu items ───────────────────────────
-                    _buildMenuItem(
-                      context,
-                      icon: Icons.edit_outlined,
-                      label: 'Edit Profile',
-                      onTap: () {},
-                    ),
-                    _buildMenuItem(
-                      context,
-                      icon: Icons.lock_outline_rounded,
-                      label: 'Change Password',
-                      onTap: () {},
-                    ),
-                    _buildMenuItem(
-                      context,
-                      icon: Icons.help_outline_rounded,
-                      label: 'Help & Support',
-                      onTap: () {},
-                    ),
-                    _buildMenuItem(
-                      context,
-                      icon: Icons.info_outline_rounded,
-                      label: 'About App',
-                      onTap: () {},
-                    ),
-                    const SizedBox(height: 32),
-
-                    // ── Logout button ────────────────────────
-                    AppContinueButton(
-                      text: 'Logout',
-                      showArrow: false,
-                      backgroundColor: Colors.white,
-                      textColor: const Color(0xFFB31515),
-                      onPressed: () {
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                              builder: (_) => const LoginScreen()),
-                          (route) => false,
-                        );
-                      },
-                    ),
+                    // ── Logout row ───────────────────────────
+                    _buildLogoutRow(context),
                   ],
                 ),
               ),
@@ -112,49 +50,27 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // ── Header ────────────────────────────────────────────────
-  Widget _buildHeader() {
-    return Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
-        ),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-          child: Text(
-            'Profile',
-            style: GoogleFonts.inter(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // ── Avatar ────────────────────────────────────────────────
-  Widget _buildAvatar() {
+  // ── Avatar + name + contact ──────────────────────────────────
+  Widget _buildAvatarSection() {
     return Column(
       children: [
+        // Initials circle
         Container(
           width: 84,
           height: 84,
           decoration: const BoxDecoration(
-            color: Color(0xFFE8F0FE),
+            color: Color(0xFFD6E4F7),
             shape: BoxShape.circle,
           ),
-          child: const Icon(
-            Icons.person_rounded,
-            size: 48,
-            color: Color(0xFF003A8A),
+          alignment: Alignment.center,
+          child: Text(
+            'ST',
+            style: GoogleFonts.inter(
+              fontSize: 28,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF003A8A),
+              letterSpacing: 1,
+            ),
           ),
         ),
         const SizedBox(height: 12),
@@ -168,91 +84,226 @@ class ProfileScreen extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          'Supplier',
+          'Rahul Roy',
           style: GoogleFonts.inter(
             fontSize: 13,
-            fontWeight: FontWeight.w500,
-            color: const Color(0xFF003A8A),
+            fontWeight: FontWeight.w400,
+            color: const Color(0xFF6C7278),
           ),
         ),
       ],
     );
   }
 
-  // ── Info tile ─────────────────────────────────────────────
-  Widget _buildInfoTile(
-      {required IconData icon,
-      required String label,
-      required String value}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
+  // ── Business Information card with info rows ─────────────────
+  Widget _buildBusinessCard(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFEDF1F3), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Icon(icon, size: 20, color: const Color(0xFF003A8A)),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          // Section header row
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+            child: Row(
               children: [
-                Text(
-                  label,
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    color: const Color(0xFF6C7278),
+                // Building icon with light blue bg
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFD6E4F7),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.business_outlined,
+                    color: Color(0xFF003A8A),
+                    size: 20,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(width: 10),
                 Text(
-                  value,
+                  'Business Information',
                   style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF202020),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF003A8A),
+                  ),
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const UpdateProfileScreen(),
+                    ),
+                  ),
+                  child: Text(
+                    'Edit',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF003A8A),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
+          const Divider(height: 1, color: Color(0xFFEDF1F3)),
+
+          // Info rows
+          _buildInfoRow('Business', 'Solar Trade Rahul Roy'),
+          _buildInfoRow('Contact Person', 'Rahul Roy'),
+          _buildInfoRow('Address', '13-223 Saket,\nNew Delhi'),
+          _buildInfoRow('Gst Number', '9876546879'),
+          _buildInfoRow('Pan Number', '12345678', isLast: true),
         ],
       ),
     );
   }
 
-  Widget _buildDivider() => const Divider(height: 1, color: Color(0xFFF0F0F0));
+  Widget _buildInfoRow(String label, String value, {bool isLast = false}) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 120,
+                child: Text(
+                  label,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    color: const Color(0xFF6C7278),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  value,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF202020),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (!isLast) const Divider(height: 1, color: Color(0xFFEDF1F3)),
+      ],
+    );
+  }
 
-  // ── Menu item ─────────────────────────────────────────────
-  Widget _buildMenuItem(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
+  // ── Logout row ───────────────────────────────────────────────
+  Widget _buildLogoutRow(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          (route) => false,
+        );
+      },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: const Color(0xFFF8F9FA),
-          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFEDF1F3), width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           children: [
-            Icon(icon, size: 20, color: const Color(0xFF003A8A)),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Text(
-                label,
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: const Color(0xFF202020),
-                ),
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: const Color(0xFFD6E4F7),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.logout_rounded,
+                color: Color(0xFF003A8A),
+                size: 20,
               ),
             ),
-            const Icon(Icons.chevron_right_rounded,
-                size: 20, color: Color(0xFF6C7278)),
+            const SizedBox(width: 12),
+            Text(
+              'Logout',
+              style: GoogleFonts.inter(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF202020),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Profile Header — matches home screen gradient (0xFF003A8A → 0xFF000F24)
+// height = statusBar + 133 (same visible area as home header)
+// ─────────────────────────────────────────────────────────────────────────────
+class _ProfileHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final top = MediaQuery.of(context).padding.top;
+    return Container(
+      width: double.infinity,
+      height: top + 133,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
+        ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16, top + 16, 16, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Back arrow
+            const Icon(
+              Icons.arrow_back,
+              color: Color(0xFFEEEEEE),
+              size: 24,
+            ),
+            const SizedBox(height: 18),
+            Text(
+              'My Profile',
+              style: GoogleFonts.inter(
+                fontSize: 26,
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFFEEEEEE),
+                letterSpacing: -0.5,
+              ),
+            ),
           ],
         ),
       ),

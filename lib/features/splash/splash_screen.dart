@@ -38,6 +38,22 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           ),
 
+          // ── Dark transparent overlay ──────────────────────
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withValues(alpha: 0.45),
+                    Colors.black.withValues(alpha: 0.10),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
           // ── Content column ────────────────────────────────
           SizedBox(
             width: screenWidth,
@@ -55,8 +71,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   fit: BoxFit.contain,
                 ),
 
-                // ── Gap between logo and text block (~6% of height) ──
-                SizedBox(height: screenHeight * 0.06),
+                // ── Gap between logo and text block (~3% of height) ──
+                SizedBox(height: screenHeight * 0.03),
 
                 // "Connecting"
                 Text(

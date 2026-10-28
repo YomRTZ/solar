@@ -88,12 +88,13 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
-        statusBarColor: Color(0xFF003A8A),
+        statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
       ),
       child: Scaffold(
         backgroundColor: Colors.white,
+        extendBodyBehindAppBar: true,
         body: Column(
           children: [
             _buildHeader(context),
@@ -110,8 +111,10 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
 
   // ── Header ─────────────────────────────────────────────────
   Widget _buildHeader(BuildContext context) {
+    final top = MediaQuery.of(context).padding.top;
     return Container(
       width: double.infinity,
+      height: top + 133,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -119,23 +122,22 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
           colors: [Color(0xFF003A8A), Color(0xFF000F24)],
         ),
       ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-          child: Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  if (_showQuoteForm) {
-                    // go back to detail view
-                    setState(() => _showQuoteForm = false);
-                  } else {
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Icon(Icons.arrow_back,
-                    color: Colors.white, size: 24),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16, top + 16, 16, 0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () {
+                if (_showQuoteForm) {
+                  // go back to detail view
+                  setState(() => _showQuoteForm = false);
+                } else {
+                  Navigator.pop(context);
+                }
+              },
+              child: const Icon(Icons.arrow_back,
+                  color: Colors.white, size: 24),
               ),
               const SizedBox(width: 12),
               Text(
@@ -150,7 +152,6 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
             ],
           ),
         ),
-      ),
     );
   }
 

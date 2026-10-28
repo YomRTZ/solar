@@ -37,6 +37,9 @@ dependencies:
   
   # Google Fonts for Roboto font family
   google_fonts: ^6.1.0
+  
+  # SVG rendering for custom nav icons
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +66,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/solarimages/
+    - assets/images/icons/
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a

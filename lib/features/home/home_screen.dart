@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/widgets/app_continue_button.dart';
@@ -95,8 +96,7 @@ class _HomeBody extends StatelessWidget {
                   showArrow: false,
                   onPressed: () => Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (_) => const AddProductScreen()),
+                    MaterialPageRoute(builder: (_) => const AddProductScreen()),
                   ),
                 ),
                 const SizedBox(height: 18),
@@ -114,22 +114,28 @@ class _HomeBody extends StatelessWidget {
                 const SizedBox(height: 10),
 
                 // ── RFQ cards ───────────────────────────────
-                ...DashboardData.recentRFQs.map(
-                  (rfq) => Padding(
+                ...DashboardData.recentRFQs.asMap().entries.map(
+                  (entry) => Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: AppProductCard(
-                      imagePath: rfq.imagePath,
-                      title: rfq.productTitle,
-                      rfqNumber: rfq.rfqNumber,
-                      price: rfq.price,
-                      statusText: rfq.status.displayName,
-                      statusBackgroundColor: rfq.status.backgroundColor,
-                      statusTextColor: rfq.status.textColor,
+                      statusBadgeOffsetY:
+                          entry.value.status.displayName == 'New' ||
+                              entry.value.status.displayName == 'Open'
+                          ? 18
+                          : 0,
+                      imagePath: entry.value.imagePath,
+                      title: entry.value.productTitle,
+                      rfqNumber: entry.value.rfqNumber,
+                      price: entry.value.price,
+                      statusText: entry.value.status.displayName,
+                      statusBackgroundColor: entry.value.status.backgroundColor,
+                      statusTextColor: entry.value.status.textColor,
                       maxWidth: double.infinity,
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => RFQDetailScreen(rfq: rfq)),
+                          builder: (_) => RFQDetailScreen(rfq: entry.value),
+                        ),
                       ),
                     ),
                   ),
@@ -159,7 +165,7 @@ class _HomeBody extends StatelessWidget {
         children: [
           // ── Logo: centered in visible 133px area ──────────
           Positioned(
-            top: top + 16,
+            top: top + 46,
             left: 0,
             right: 0,
             child: Center(
@@ -179,15 +185,15 @@ class _HomeBody extends StatelessWidget {
 
           // ── Notification bell ──────────────────────────────
           Positioned(
-            top: top + 44,
+            top: top + 65,
             right: 12,
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                const Icon(
-                  Icons.notifications_rounded,
-                  color: Color(0xFFFFC107),
-                  size: 32,
+                Image.asset(
+                  'assets/images/icons/image_1374.png',
+                  width: 32,
+                  height: 32,
                 ),
                 Positioned(
                   top: 0,
@@ -216,24 +222,25 @@ class _HomeBody extends StatelessWidget {
         Row(
           children: [
             _StatCard(
-                label: 'All Products',
-                value: DashboardData.allProducts.toString()),
+              label: 'All Products',
+              value: DashboardData.allProducts.toString(),
+            ),
             const SizedBox(width: 11),
             _StatCard(
-                label: 'New RFQs',
-                value: DashboardData.newRFQs.toString()),
+              label: 'New RFQs',
+              value: DashboardData.newRFQs.toString(),
+            ),
           ],
         ),
         const SizedBox(height: 11),
         Row(
           children: [
-            _StatCard(
-                label: 'Orders',
-                value: DashboardData.orders.toString()),
+            _StatCard(label: 'Orders', value: DashboardData.orders.toString()),
             const SizedBox(width: 11),
             _StatCard(
-                label: 'My Balance',
-                value: DashboardData.myBalance.toStringAsFixed(0)),
+              label: 'My Balance',
+              value: DashboardData.myBalance.toStringAsFixed(0),
+            ),
           ],
         ),
       ],
@@ -262,7 +269,7 @@ class _StatCard extends StatelessWidget {
         ),
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -276,7 +283,6 @@ class _StatCard extends StatelessWidget {
                 color: Colors.white.withValues(alpha: 0.85),
               ),
             ),
-            const SizedBox(height: 8),
             Text(
               value,
               maxLines: 1,
@@ -304,12 +310,35 @@ class _AppNavBar extends StatelessWidget {
 
   const _AppNavBar({required this.currentIndex, required this.onTap});
 
+  // Each entry: svgPath/pngPath, label, isPng flag
+  // Vector.svg is a pure path SVG — tint with colorFilter for active/inactive
+  // The other 4 embed PNG bitmaps — rendered via Image.asset with ColorFiltered
   static const List<_NavItem> _items = [
-    _NavItem(icon: Icons.home_outlined,        activeIcon: Icons.home_rounded,          label: 'Home'),
-    _NavItem(icon: Icons.inventory_2_outlined, activeIcon: Icons.inventory_2_rounded,   label: 'Products'),
-    _NavItem(icon: Icons.description_outlined, activeIcon: Icons.description_rounded,   label: 'RFQs'),
-    _NavItem(icon: Icons.shopping_bag_outlined,activeIcon: Icons.shopping_bag_rounded,  label: 'Orders'),
-    _NavItem(icon: Icons.person_outline_rounded, activeIcon: Icons.person_rounded,      label: 'Profile'),
+    _NavItem(
+      svgPath: 'assets/images/icons/Vector.svg',
+      label: 'Home',
+      isPng: false,
+    ),
+    _NavItem(
+      svgPath: 'assets/images/icons/image_1380.png',
+      label: 'Products',
+      isPng: true,
+    ),
+    _NavItem(
+      svgPath: 'assets/images/icons/image_1379.png',
+      label: 'RFQs',
+      isPng: true,
+    ),
+    _NavItem(
+      svgPath: 'assets/images/icons/image_1376.png',
+      label: 'Orders',
+      isPng: true,
+    ),
+    _NavItem(
+      svgPath: 'assets/images/icons/image_1382.png',
+      label: 'Profile',
+      isPng: true,
+    ),
   ];
 
   @override
@@ -343,13 +372,32 @@ class _AppNavBar extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          isActive ? item.activeIcon : item.icon,
-                          size: 24,
-                          color: isActive
-                              ? const Color(0xFF003A8A)
-                              : const Color(0xFF030303),
-                        ),
+                        if (item.isPng)
+                          ColorFiltered(
+                            colorFilter: ColorFilter.mode(
+                              isActive
+                                  ? const Color(0xFF003A8A)
+                                  : const Color(0xFF6C7278),
+                              BlendMode.srcATop,
+                            ),
+                            child: Image.asset(
+                              item.svgPath,
+                              width: 24,
+                              height: 24,
+                            ),
+                          )
+                        else
+                          SvgPicture.asset(
+                            item.svgPath,
+                            width: 24,
+                            height: 24,
+                            colorFilter: ColorFilter.mode(
+                              isActive
+                                  ? const Color(0xFF003A8A)
+                                  : const Color(0xFF6C7278),
+                              BlendMode.srcIn,
+                            ),
+                          ),
                         const SizedBox(height: 4),
                         Text(
                           item.label,
@@ -380,9 +428,12 @@ class _AppNavBar extends StatelessWidget {
 }
 
 class _NavItem {
-  final IconData icon;
-  final IconData activeIcon;
+  final String svgPath;
   final String label;
-  const _NavItem(
-      {required this.icon, required this.activeIcon, required this.label});
+  final bool isPng;
+  const _NavItem({
+    required this.svgPath,
+    required this.label,
+    required this.isPng,
+  });
 }

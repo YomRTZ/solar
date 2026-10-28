@@ -6,17 +6,20 @@ import 'package:google_fonts/google_fonts.dart';
 class AppHeader extends StatelessWidget {
   /// The title text to display in the header
   final String title;
-  
+
   /// Whether to show the back button (default: true)
   final bool showBackButton;
-  
+
+  /// Whether to place the title directly below the back button
+  final bool titleBelowBackButton;
+
   /// Custom action when back button is pressed
   /// If null, uses Navigator.pop(context)
   final VoidCallback? onBackPressed;
-  
+
   /// Height of the header (default: 192)
   final double height;
-  
+
   /// Maximum width for the content (default: 327)
   final double maxContentWidth;
 
@@ -24,6 +27,7 @@ class AppHeader extends StatelessWidget {
     super.key,
     required this.title,
     this.showBackButton = true,
+    this.titleBelowBackButton = false,
     this.onBackPressed,
     this.height = 192,
     this.maxContentWidth = 327,
@@ -33,8 +37,6 @@ class AppHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final statusBarHeight = MediaQuery.of(context).padding.top;
-    final headerWidth = screenWidth < maxContentWidth ? screenWidth : maxContentWidth;
-    // Total height = status bar + visible 192px content
     final totalHeight = height + statusBarHeight;
 
     return Center(
@@ -52,43 +54,36 @@ class AppHeader extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
-                // 68px below status bar top
-                top: statusBarHeight + 68,
-                left: (screenWidth - headerWidth) / 2,
-                width: headerWidth,
-                height: 90,
+                // 16px below status bar — matches all custom gradient headers
+                top: statusBarHeight + 16,
+                bottom: 16,
+                left: 16,
+                right: 16,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (showBackButton)
-                      SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.arrow_back,
-                            color: Color(0xFFEEEEEE),
-                            size: 24,
-                          ),
-                          onPressed: onBackPressed ?? () => Navigator.pop(context),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
+                    if (showBackButton) ...[
+                      GestureDetector(
+                        onTap: onBackPressed ?? () => Navigator.pop(context),
+                        child: const Icon(
+                          Icons.arrow_back,
+                          color: Color(0xFFEEEEEE),
+                          size: 24,
                         ),
                       ),
-                    SizedBox(height: showBackButton ? 24 : 0),
-                    SizedBox(
-                      width: headerWidth,
-                      height: 42,
-                      child: Text(
-                        title,
-                        maxLines: 1,
-                        style: GoogleFonts.inter(
-                          fontSize: 32,
-                          height: 1.3,
-                          letterSpacing: -0.64,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFFEEEEEE),
-                        ),
+                    ],
+                    if (titleBelowBackButton && showBackButton)
+                      const SizedBox(height: 16),
+                    if (!titleBelowBackButton) const Spacer(),
+                    Text(
+                      title,
+                      maxLines: 1,
+                      style: GoogleFonts.inter(
+                        fontSize: 28,
+                        height: 1.2,
+                        letterSpacing: -0.5,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFFEEEEEE),
                       ),
                     ),
                   ],

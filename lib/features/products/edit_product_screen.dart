@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/widgets/app_text_field.dart';
 import '../../core/widgets/app_dropdown_field.dart';
@@ -32,6 +33,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
   String? _selectedBrand;
   String? _selectedStock;
 
+  final List<String> _selectedImages = [
+    'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+  ];
+
   // UI state
   bool _isLoading = false;
   bool _showSuccessBanner = true; // shown immediately on edit screen
@@ -63,25 +68,22 @@ class _EditProductScreenState extends State<EditProductScreen> {
     final p = widget.product;
 
     // Pre-fill controllers from passed product (or defaults matching screenshot)
-    _productNameController =
-        TextEditingController(text: p?.title ?? 'Solar Trade');
-    _modelNumberController =
-        TextEditingController(text: p?.idNumber.replaceAll('#', '') ?? 'MB12345');
-    _priceController =
-        TextEditingController(text: p?.price ?? '1234');
+    _productNameController = TextEditingController(
+      text: p?.title ?? 'Solar Trade',
+    );
+    _modelNumberController = TextEditingController(
+      text: p?.idNumber.replaceAll('#', '') ?? 'MB12345',
+    );
+    _priceController = TextEditingController(text: p?.price ?? '1234');
     _taxAmountController = TextEditingController(text: '12');
     _minOrderQtyController = TextEditingController(text: '12');
     _warrantyController = TextEditingController(text: '09/2026');
     _dispatchDistController = TextEditingController(text: 'New Delhi');
 
     // Pre-select dropdowns
-    _selectedCategory = p != null
-        ? _categoryFromEnum(p.category)
-        : 'Panel';
+    _selectedCategory = p != null ? _categoryFromEnum(p.category) : 'Panel';
     _selectedBrand = 'Long';
-    _selectedStock = p != null
-        ? _stockFromEnum(p.status)
-        : 'In Stock';
+    _selectedStock = p != null ? _stockFromEnum(p.status) : 'In Stock';
   }
 
   String _categoryFromEnum(ProductCategory cat) {
@@ -155,126 +157,150 @@ class _EditProductScreenState extends State<EditProductScreen> {
     });
   }
 
+  void _addImage() {
+    setState(() {
+      _selectedImages.add(
+        'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      );
+    });
+  }
+
+  void _removeImage(int index) {
+    setState(() => _selectedImages.removeAt(index));
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
-        statusBarColor: Color(0xFF003A8A),
+        statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
       ),
       child: Scaffold(
         backgroundColor: Colors.white,
+        extendBodyBehindAppBar: true,
         body: Column(
           children: [
             _buildHeader(context),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+                padding: const EdgeInsets.fromLTRB(10, 12, 10, 32),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ── Success Banner ───────────────────────────────────────
                     if (_showSuccessBanner) ...[
                       _buildSuccessBanner(),
                       const SizedBox(height: 20),
                     ],
-
-                    // ── Product Name ─────────────────────────────────────────
-                    AppTextField(
-                      label: 'Product Name',
-                      hint: 'Solar Trade',
-                      controller: _productNameController,
-                    ),
+                    _buildAddImages(),
                     const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // ── Product Name ─────────────────────────────────────────
+                          AppTextField(
+                            label: 'Product Name',
+                            hint: 'Solar Trade',
+                            controller: _productNameController,
+                          ),
+                          const SizedBox(height: 20),
 
-                    // ── Select Category ──────────────────────────────────────
-                    AppDropdownFieldString(
-                      label: 'Select Category',
-                      hint: 'Panel',
-                      items: _categories,
-                      value: _selectedCategory,
-                      onChanged: (v) => setState(() => _selectedCategory = v),
-                    ),
-                    const SizedBox(height: 20),
+                          // ── Select Category ──────────────────────────────────────
+                          AppDropdownFieldString(
+                            label: 'Select Category',
+                            hint: 'Panel',
+                            items: _categories,
+                            value: _selectedCategory,
+                            onChanged: (v) =>
+                                setState(() => _selectedCategory = v),
+                          ),
+                          const SizedBox(height: 20),
 
-                    // ── Model Number ─────────────────────────────────────────
-                    AppTextField(
-                      label: 'Model Number',
-                      hint: 'MB12345',
-                      controller: _modelNumberController,
-                    ),
-                    const SizedBox(height: 20),
+                          // ── Model Number ─────────────────────────────────────────
+                          AppTextField(
+                            label: 'Model Number',
+                            hint: 'MB12345',
+                            controller: _modelNumberController,
+                          ),
+                          const SizedBox(height: 20),
 
-                    // ── Select Brand ─────────────────────────────────────────
-                    AppDropdownFieldString(
-                      label: 'Select Brand',
-                      hint: 'Long',
-                      items: _brands,
-                      value: _selectedBrand,
-                      onChanged: (v) => setState(() => _selectedBrand = v),
-                    ),
-                    const SizedBox(height: 20),
+                          // ── Select Brand ─────────────────────────────────────────
+                          AppDropdownFieldString(
+                            label: 'Select Brand',
+                            hint: 'Long',
+                            items: _brands,
+                            value: _selectedBrand,
+                            onChanged: (v) =>
+                                setState(() => _selectedBrand = v),
+                          ),
+                          const SizedBox(height: 20),
 
-                    // ── Price (Excluding Tax) ────────────────────────────────
-                    AppTextField(
-                      label: 'Price (Excluding Tax)',
-                      hint: '1234',
-                      controller: _priceController,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
+                          // ── Price (Excluding Tax) ────────────────────────────────
+                          AppTextField(
+                            label: 'Price (Excluding Tax)',
+                            hint: '1234',
+                            controller: _priceController,
+                            keyboardType: TextInputType.number,
+                          ),
+                          const SizedBox(height: 20),
 
-                    // ── Tax Amount ───────────────────────────────────────────
-                    AppTextField(
-                      label: 'Tax Amount',
-                      hint: '12',
-                      controller: _taxAmountController,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
+                          // ── Tax Amount ───────────────────────────────────────────
+                          AppTextField(
+                            label: 'Tax Amount',
+                            hint: '12',
+                            controller: _taxAmountController,
+                            keyboardType: TextInputType.number,
+                          ),
+                          const SizedBox(height: 20),
 
-                    // ── Min Order Qty ────────────────────────────────────────
-                    AppTextField(
-                      label: 'Min Order Qty',
-                      hint: '12',
-                      controller: _minOrderQtyController,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
+                          // ── Min Order Qty ────────────────────────────────────────
+                          AppTextField(
+                            label: 'Min Order Qty',
+                            hint: '12',
+                            controller: _minOrderQtyController,
+                            keyboardType: TextInputType.number,
+                          ),
+                          const SizedBox(height: 20),
 
-                    // ── Stock ────────────────────────────────────────────────
-                    AppDropdownFieldString(
-                      label: 'Stock',
-                      hint: 'In Stock',
-                      items: _stockOptions,
-                      value: _selectedStock,
-                      onChanged: (v) => setState(() => _selectedStock = v),
-                    ),
-                    const SizedBox(height: 20),
+                          // ── Stock ────────────────────────────────────────────────
+                          AppDropdownFieldString(
+                            label: 'Stock',
+                            hint: 'In Stock',
+                            items: _stockOptions,
+                            value: _selectedStock,
+                            onChanged: (v) =>
+                                setState(() => _selectedStock = v),
+                          ),
+                          const SizedBox(height: 20),
 
-                    // ── Warranty ─────────────────────────────────────────────
-                    AppTextField(
-                      label: 'Warranty',
-                      hint: '09/2026',
-                      controller: _warrantyController,
-                    ),
-                    const SizedBox(height: 20),
+                          // ── Warranty ─────────────────────────────────────────────
+                          AppTextField(
+                            label: 'Warranty',
+                            hint: '09/2026',
+                            controller: _warrantyController,
+                          ),
+                          const SizedBox(height: 20),
 
-                    // ── Dispatch Dist. ───────────────────────────────────────
-                    AppTextField(
-                      label: 'Dispatch Dist.',
-                      hint: 'New Delhi',
-                      controller: _dispatchDistController,
-                    ),
-                    const SizedBox(height: 28),
+                          // ── Dispatch Dist. ───────────────────────────────────────
+                          AppTextField(
+                            label: 'Dispatch Dist.',
+                            hint: 'New Delhi',
+                            controller: _dispatchDistController,
+                          ),
+                          const SizedBox(height: 28),
 
-                    // ── Continue Button ──────────────────────────────────────
-                    AppContinueButton(
-                      text: 'Continue',
-                      isLoading: _isLoading,
-                      showArrow: false,
-                      onPressed: _handleContinue,
+                          // ── Continue Button ──────────────────────────────────────
+                          AppContinueButton(
+                            text: 'Continue',
+                            isLoading: _isLoading,
+                            showArrow: false,
+                            onPressed: _handleContinue,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -292,6 +318,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   Widget _buildHeader(BuildContext context) {
     return Container(
       width: double.infinity,
+      height: 133,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -299,35 +326,140 @@ class _EditProductScreenState extends State<EditProductScreen> {
           colors: [Color(0xFF003A8A), Color(0xFF000F24)],
         ),
       ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                  size: 24,
-                ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 0, 24, 0),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Transform.translate(
+            offset: const Offset(0, 14),
+            child: SizedBox(
+              height: 26,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    tooltip: 'Back',
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints.tightFor(
+                      width: 24,
+                      height: 26,
+                    ),
+                    icon: SvgPicture.asset(
+                      'assets/images/icons/arrow-narrow-left.svg',
+                      width: 24,
+                      height: 24,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 203,
+                    height: 26,
+                    child: Text(
+                      'Edit Product',
+                      style: GoogleFonts.inter(
+                        fontSize: 20,
+                        height: 1.3,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFFEEEEEE),
+                        letterSpacing: -0.4,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 14),
-              Text(
-                'Edit Product',
-                style: GoogleFonts.inter(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                  letterSpacing: -0.5,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildAddImages() {
+    return SizedBox(
+      width: double.infinity,
+      height: 64,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Add Images',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              height: 1.6,
+              fontWeight: FontWeight.w500,
+              letterSpacing: -0.24,
+              color: const Color(0xFF6C7278),
+            ),
+          ),
+          const SizedBox(height: 2),
+          SizedBox(
+            height: 41,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                ..._selectedImages.asMap().entries.map((entry) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: _buildImageThumb(entry.value, entry.key),
+                  );
+                }),
+                GestureDetector(
+                  onTap: _addImage,
+                  child: SizedBox(
+                    width: 41,
+                    height: 41,
+                    child: Image.asset(
+                      'assets/images/icons/5ceff9d5d9cae078a369c65ead35be73405d7dcd.png',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImageThumb(String imagePath, int index) {
+    return Stack(
+      children: [
+        Container(
+          width: 41,
+          height: 41,
+          decoration: BoxDecoration(
+            color: const Color(0x1F084EAD),
+            borderRadius: BorderRadius.circular(5),
+            border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Image.asset(
+            imagePath,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => Container(
+              color: const Color(0xFFF5F5F5),
+              child: const Icon(Icons.image, color: Colors.grey),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 2,
+          right: 2,
+          child: GestureDetector(
+            onTap: () => _removeImage(index),
+            child: Container(
+              width: 18,
+              height: 18,
+              decoration: const BoxDecoration(
+                color: Color(0xFF003D82),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.close, color: Colors.white, size: 11),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -337,63 +469,69 @@ class _EditProductScreenState extends State<EditProductScreen> {
   Widget _buildSuccessBanner() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      constraints: const BoxConstraints(maxWidth: 332),
+      height: 85,
       decoration: BoxDecoration(
-        color: const Color(0xFFF0FBF5),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: const Color(0xFF217552).withValues(alpha: 0.3),
-          width: 1,
-        ),
+        color: const Color(0xFF20315C),
+        borderRadius: BorderRadius.circular(24),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          // Green check circle
-          Container(
-            width: 22,
-            height: 22,
-            decoration: const BoxDecoration(
-              color: Color(0xFF217552),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.check, color: Colors.white, size: 14),
-          ),
-          const SizedBox(width: 10),
-
-          // Text
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Positioned(
+            top: 20,
+            left: 16,
+            right: 37,
+            height: 52,
+            child: Row(
               children: [
-                Text(
-                  'Product Updated!',
-                  style: GoogleFonts.roboto(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF217552),
-                  ),
+                SvgPicture.asset(
+                  'assets/images/icons/green-check-icon.svg',
+                  width: 20,
+                  height: 20,
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  'Product has been updated successfully',
-                  style: GoogleFonts.roboto(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xFF4CAF50),
+                const SizedBox(width: 11),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Product Updated!',
+                        style: GoogleFonts.roboto(
+                          fontSize: 16,
+                          height: 1.2,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 9),
+                      Text(
+                        'Product has been updated successfully',
+                        style: GoogleFonts.roboto(
+                          fontSize: 14,
+                          height: 1.69,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF9FAED7),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-
-          // Close button
-          GestureDetector(
-            onTap: () => setState(() => _showSuccessBanner = false),
-            child: const Icon(
-              Icons.close,
-              color: Color(0xFF217552),
-              size: 18,
+          Positioned(
+            top: 0,
+            bottom: 0,
+            right: 16,
+            child: Center(
+              child: GestureDetector(
+                onTap: () => setState(() => _showSuccessBanner = false),
+                child: SvgPicture.asset(
+                  'assets/images/icons/cross-icon.svg',
+                  width: 10,
+                  height: 10,
+                ),
+              ),
             ),
           ),
         ],

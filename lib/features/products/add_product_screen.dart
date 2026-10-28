@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/widgets/app_text_field.dart';
 import '../../core/widgets/app_dropdown_field.dart';
@@ -113,12 +114,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
-        statusBarColor: Color(0xFF003A8A),
+        statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
       ),
       child: Scaffold(
         backgroundColor: Colors.white,
+        extendBodyBehindAppBar: true,
         body: Column(
           children: [
             _buildHeader(context),
@@ -244,6 +246,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget _buildHeader(BuildContext context) {
     return Container(
       width: double.infinity,
+      height: 133,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -251,32 +254,50 @@ class _AddProductScreenState extends State<AddProductScreen> {
           colors: [Color(0xFF003A8A), Color(0xFF000F24)],
         ),
       ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                  size: 24,
-                ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 0, 24, 0),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Transform.translate(
+            offset: const Offset(0, 14),
+            child: SizedBox(
+              height: 26,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.of(
+                      context,
+                    ).popUntil((route) => route.isFirst),
+                    tooltip: 'Back to home',
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints.tightFor(
+                      width: 24,
+                      height: 26,
+                    ),
+                    icon: SvgPicture.asset(
+                      'assets/images/icons/arrow-narrow-left.svg',
+                      width: 24,
+                      height: 24,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 203,
+                    height: 26,
+                    child: Text(
+                      'Add Product',
+                      style: GoogleFonts.inter(
+                        fontSize: 20,
+                        height: 1.3,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFFEEEEEE),
+                        letterSpacing: -0.4,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 14),
-              Text(
-                'Add Product',
-                style: GoogleFonts.inter(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                  letterSpacing: -0.5,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -287,58 +308,54 @@ class _AddProductScreenState extends State<AddProductScreen> {
   // Add Images Row
   // ────────────────────────────────────────────────────────────
   Widget _buildAddImages() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Add Images',
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 12,
-            height: 1.6,
-            fontWeight: FontWeight.w500,
-            letterSpacing: -0.24,
-            color: const Color(0xFF6C7278),
+    return SizedBox(
+      width: double.infinity,
+      height: 64,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Add Images',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              height: 1.6,
+              fontWeight: FontWeight.w500,
+              letterSpacing: -0.24,
+              color: const Color(0xFF6C7278),
+            ),
           ),
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 72,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              // Already added images
-              ..._selectedImages.asMap().entries.map((entry) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: _buildImageThumb(entry.value, entry.key),
-                );
-              }),
-
-              // Add more button
-              GestureDetector(
-                onTap: _addImage,
-                child: Container(
-                  width: 64,
-                  height: 64,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF5F5F5),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: const Color(0xFFE0E0E0),
-                      width: 1,
+          const SizedBox(height: 2),
+          SizedBox(
+            height: 41,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                ..._selectedImages.asMap().entries.map((entry) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: _buildImageThumb(entry.value, entry.key),
+                  );
+                }),
+                GestureDetector(
+                  onTap: _addImage,
+                  child: Container(
+                    width: 41,
+                    height: 41,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.asset(
+                      'assets/images/icons/5ceff9d5d9cae078a369c65ead35be73405d7dcd.png',
+                      fit: BoxFit.contain,
                     ),
                   ),
-                  child: const Icon(
-                    Icons.add,
-                    color: Color(0xFF003D82),
-                    size: 28,
-                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -346,14 +363,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
     return Stack(
       children: [
         Container(
-          width: 64,
-          height: 64,
+          width: 41,
+          height: 41,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: const Color(0xFFE0E0E0),
-              width: 1,
-            ),
+            color: const Color(0x1F084EAD),
+            borderRadius: BorderRadius.circular(5),
+            border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
           ),
           clipBehavior: Clip.antiAlias,
           child: Image.asset(

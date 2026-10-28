@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/widgets/app_expandable_card.dart';
 import '../../models/product.dart';
@@ -99,28 +100,34 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
         padding: EdgeInsets.fromLTRB(16, top + 16, 16, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            // Back arrow
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-                size: 24,
-              ),
+            // Arrow + Title in a Row
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'My Products',
+                  style: GoogleFonts.inter(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    letterSpacing: -0.5,
+                    height: 1.2,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
-            // Title
-            Text(
-              'My Products',
-              style: GoogleFonts.inter(
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-                letterSpacing: -0.5,
-                height: 1.2,
-              ),
-            ),
           ],
         ),
       ),
@@ -130,36 +137,56 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
   // ── Search bar ─────────────────────────────────────────────
   Widget _buildSearchBar() {
     return Container(
+      width: 327,
+      height: 46,
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      height: 48,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFE0E0E0)),
-        boxShadow: [
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFEDF1F3), width: 1),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+            color: Color(0x3DE4E5E7),
+            blurRadius: 2,
+            offset: Offset(0, 1),
+            spreadRadius: 0,
           ),
         ],
       ),
       child: Row(
         children: [
-          const SizedBox(width: 12),
-          const Icon(Icons.search, color: Color(0xFF6C7278), size: 20),
+          SvgPicture.asset(
+            'assets/images/icons/search.svg',
+            width: 20,
+            height: 20,
+          ),
           const SizedBox(width: 10),
           Expanded(
             child: TextField(
               controller: searchController,
               onChanged: (v) => setState(() => searchQuery = v),
-              style: GoogleFonts.roboto(
-                  fontSize: 14, color: const Color(0xFF000000)),
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF1A1C1E),
+                height: 1.4,
+                letterSpacing: -0.14,
+              ),
               decoration: InputDecoration(
                 hintText: 'Search Product...',
-                hintStyle: GoogleFonts.roboto(
-                    fontSize: 14, color: const Color(0xFF9E9E9E)),
+                hintStyle: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF1A1C1E),
+                  height: 1.4,
+                  letterSpacing: -0.14,
+                ),
+                filled: true,
+                fillColor: Colors.transparent,
                 border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
               ),
@@ -171,10 +198,7 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
                 searchController.clear();
                 searchQuery = '';
               }),
-              child: const Padding(
-                padding: EdgeInsets.only(right: 12),
-                child: Icon(Icons.clear, color: Color(0xFF6C7278), size: 18),
-              ),
+              child: const Icon(Icons.clear, color: Color(0xFF6C7278), size: 18),
             ),
         ],
       ),
@@ -183,16 +207,20 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
 
   // ── Category tabs ──────────────────────────────────────────
   Widget _buildCategoryTabs() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          _categoryTab(ProductCategory.all),
-          const SizedBox(width: 8),
-          _categoryTab(ProductCategory.panel),
-          const SizedBox(width: 8),
-          _categoryTab(ProductCategory.battery),
-        ],
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _categoryTab(ProductCategory.all),
+            const SizedBox(width: 12.85),
+            _categoryTab(ProductCategory.panel),
+            const SizedBox(width: 12.86),
+            _categoryTab(ProductCategory.battery),
+          ],
+        ),
       ),
     );
   }
@@ -202,25 +230,26 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
     return GestureDetector(
       onTap: () => setState(() => selectedCategory = category),
       child: Container(
-        height: 32,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        width: 72.43,
+        height: 27,
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF003D82) : Colors.white,
-          borderRadius: BorderRadius.circular(6),
+          color: isSelected ? const Color(0xFF003A8A) : Colors.white,
+          borderRadius: BorderRadius.circular(4),
           border: Border.all(
-            color: isSelected
-                ? const Color(0xFF003D82)
-                : const Color(0xFFE0E0E0),
+            color: const Color(0xFF003A8A),
+            width: 1,
           ),
         ),
-        child: Center(
-          child: Text(
-            category.displayName,
-            style: GoogleFonts.roboto(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              color: isSelected ? Colors.white : const Color(0xFF6C7278),
-            ),
+        alignment: Alignment.center,
+        child: Text(
+          category.displayName,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.roboto(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: isSelected ? Colors.white : const Color(0xFF003A8A),
+            height: 18 / 12,        // line-height: 18px
+            letterSpacing: -0.14,
           ),
         ),
       ),

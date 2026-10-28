@@ -2,6 +2,7 @@
 /// 
 /// This file demonstrates how to use the reusable widgets across different screens
 /// DO NOT import this file - it's just for reference!
+library;
 
 import 'package:flutter/material.dart';
 import 'app_header.dart';

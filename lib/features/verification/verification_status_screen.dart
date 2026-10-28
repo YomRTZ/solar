@@ -61,7 +61,7 @@ class VerificationStatusScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
-        statusBarColor: Color(0xFF003A8A),
+        statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
         systemNavigationBarColor: Colors.white,
@@ -69,11 +69,13 @@ class VerificationStatusScreen extends StatelessWidget {
       ),
       child: Scaffold(
         backgroundColor: Colors.white,
+        extendBodyBehindAppBar: true,
         body: Column(
           children: [
             // ── Reusable gradient header ──────────────────
             AppHeader(
               title: 'Verification Status',
+              height: 133,
               // Only show back on rejected screen
               showBackButton: status == VerificationStatus.rejected,
             ),
@@ -177,9 +179,11 @@ class _InProgressBodyState extends State<_InProgressBody>
               'Verification in Progress',
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
-                fontSize: 18,
+                fontSize: 20,
                 fontWeight: FontWeight.w700,
                 color: const Color(0xFF003A8A),
+                height: 1.3,
+                letterSpacing: 20 * -0.02,
               ),
             ),
             const SizedBox(height: 12),
@@ -189,10 +193,11 @@ class _InProgressBodyState extends State<_InProgressBody>
               'We are verifying your documents\nand business details.',
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
-                color: const Color(0xFF6C7278),
-                height: 1.6,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF808080),
+                height: 1.3,
+                letterSpacing: 14 * -0.02,
               ),
             ),
           ],
@@ -201,114 +206,14 @@ class _InProgressBodyState extends State<_InProgressBody>
     );
   }
 
-  // Custom document + clock illustration matching the screenshot
+  // PNG illustration for in-progress state
   Widget _buildIllustration() {
-    return SizedBox(
-      width: 120,
-      height: 120,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Document body
-          Positioned(
-            bottom: 0,
-            left: 10,
-            child: Container(
-              width: 78,
-              height: 90,
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFF8EE),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: const Color(0xFFE8A84C),
-                  width: 2.5,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 28, 10, 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: List.generate(
-                    4,
-                    (i) => Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
-                      child: Container(
-                        height: 4,
-                        width: i == 3 ? 30 : double.infinity,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE8A84C).withValues(alpha: 0.4),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // Dog-ear on document
-          Positioned(
-            bottom: 72,
-            left: 10,
-            child: ClipPath(
-              clipper: _DogEarClipper(),
-              child: Container(
-                width: 20,
-                height: 20,
-                color: const Color(0xFFE8A84C),
-              ),
-            ),
-          ),
-
-          // Clock circle
-          Positioned(
-            top: 0,
-            right: 8,
-            child: Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: const Color(0xFF003A8A),
-                  width: 3,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.access_time_rounded,
-                color: Color(0xFF003A8A),
-                size: 28,
-              ),
-            ),
-          ),
-        ],
-      ),
+    return Image.asset(
+      'assets/images/icons/image_1_1.png',
+      width: 111,
+      height: 111,
     );
   }
-}
-
-// Clipper for the dog-ear fold effect
-class _DogEarClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width, size.height)
-      ..close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(_DogEarClipper old) => false;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -325,25 +230,13 @@ class _ApprovedBody extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // ── Green check circle ────────────────────────────
-          Container(
-            width: 110,
-            height: 110,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE6F9EF),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: const Color(0xFF4CAF50).withValues(alpha: 0.3),
-                width: 6,
-              ),
-            ),
-            child: const Icon(
-              Icons.check_rounded,
-              color: Color(0xFF217552),
-              size: 60,
-            ),
+          // ── Approved PNG illustration ─────────────────────
+          Image.asset(
+            'assets/images/icons/image_1.png',
+            width: 327,
+            height: 111,
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 16),
 
           // ── Title ─────────────────────────────────────────
           Text(
@@ -352,7 +245,9 @@ class _ApprovedBody extends StatelessWidget {
             style: GoogleFonts.inter(
               fontSize: 20,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFF217552),
+              color: const Color(0xFF008000),
+              height: 1.3,
+              letterSpacing: 20 * -0.02,
             ),
           ),
           const SizedBox(height: 10),
@@ -361,22 +256,37 @@ class _ApprovedBody extends StatelessWidget {
           RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
-                color: const Color(0xFF6C7278),
-                height: 1.6,
-              ),
-              children: const [
-                TextSpan(text: 'Your '),
+              children: [
                 TextSpan(
-                  text: 'Supplier',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF202020),
+                  text: 'Your ',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF808080),
+                    height: 1.3,
+                    letterSpacing: 14 * -0.02,
                   ),
                 ),
-                TextSpan(text: ' account has been verified'),
+                TextSpan(
+                  text: 'Supplier',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF808080),
+                    height: 1.3,
+                    letterSpacing: 14 * -0.02,
+                  ),
+                ),
+                TextSpan(
+                  text: ' account has been verified',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF808080),
+                    height: 1.3,
+                    letterSpacing: 14 * -0.02,
+                  ),
+                ),
               ],
             ),
           ),
@@ -410,23 +320,11 @@ class _RejectedBody extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // ── Red X circle ──────────────────────────────────
-          Container(
+          // ── Rejected PNG illustration ─────────────────────
+          Image.asset(
+            'assets/images/icons/image_1_2.png',
             width: 110,
             height: 110,
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFEBEB),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: const Color(0xFFB31515).withValues(alpha: 0.25),
-                width: 6,
-              ),
-            ),
-            child: const Icon(
-              Icons.close_rounded,
-              color: Color(0xFFB31515),
-              size: 60,
-            ),
           ),
           const SizedBox(height: 32),
 

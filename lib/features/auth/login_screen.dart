@@ -4,6 +4,34 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants/app_colors.dart';
 import 'otp_verification_screen.dart';
 
+// ── Phone formatter: XXXX XXX XXXX ────────────────────────────────────────────
+class _PhoneFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    // Strip everything that isn't a digit
+    final digits = newValue.text.replaceAll(RegExp(r'\D'), '');
+
+    // Cap at 10 raw digits
+    final capped = digits.length > 10 ? digits.substring(0, 10) : digits;
+
+    // Build formatted string: XXXX XXX XXXX
+    final buffer = StringBuffer();
+    for (int i = 0; i < capped.length; i++) {
+      if (i == 4 || i == 7) buffer.write(' ');
+      buffer.write(capped[i]);
+    }
+
+    final formatted = buffer.toString();
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
+    );
+  }
+}
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -27,10 +55,12 @@ class _LoginScreenState extends State<LoginScreen> {
   void _continue() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
+    // Strip the visual spaces before passing the number onward
+    final rawDigits = _mobileController.text.replaceAll(' ', '').trim();
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => OtpVerificationScreen(
-          mobileNumber: '+91 ${_mobileController.text.trim()}',
+          mobileNumber: '+91 $rawDigits',
         ),
       ),
     );
@@ -229,8 +259,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     textInputAction: TextInputAction.done,
                                     onFieldSubmitted: (_) => _continue(),
                                     inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly,
-                                      LengthLimitingTextInputFormatter(10),
+                                      _PhoneFormatter(),
                                     ],
                                     style: GoogleFonts.inter(
                                       fontSize: 16,
@@ -286,7 +315,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ),
                                     validator: (value) {
-                                      final number = value?.trim() ?? '';
+                                      final number = (value ?? '').replaceAll(' ', '').trim();
                                       if (number.isEmpty) {
                                         return 'Enter your mobile number';
                                       }
