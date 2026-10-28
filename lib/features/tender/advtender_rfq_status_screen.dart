@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/widgets/app_continue_button.dart';
+import '../../core/widgets/app_header.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AdvTender — RFQ Status Screen
@@ -38,38 +39,11 @@ class AdvTenderRfqStatusScreen extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildTopBanner(context),
+            const AppHeader(title: 'RFQ Status', showBackButton: false),
             Expanded(
               child: _buildBody(context),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  // ── Top dark-gradient banner with title ────────────────────
-  Widget _buildTopBanner(BuildContext context) {
-    final top = MediaQuery.of(context).padding.top;
-    return Container(
-      width: double.infinity,
-      height: top + 100,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF001A4D)],
-        ),
-      ),
-      alignment: Alignment.bottomLeft,
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-      child: Text(
-        'RFQ Status',
-        style: GoogleFonts.inter(
-          fontSize: 26,
-          fontWeight: FontWeight.w800,
-          color: Colors.white,
-          letterSpacing: -0.5,
         ),
       ),
     );

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/widgets/app_text_field.dart';
 import '../../core/widgets/app_dropdown_field.dart';
 import '../../core/widgets/app_continue_button.dart';
+import '../../core/widgets/second_app_header.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
@@ -123,7 +123,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         extendBodyBehindAppBar: true,
         body: Column(
           children: [
-            _buildHeader(context),
+            const SecondAppHeader(title: 'Add Product'),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
@@ -235,70 +235,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  // ────────────────────────────────────────────────────────────
-  // Header
-  // ────────────────────────────────────────────────────────────
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 133,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 0, 24, 0),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Transform.translate(
-            offset: const Offset(0, 14),
-            child: SizedBox(
-              height: 26,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: () => Navigator.of(
-                      context,
-                    ).popUntil((route) => route.isFirst),
-                    tooltip: 'Back to home',
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints.tightFor(
-                      width: 24,
-                      height: 26,
-                    ),
-                    icon: SvgPicture.asset(
-                      'assets/images/icons/arrow-narrow-left.svg',
-                      width: 24,
-                      height: 24,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 203,
-                    height: 26,
-                    child: Text(
-                      'Add Product',
-                      style: GoogleFonts.inter(
-                        fontSize: 20,
-                        height: 1.3,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFFEEEEEE),
-                        letterSpacing: -0.4,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
         ),
       ),
     );

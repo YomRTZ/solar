@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/widgets/app_continue_button.dart';
+import '../../core/widgets/app_header.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AddTender — Payment Status Screen
@@ -37,36 +38,9 @@ class AddTenderPaymentStatusScreen extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildBanner(context),
+            const AppHeader(title: 'Payment Status', showBackButton: false),
             Expanded(child: _buildBody(context)),
           ],
-        ),
-      ),
-    );
-  }
-
-  // ── Top dark-gradient banner ─────────────────────────────────
-  Widget _buildBanner(BuildContext context) {
-    final top = MediaQuery.of(context).padding.top;
-    return Container(
-      width: double.infinity,
-      height: top + 110,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF001A4D)],
-        ),
-      ),
-      alignment: Alignment.bottomLeft,
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 22),
-      child: Text(
-        'Payment Status',
-        style: GoogleFonts.inter(
-          fontSize: 28,
-          fontWeight: FontWeight.w800,
-          color: Colors.white,
-          letterSpacing: -0.5,
         ),
       ),
     );

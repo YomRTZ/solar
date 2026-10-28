@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/widgets/app_expandable_card.dart';
+import '../../core/widgets/second_app_header.dart';
 import '../../data/rfq_data.dart';
 import '../../models/rfq.dart';
 import 'rfq_detail_screen.dart';
@@ -35,7 +36,10 @@ class _RFQRequestsScreenState extends State<RFQRequestsScreen> {
         extendBodyBehindAppBar: true,
         body: Column(
           children: [
-            _buildHeader(context),
+            SecondAppHeader(
+              title: 'RFQ Requests',
+              showBackButton: widget.showBackButton,
+            ),
             const SizedBox(height: 20),
             _buildFilterTabs(),
             const SizedBox(height: 16),
@@ -66,56 +70,6 @@ class _RFQRequestsScreenState extends State<RFQRequestsScreen> {
                       },
                     ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ── Header — same height as HomeScreen (statusBarH + 133) ──
-  Widget _buildHeader(BuildContext context) {
-    final top = MediaQuery.of(context).padding.top;
-    return Container(
-      width: double.infinity,
-      height: top + 133,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16, top + 16, 16, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  'RFQ Requests',
-                  style: GoogleFonts.inter(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    letterSpacing: -0.5,
-                    height: 1.2,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
           ],
         ),
       ),

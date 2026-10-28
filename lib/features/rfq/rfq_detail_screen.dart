@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/widgets/app_text_field.dart';
 import '../../core/widgets/app_continue_button.dart';
+import '../../core/widgets/second_app_header.dart';
 import '../../models/rfq.dart';
 
 /// Two-phase screen:
@@ -97,7 +98,16 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
         extendBodyBehindAppBar: true,
         body: Column(
           children: [
-            _buildHeader(context),
+            SecondAppHeader(
+              title: 'RFQ Detail',
+              onBackPressed: () {
+                if (_showQuoteForm) {
+                  setState(() => _showQuoteForm = false);
+                } else {
+                  Navigator.pop(context);
+                }
+              },
+            ),
             Expanded(
               child: _showQuoteForm
                   ? _buildQuoteForm()
@@ -106,52 +116,6 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  // ── Header ─────────────────────────────────────────────────
-  Widget _buildHeader(BuildContext context) {
-    final top = MediaQuery.of(context).padding.top;
-    return Container(
-      width: double.infinity,
-      height: top + 133,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16, top + 16, 16, 0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: () {
-                if (_showQuoteForm) {
-                  // go back to detail view
-                  setState(() => _showQuoteForm = false);
-                } else {
-                  Navigator.pop(context);
-                }
-              },
-              child: const Icon(Icons.arrow_back,
-                  color: Colors.white, size: 24),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'RFQ Detail',
-                style: GoogleFonts.inter(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                  letterSpacing: -0.4,
-                ),
-              ),
-            ],
-          ),
-        ),
     );
   }
 

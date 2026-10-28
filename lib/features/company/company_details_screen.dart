@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/widgets/widgets.dart';
 import '../bank/bank_details_screen.dart';
 
@@ -81,8 +79,8 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
         extendBodyBehindAppBar: true,
         body: Column(
           children: [
-            // Header
-            _buildHeader(context),
+            // Header — reusable widget, arrow top / title bottom
+            const AppHeader(title: 'Company Details'),
 
             // Form Content
             Expanded(
@@ -148,54 +146,4 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
     );
   }
 
-  /// Build header with back button and title
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 192,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: SvgPicture.asset(
-                  'assets/images/icons/arrow-narrow-left.svg',
-                  width: 24,
-                  height: 24,
-                ),
-                onPressed: () => Navigator.pop(context),
-                tooltip: 'Back',
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints.tightFor(
-                  width: 24,
-                  height: 24,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'Company Details',
-                style: GoogleFonts.inter(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                  height: 1.2,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }

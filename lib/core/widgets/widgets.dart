@@ -4,6 +4,7 @@
 library;
 
 export 'app_header.dart';
+export 'second_app_header.dart';
 export 'app_continue_button.dart';
 export 'app_text_field.dart';
 export 'app_dropdown_field.dart';
