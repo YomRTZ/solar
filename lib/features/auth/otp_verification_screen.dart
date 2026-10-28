@@ -3,11 +3,20 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants/app_colors.dart';
 import '../account/create_account_screen.dart';
+import '../company/company_details_screen.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   final String mobileNumber;
 
-  const OtpVerificationScreen({super.key, required this.mobileNumber});
+  /// The role selected on the login screen — 'Supplier' or 'Vendor'.
+  /// Determines which screen to navigate to after OTP verification.
+  final String role;
+
+  const OtpVerificationScreen({
+    super.key,
+    required this.mobileNumber,
+    this.role = 'Supplier',
+  });
 
   @override
   State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
@@ -32,9 +41,17 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   }
 
   void _continue() {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const CreateAccountScreen()),
-    );
+    // Vendor → tender create account + plan flow
+    // Supplier → original supplier company details flow
+    if (widget.role == 'Vendor') {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const CreateAccountScreen()),
+      );
+    } else {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const CompanyDetailsScreen()),
+      );
+    }
   }
 
   Widget _buildOtpField(int index) {

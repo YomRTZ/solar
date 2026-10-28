@@ -61,6 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
       MaterialPageRoute(
         builder: (context) => OtpVerificationScreen(
           mobileNumber: '+91 $rawDigits',
+          role: _selectedRole,
         ),
       ),
     );
