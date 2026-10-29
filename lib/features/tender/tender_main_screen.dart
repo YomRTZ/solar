@@ -79,11 +79,11 @@ class _TenderNavBar extends StatelessWidget {
   const _TenderNavBar({required this.currentIndex, required this.onTap});
 
   static const List<_NavItem> _items = [
-    _NavItem(pngPath: 'assets/images/icons/image_1374.png', label: 'Home'),
-    _NavItem(pngPath: 'assets/images/icons/image_1380.png', label: 'Categories'),
-    _NavItem(pngPath: 'assets/images/icons/image_1379.png', label: 'My RFQs'),
-    _NavItem(pngPath: 'assets/images/icons/image_1376.png', label: 'Wallet'),
-    _NavItem(pngPath: 'assets/images/icons/image_1382.png', label: 'Profile'),
+    _NavItem(pngPath: 'assets/icons/image_1374.png', label: 'Home'),
+    _NavItem(pngPath: 'assets/icons/image_1380.png', label: 'Categories'),
+    _NavItem(pngPath: 'assets/icons/image_1379.png', label: 'My RFQs'),
+    _NavItem(pngPath: 'assets/icons/image_1376.png', label: 'Wallet'),
+    _NavItem(pngPath: 'assets/icons/image_1382.png', label: 'Profile'),
   ];
 
   @override

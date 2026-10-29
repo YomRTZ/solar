@@ -88,7 +88,7 @@ class TrackStatusScreen extends StatelessWidget {
       step: TrackStep.dispatched,
       dateTime: '20 Oct 2026 | 09:10 AM',
       imagePaths: [
-        'assets/images/solarimages/03f133a91b6e5ade2638722f368e27d2f92f051b.png',
+        'assets/solarimages/03f133a91b6e5ade2638722f368e27d2f92f051b.png',
       ],
     ),
     const TrackEvent(
@@ -231,28 +231,28 @@ class _TimelineRow extends StatelessWidget {
                     alignment: Alignment.center,
                     children: [
                       SvgPicture.asset(
-                        'assets/images/icons/Ellipse 65.svg',
+                        'assets/icons/Ellipse 65.svg',
                         width: 32,
                         height: 32,
                       ),
                       switch (event.step) {
                         TrackStep.orderConfirmed => SvgPicture.asset(
-                          'assets/images/icons/location-tick1.svg',
+                          'assets/icons/location-tick1.svg',
                           width: 32,
                           height: 32,
                         ),
                         TrackStep.dispatched => Image.asset(
-                          'assets/images/icons/shop.png',
+                          'assets/icons/shop.png',
                           width: 18,
                           height: 18,
                         ),
                         TrackStep.inTransit => SvgPicture.asset(
-                          'assets/images/icons/truck-fast.svg',
+                          'assets/icons/truck-fast.svg',
                           width: 18,
                           height: 18,
                         ),
                         TrackStep.delivered => SvgPicture.asset(
-                          'assets/images/icons/Vector1.svg',
+                          'assets/icons/Vector1.svg',
                           width: 16.56,
                           height: 19.1427,
                         ),

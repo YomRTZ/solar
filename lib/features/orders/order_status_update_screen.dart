@@ -24,9 +24,9 @@ class OrderStatusUpdateScreen extends StatefulWidget {
 
 class _OrderStatusUpdateScreenState extends State<OrderStatusUpdateScreen> {
   static const _addImageAsset =
-      'assets/images/icons/5ceff9d5d9cae078a369c65ead35be73405d7dcd.png';
+      'assets/icons/5ceff9d5d9cae078a369c65ead35be73405d7dcd.png';
   static const _proofImageAsset =
-      'assets/images/solarimages/03f133a91b6e5ade2638722f368e27d2f92f051b.png';
+      'assets/solarimages/03f133a91b6e5ade2638722f368e27d2f92f051b.png';
 
   final _transporterController = TextEditingController(text: 'Ekart');
   final _trackingNumberController = TextEditingController(text: '12,340');

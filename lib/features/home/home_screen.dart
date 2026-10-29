@@ -188,7 +188,7 @@ class _HomeBody extends StatelessWidget {
               clipBehavior: Clip.none,
               children: [
                 Image.asset(
-                  'assets/images/icons/image_1374.png',
+                  'assets/icons/image_1374.png',
                   width: 32,
                   height: 32,
                 ),
@@ -312,27 +312,27 @@ class _AppNavBar extends StatelessWidget {
   // The other 4 embed PNG bitmaps — rendered via Image.asset with ColorFiltered
   static const List<_NavItem> _items = [
     _NavItem(
-      svgPath: 'assets/images/icons/Vector.svg',
+      svgPath: 'assets/icons/Vector.svg',
       label: 'Home',
       isPng: false,
     ),
     _NavItem(
-      svgPath: 'assets/images/icons/image_1380.png',
+      svgPath: 'assets/icons/image_1380.png',
       label: 'Products',
       isPng: true,
     ),
     _NavItem(
-      svgPath: 'assets/images/icons/image_1379.png',
+      svgPath: 'assets/icons/image_1379.png',
       label: 'RFQs',
       isPng: true,
     ),
     _NavItem(
-      svgPath: 'assets/images/icons/image_1376.png',
+      svgPath: 'assets/icons/image_1376.png',
       label: 'Orders',
       isPng: true,
     ),
     _NavItem(
-      svgPath: 'assets/images/icons/image_1382.png',
+      svgPath: 'assets/icons/image_1382.png',
       label: 'Profile',
       isPng: true,
     ),

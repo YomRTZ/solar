@@ -342,7 +342,7 @@ import 'package:flutter_app/core/widgets/app_product_card.dart';
 
 // Product with "New" status (green badge)
 AppProductCard.newStatus(
-  imagePath: 'assets/images/solarimages/solar_panel.png',
+  imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
   title: '10 KW Solar Panel',
   rfqNumber: '#RFQ123456',
   price: '100000',
@@ -353,7 +353,7 @@ AppProductCard.newStatus(
 
 // Product with "Open" status (blue badge)
 AppProductCard.openStatus(
-  imagePath: 'assets/images/solarimages/solar_panel.png',
+  imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
   title: '5 KW Solar Panel',
   rfqNumber: '#RFQ123456',
   price: '23000',
@@ -364,7 +364,7 @@ AppProductCard.openStatus(
 
 // Custom status with custom colors
 AppProductCard(
-  imagePath: 'assets/images/product.png',
+  imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
   title: 'Product Name',
   rfqNumber: '#RFQ111222',
   price: '50000',
@@ -543,7 +543,7 @@ import 'package:flutter_app/core/widgets/app_expandable_card.dart';
 
 // In Stock (green badge)
 AppExpandableCard.inStock(
-  imagePath: 'assets/images/solarimages/solar_panel.png',
+  imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
   title: 'Solar Trade',
   idNumber: '#MB12345',
   price: '11234',
@@ -554,7 +554,7 @@ AppExpandableCard.inStock(
 
 // Low Stock (orange badge)
 AppExpandableCard.lowStock(
-  imagePath: 'assets/images/solarimages/solar_panel.png',
+  imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
   title: 'Solar Panel 5KW',
   idNumber: '#MB12346',
   price: '5000',
@@ -565,7 +565,7 @@ AppExpandableCard.lowStock(
 
 // Out of Stock (red badge)
 AppExpandableCard.outOfStock(
-  imagePath: 'assets/images/solarimages/solar_panel.png',
+  imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
   title: 'Solar Panel 10KW',
   idNumber: '#MB12347',
   price: '10000',
@@ -576,7 +576,7 @@ AppExpandableCard.outOfStock(
 
 // Custom status
 AppExpandableCard(
-  imagePath: 'assets/images/product.png',
+  imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
   title: 'Product Name',
   idNumber: '#ID12345',
   price: '50000',
@@ -612,14 +612,14 @@ ListView(
   padding: const EdgeInsets.symmetric(horizontal: 16),
   children: [
     AppExpandableCard.inStock(
-      imagePath: 'assets/images/item1.png',
+      imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       title: 'Solar Trade',
       idNumber: '#MB12345',
       price: '11234',
       onTap: () => _viewDetails(),
     ),
     AppExpandableCard.lowStock(
-      imagePath: 'assets/images/item2.png',
+      imagePath: 'assets/solarimages/8c95b22c561eba1d7752be96d662579cfd873d93.jpg',
       title: 'Solar Panel',
       idNumber: '#MB12346',
       price: '5000',

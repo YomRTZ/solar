@@ -185,7 +185,7 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
               clipBehavior: Clip.none,
               children: [
                 Image.asset(
-                  'assets/images/icons/image_1374.png',
+                  'assets/icons/image_1374.png',
                   width: 28,
                   height: 28,
                   errorBuilder: (ctx, err, st) => const Icon(

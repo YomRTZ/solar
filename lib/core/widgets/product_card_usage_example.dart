@@ -17,7 +17,7 @@ class SingleProductCardExample extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: AppProductCard.newStatus(
-          imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+          imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
           title: '10 KW Solar Panel',
           rfqNumber: '#RFQ123456',
           price: '100000',
@@ -39,7 +39,7 @@ class OpenStatusProductCardExample extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: AppProductCard.openStatus(
-          imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+          imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
           title: '5 KW Solar Panel',
           rfqNumber: '#RFQ123456',
           price: '23000',
@@ -69,7 +69,7 @@ class ProductListExample extends StatelessWidget {
                 padding: const EdgeInsets.all(18),
                 children: [
                   AppProductCard.newStatus(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: '10 KW Solar Panel',
                     rfqNumber: '#RFQ123456',
                     price: '100000',
@@ -80,7 +80,7 @@ class ProductListExample extends StatelessWidget {
                   const SizedBox(height: 16),
                   
                   AppProductCard.openStatus(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: '5 KW Solar Panel',
                     rfqNumber: '#RFQ123456',
                     price: '23000',
@@ -91,7 +91,7 @@ class ProductListExample extends StatelessWidget {
                   const SizedBox(height: 16),
                   
                   AppProductCard.newStatus(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: '15 KW Solar Panel',
                     rfqNumber: '#RFQ789012',
                     price: '150000',
@@ -122,7 +122,7 @@ class CustomStatusProductCardExample extends StatelessWidget {
           children: [
             // Custom status with custom colors
             AppProductCard(
-              imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+              imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
               title: '20 KW Solar Panel',
               rfqNumber: '#RFQ567890',
               price: '200000',
@@ -136,7 +136,7 @@ class CustomStatusProductCardExample extends StatelessWidget {
             const SizedBox(height: 16),
             
             AppProductCard(
-              imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+              imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
               title: '8 KW Solar Panel',
               rfqNumber: '#RFQ345678',
               price: '80000',
@@ -184,28 +184,28 @@ class DynamicProductListExample extends StatelessWidget {
   // Sample data
   static const List<Map<String, dynamic>> products = [
     {
-      'image': 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      'image': 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       'title': '10 KW Solar Panel',
       'rfq': '#RFQ123456',
       'price': '100000',
       'status': 'new',
     },
     {
-      'image': 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      'image': 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       'title': '5 KW Solar Panel',
       'rfq': '#RFQ123457',
       'price': '23000',
       'status': 'open',
     },
     {
-      'image': 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      'image': 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       'title': '15 KW Solar Panel',
       'rfq': '#RFQ123458',
       'price': '150000',
       'status': 'new',
     },
     {
-      'image': 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      'image': 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       'title': '8 KW Solar Panel',
       'rfq': '#RFQ123459',
       'price': '80000',
@@ -311,7 +311,7 @@ class HorizontalProductCardsExample extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 18),
                 children: [
                   AppProductCard.newStatus(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: '10 KW Solar Panel',
                     rfqNumber: '#RFQ123456',
                     price: '100000',
@@ -319,7 +319,7 @@ class HorizontalProductCardsExample extends StatelessWidget {
                   const SizedBox(width: 16),
                   
                   AppProductCard.openStatus(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: '5 KW Solar Panel',
                     rfqNumber: '#RFQ123457',
                     price: '23000',
@@ -327,7 +327,7 @@ class HorizontalProductCardsExample extends StatelessWidget {
                   const SizedBox(width: 16),
                   
                   AppProductCard.newStatus(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: '15 KW Solar Panel',
                     rfqNumber: '#RFQ123458',
                     price: '150000',
@@ -362,25 +362,25 @@ class GridProductCardsExample extends StatelessWidget {
                 childAspectRatio: 327 / 103,
                 children: [
                   AppProductCard.newStatus(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: '10 KW Solar Panel',
                     rfqNumber: '#RFQ123456',
                     price: '100000',
                   ),
                   AppProductCard.openStatus(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: '5 KW Solar Panel',
                     rfqNumber: '#RFQ123457',
                     price: '23000',
                   ),
                   AppProductCard.newStatus(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: '15 KW Solar Panel',
                     rfqNumber: '#RFQ123458',
                     price: '150000',
                   ),
                   AppProductCard.openStatus(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: '8 KW Solar Panel',
                     rfqNumber: '#RFQ123459',
                     price: '80000',

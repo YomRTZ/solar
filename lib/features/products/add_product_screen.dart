@@ -30,7 +30,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   // Image paths (simulated picks)
   final List<String> _selectedImages = [
-    'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+    'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
   ];
 
   bool _isLoading = false;
@@ -101,7 +101,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   void _addImage() {
     setState(() {
       _selectedImages.add(
-        'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+        'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       );
     });
   }
@@ -282,7 +282,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: Image.asset(
-                      'assets/images/icons/5ceff9d5d9cae078a369c65ead35be73405d7dcd.png',
+                      'assets/icons/5ceff9d5d9cae078a369c65ead35be73405d7dcd.png',
                       fit: BoxFit.contain,
                     ),
                   ),

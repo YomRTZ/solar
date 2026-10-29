@@ -95,7 +95,7 @@ class AppFileUploadField extends StatelessWidget {
                     children: [
                       // Upload icon
                       SvgPicture.asset(
-                        'assets/images/icons/cloud_upload_icon.svg',
+                        'assets/icons/cloud_upload_icon.svg',
                         width: 26,
                         height: 26,
                       ),

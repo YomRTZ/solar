@@ -141,7 +141,7 @@ Product(
   title: 'New Product',
   idNumber: '#NEW001',
   price: '50000',
-  imagePath: 'assets/images/your_image.png',
+  imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
   status: ProductStatus.inStock,
   category: ProductCategory.panel,
 )

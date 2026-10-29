@@ -8,22 +8,22 @@ class TenderData {
     TenderCategory(
       id: 'cat_solar',
       name: 'Solar Panels',
-      iconPath: 'assets/images/icons/image_1380.png',
+      iconPath: 'assets/icons/image_1380.png',
     ),
     TenderCategory(
       id: 'cat_battery',
       name: 'Battery',
-      iconPath: 'assets/images/icons/image_1.png',
+      iconPath: 'assets/icons/image_1.png',
     ),
     TenderCategory(
       id: 'cat_inverters',
       name: 'Inverters',
-      iconPath: 'assets/images/icons/image_1_1.png',
+      iconPath: 'assets/icons/image_1_1.png',
     ),
     TenderCategory(
       id: 'cat_cables',
       name: 'Cables',
-      iconPath: 'assets/images/icons/image_1_2.png',
+      iconPath: 'assets/icons/image_1_2.png',
     ),
   ];
 
@@ -32,37 +32,37 @@ class TenderData {
     TenderCategory(
       id: 'cat_solar',
       name: 'Solar Panel',
-      iconPath: 'assets/images/icons/image_1380.png',
+      iconPath: 'assets/icons/image_1380.png',
     ),
     TenderCategory(
       id: 'cat_battery',
       name: 'Battery',
-      iconPath: 'assets/images/icons/image_1.png',
+      iconPath: 'assets/icons/image_1.png',
     ),
     TenderCategory(
       id: 'cat_inverters',
       name: 'Inverters',
-      iconPath: 'assets/images/icons/image_1_1.png',
+      iconPath: 'assets/icons/image_1_1.png',
     ),
     TenderCategory(
       id: 'cat_cables',
       name: 'Cables',
-      iconPath: 'assets/images/icons/image_1_2.png',
+      iconPath: 'assets/icons/image_1_2.png',
     ),
     TenderCategory(
       id: 'cat_more',
       name: 'View More',
-      iconPath: 'assets/images/icons/5ceff9d5d9cae078a369c65ead35be73405d7dcd.png',
+      iconPath: 'assets/icons/5ceff9d5d9cae078a369c65ead35be73405d7dcd.png',
     ),
   ];
 
   // ── Banner promo image ─────────────────────────────────────
   static const String bannerImage =
-      'assets/images/solarimages/8c95b22c561eba1d7752be96d662579cfd873d93.jpg';
+      'assets/solarimages/8c95b22c561eba1d7752be96d662579cfd873d93.jpg';
 
   // ── Products (shared with catalog, extended with category) ─
   static const String _img =
-      'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png';
+      'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png';
 
   static const List<CatalogProduct> products = [
     CatalogProduct(

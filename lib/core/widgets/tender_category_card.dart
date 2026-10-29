@@ -9,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 /// Usage:
 /// ```dart
 /// TenderCategoryCard(
-///   iconPath: 'assets/images/icons/solar.png',
+///   iconPath: 'assets/icons/image_1380.png',
 ///   label: 'Solar Panels',
 ///   onTap: () { ... },
 /// );

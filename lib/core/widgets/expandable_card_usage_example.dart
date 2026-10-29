@@ -17,7 +17,7 @@ class SingleExpandableCardExample extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: AppExpandableCard.inStock(
-          imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+          imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
           title: 'Solar Trade',
           idNumber: '#MB12345',
           price: '11234',
@@ -47,7 +47,7 @@ class ExpandableCardListExample extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [
                   AppExpandableCard.inStock(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: 'Solar Trade',
                     idNumber: '#MB12345',
                     price: '11234',
@@ -56,7 +56,7 @@ class ExpandableCardListExample extends StatelessWidget {
                     },
                   ),
                   AppExpandableCard.inStock(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: 'Solar Trade',
                     idNumber: '#MB12345',
                     price: '11234',
@@ -65,7 +65,7 @@ class ExpandableCardListExample extends StatelessWidget {
                     },
                   ),
                   AppExpandableCard.lowStock(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: 'Solar Panel 5KW',
                     idNumber: '#MB12346',
                     price: '5000',
@@ -74,7 +74,7 @@ class ExpandableCardListExample extends StatelessWidget {
                     },
                   ),
                   AppExpandableCard.outOfStock(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: 'Solar Panel 10KW',
                     idNumber: '#MB12347',
                     price: '10000',
@@ -105,7 +105,7 @@ class DifferentStatusCardsExample extends StatelessWidget {
           children: [
             // In Stock - Green
             AppExpandableCard.inStock(
-              imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+              imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
               title: 'Solar Trade',
               idNumber: '#MB12345',
               price: '11234',
@@ -114,7 +114,7 @@ class DifferentStatusCardsExample extends StatelessWidget {
             
             // Low Stock - Orange
             AppExpandableCard.lowStock(
-              imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+              imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
               title: 'Solar Panel 5KW',
               idNumber: '#MB12346',
               price: '5000',
@@ -123,7 +123,7 @@ class DifferentStatusCardsExample extends StatelessWidget {
             
             // Out of Stock - Red
             AppExpandableCard.outOfStock(
-              imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+              imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
               title: 'Solar Panel 10KW',
               idNumber: '#MB12347',
               price: '10000',
@@ -147,7 +147,7 @@ class CustomStatusCardExample extends StatelessWidget {
         child: Column(
           children: [
             AppExpandableCard(
-              imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+              imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
               title: 'Premium Solar',
               idNumber: '#MB12348',
               price: '50000',
@@ -159,7 +159,7 @@ class CustomStatusCardExample extends StatelessWidget {
             const SizedBox(height: 16),
             
             AppExpandableCard(
-              imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+              imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
               title: 'Discounted Solar',
               idNumber: '#MB12349',
               price: '8000',
@@ -182,28 +182,28 @@ class DynamicExpandableListExample extends StatelessWidget {
   // Sample data
   static const List<Map<String, dynamic>> items = [
     {
-      'image': 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      'image': 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       'title': 'Solar Trade',
       'id': '#MB12345',
       'price': '11234',
       'status': 'in_stock',
     },
     {
-      'image': 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      'image': 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       'title': '5 KW Solar Panel',
       'id': '#MB12346',
       'price': '5000',
       'status': 'low_stock',
     },
     {
-      'image': 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      'image': 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       'title': '10 KW Solar Panel',
       'id': '#MB12347',
       'price': '10000',
       'status': 'out_of_stock',
     },
     {
-      'image': 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      'image': 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       'title': '15 KW Solar Panel',
       'id': '#MB12348',
       'price': '15000',
@@ -295,7 +295,7 @@ class NoArrowCardExample extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: AppExpandableCard.inStock(
-          imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+          imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
           title: 'Solar Trade',
           idNumber: '#MB12345',
           price: '11234',
@@ -345,21 +345,21 @@ class _FilterableExpandableListExampleState
 
   final List<Map<String, dynamic>> allItems = [
     {
-      'image': 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      'image': 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       'title': 'Solar Trade 1',
       'id': '#MB12345',
       'price': '11234',
       'status': 'in_stock',
     },
     {
-      'image': 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      'image': 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       'title': 'Solar Trade 2',
       'id': '#MB12346',
       'price': '5000',
       'status': 'low_stock',
     },
     {
-      'image': 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      'image': 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       'title': 'Solar Trade 3',
       'id': '#MB12347',
       'price': '10000',

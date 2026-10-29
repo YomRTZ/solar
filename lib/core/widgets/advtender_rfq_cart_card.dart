@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 /// Usage:
 /// ```dart
 /// AdvTenderRfqCartCard(
-///   imagePath: 'assets/...',
+///   imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
 ///   name: 'Solar Trade',
 ///   subtitle: 'By SunTech Sol.',
 ///   price: 'Rs.10000+',

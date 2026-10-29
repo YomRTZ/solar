@@ -129,7 +129,7 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
       child: Row(
         children: [
           SvgPicture.asset(
-            'assets/images/icons/search.svg',
+            'assets/icons/search.svg',
             width: 24,
             height: 24,
           ),

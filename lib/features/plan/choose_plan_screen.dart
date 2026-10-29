@@ -94,7 +94,7 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Image.asset(
-                  'assets/images/solarimages/8c95b22c561eba1d7752be96d662579cfd873d93.jpg',
+                  'assets/solarimages/8c95b22c561eba1d7752be96d662579cfd873d93.jpg',
                   height: 140,
                   width: double.infinity,
                   fit: BoxFit.cover,

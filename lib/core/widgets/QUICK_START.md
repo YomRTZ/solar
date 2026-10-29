@@ -624,7 +624,7 @@ class ProductListScreen extends StatelessWidget {
                 children: [
                   // New product with green badge
                   AppProductCard.newStatus(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: '10 KW Solar Panel',
                     rfqNumber: '#RFQ123456',
                     price: '100000',
@@ -636,7 +636,7 @@ class ProductListScreen extends StatelessWidget {
                   
                   // Open product with blue badge
                   AppProductCard.openStatus(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: '5 KW Solar Panel',
                     rfqNumber: '#RFQ123456',
                     price: '23000',
@@ -681,21 +681,21 @@ class DynamicProductListScreen extends StatelessWidget {
 
   final List<Product> products = [
     Product(
-      image: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      image: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       title: '10 KW Solar Panel',
       rfq: '#RFQ123456',
       price: '100000',
       isNew: true,
     ),
     Product(
-      image: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      image: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       title: '5 KW Solar Panel',
       rfq: '#RFQ123457',
       price: '23000',
       isNew: false,
     ),
     Product(
-      image: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      image: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       title: '15 KW Solar Panel',
       rfq: '#RFQ123458',
       price: '150000',
@@ -758,7 +758,7 @@ class DynamicProductListScreen extends StatelessWidget {
 ```dart
 // Closed status with red colors
 AppProductCard(
-  imagePath: 'assets/images/product.png',
+  imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
   title: '20 KW Solar Panel',
   rfqNumber: '#RFQ567890',
   price: '200000',
@@ -770,7 +770,7 @@ AppProductCard(
 
 // Pending status with orange colors
 AppProductCard(
-  imagePath: 'assets/images/product.png',
+  imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
   title: '12 KW Solar Panel',
   rfqNumber: '#RFQ345678',
   price: '120000',
@@ -1088,7 +1088,7 @@ class InventoryListScreen extends StatelessWidget {
                 children: [
                   // In Stock - Green
                   AppExpandableCard.inStock(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: 'Solar Trade',
                     idNumber: '#MB12345',
                     price: '11234',
@@ -1099,7 +1099,7 @@ class InventoryListScreen extends StatelessWidget {
                   
                   // Low Stock - Orange
                   AppExpandableCard.lowStock(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: 'Solar Panel 5KW',
                     idNumber: '#MB12346',
                     price: '5000',
@@ -1110,7 +1110,7 @@ class InventoryListScreen extends StatelessWidget {
                   
                   // Out of Stock - Red
                   AppExpandableCard.outOfStock(
-                    imagePath: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+                    imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
                     title: 'Solar Panel 10KW',
                     idNumber: '#MB12347',
                     price: '10000',
@@ -1155,14 +1155,14 @@ class DynamicInventoryScreen extends StatelessWidget {
 
   final List<Product> products = [
     Product(
-      image: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      image: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       title: 'Solar Trade',
       id: '#MB12345',
       price: '11234',
       status: 'in_stock',
     ),
     Product(
-      image: 'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      image: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
       title: '5KW Panel',
       id: '#MB12346',
       price: '5000',
@@ -1241,7 +1241,7 @@ class DynamicInventoryScreen extends StatelessWidget {
 ### Custom Status Example
 ```dart
 AppExpandableCard(
-  imagePath: 'assets/images/product.png',
+  imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
   title: 'Premium Product',
   idNumber: '#PREM001',
   price: '99999',

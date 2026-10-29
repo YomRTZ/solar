@@ -189,7 +189,7 @@ class _InProgressBodyState extends State<_InProgressBody>
   // PNG illustration for in-progress state
   Widget _buildIllustration() {
     return Image.asset(
-      'assets/images/icons/image_1_1.png',
+      'assets/icons/image_1_1.png',
       width: 111,
       height: 111,
     );
@@ -212,7 +212,7 @@ class _ApprovedBody extends StatelessWidget {
         children: [
           // ── Approved PNG illustration ─────────────────────
           Image.asset(
-            'assets/images/icons/image_1.png',
+            'assets/icons/image_1.png',
             width: 327,
             height: 111,
           ),
@@ -304,7 +304,7 @@ class _RejectedBody extends StatelessWidget {
         children: [
           // ── Rejected PNG illustration ─────────────────────
           Image.asset(
-            'assets/images/icons/image_1_2.png',
+            'assets/icons/image_1_2.png',
             width: 110,
             height: 110,
           ),

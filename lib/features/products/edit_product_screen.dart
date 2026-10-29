@@ -321,7 +321,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SvgPicture.asset(
-                  'assets/images/icons/green-check-icon.svg',
+                  'assets/icons/green-check-icon.svg',
                   width: 20,
                   height: 20,
                 ),
@@ -365,7 +365,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               child: GestureDetector(
                 onTap: () => setState(() => _showSuccessBanner = false),
                 child: SvgPicture.asset(
-                  'assets/images/icons/cross-icon.svg',
+                  'assets/icons/cross-icon.svg',
                   width: 10,
                   height: 10,
                 ),

@@ -13,7 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 /// Usage:
 /// ```dart
 /// TenderProductCard(
-///   imagePath: 'assets/images/solar.png',
+///   imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
 ///   name: '100 X 100 Solar Panel Matched Premium',
 ///   price: 'Rs.10000',
 ///   quantity: qty,

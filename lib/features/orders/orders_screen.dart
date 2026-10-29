@@ -14,7 +14,7 @@ const List<Order> _kOrders = [
     id: '#ORD123456',
     productName: '10 KW Solar Panel',
     productImagePath:
-        'assets/images/solarimages/8c95b22c561eba1d7752be96d662579cfd873d93.jpg',
+        'assets/solarimages/8c95b22c561eba1d7752be96d662579cfd873d93.jpg',
     price: '45000',
     deliveryLocation: 'Pune, Maharashtra',
     buyer: 'Green Energy Installers',
@@ -28,7 +28,7 @@ const List<Order> _kOrders = [
     id: '#ORD1234564',
     productName: '10 KW Solar Panel',
     productImagePath:
-        'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+        'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
     price: '45000',
     deliveryLocation: 'Mumbai, Maharashtra',
     buyer: 'SunRise Solar Co.',
