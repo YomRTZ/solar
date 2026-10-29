@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/app_expandable_card.dart';
 import '../../core/widgets/second_app_header.dart';
 import '../../models/order.dart';
-import 'order_details_screen.dart';
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 const List<Order> _kOrders = [
@@ -176,10 +178,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       statusBackgroundColor: order.status.backgroundColor,
       statusTextColor: order.status.textColor,
       maxWidth: double.infinity,
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => OrderDetailsScreen(order: order)),
-      ),
+      onTap: () => context.push(AppRoutes.orderDetails, extra: order),
     );
   }
 

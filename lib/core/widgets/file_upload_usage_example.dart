@@ -36,7 +36,7 @@ class _BasicFileUploadExampleState extends State<BasicFileUploadExample> {
         });
       }
     } catch (e) {
-      print('Error picking file: $e');
+      debugPrint('Error picking file: $e');
     }
   }
 
@@ -86,7 +86,7 @@ class _MultipleFileUploadExampleState extends State<MultipleFileUploadExample> {
         });
       }
     } catch (e) {
-      print('Error picking file: $e');
+      debugPrint('Error picking file: $e');
     }
   }
 
@@ -180,7 +180,7 @@ class _ImageUploadExampleState extends State<ImageUploadExample> {
         }
       }
     } catch (e) {
-      print('Error picking image: $e');
+      debugPrint('Error picking image: $e');
     }
   }
 
@@ -229,6 +229,7 @@ class _CustomFileUploadExampleState extends State<CustomFileUploadExample> {
         
         // Check file size (20MB limit)
         if (file.size > 20 * 1024 * 1024) {
+          if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('File size must be less than 20MB'),
@@ -242,7 +243,7 @@ class _CustomFileUploadExampleState extends State<CustomFileUploadExample> {
         });
       }
     } catch (e) {
-      print('Error picking file: $e');
+      debugPrint('Error picking file: $e');
     }
   }
 
@@ -301,12 +302,13 @@ class _CompleteFormWithFileUploadState
         });
       }
     } catch (e) {
-      print('Error picking file: $e');
+      debugPrint('Error picking file: $e');
     }
   }
 
   Future<void> _submitForm() async {
     if (gstCertificate == null || panCard == null) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please upload all required documents'),
@@ -322,10 +324,12 @@ class _CompleteFormWithFileUploadState
     // Simulate upload
     await Future.delayed(const Duration(seconds: 2));
 
+    if (!mounted) return;
     setState(() {
       isLoading = false;
     });
 
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Documents uploaded successfully!'),

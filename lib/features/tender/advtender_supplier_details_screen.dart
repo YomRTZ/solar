@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../app/routing/app_routes.dart';
+import '../../app/routing/route_data.dart';
 import '../../core/widgets/tender_product_card.dart';
 import '../../data/advtender_data.dart';
 import '../../models/advtender_supplier.dart';
-import 'advtender_rfq_cart_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AdvTender — Supplier Details Screen
@@ -32,8 +34,7 @@ class _AdvTenderSupplierDetailsScreenState
   // RFQ cart: productId → quantity
   final Map<String, int> _rfqCart = {};
 
-  int get _cartCount =>
-      _rfqCart.values.fold(0, (sum, qty) => sum + qty);
+  int get _cartCount => _rfqCart.values.fold(0, (sum, qty) => sum + qty);
 
   late final AdvTenderSupplier _supplier;
 
@@ -65,13 +66,11 @@ class _AdvTenderSupplierDetailsScreenState
         .where((p) => (_rfqCart[p.id] ?? 0) > 0)
         .toList();
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => AdvTenderRfqCartScreen(
-          cartItems: cartItems,
-          initialQuantities: Map.from(_rfqCart),
-        ),
+    context.push(
+      AppRoutes.advTenderCart,
+      extra: AdvTenderCartRouteData(
+        cartItems: cartItems,
+        initialQuantities: Map.from(_rfqCart),
       ),
     );
   }
@@ -132,11 +131,11 @@ class _AdvTenderSupplierDetailsScreenState
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 156 / 220,
-                      ),
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 156 / 220,
+                          ),
                       itemCount: _supplier.mainProducts.length,
                       itemBuilder: (context, i) {
                         final product = _supplier.mainProducts[i];
@@ -181,8 +180,11 @@ class _AdvTenderSupplierDetailsScreenState
           children: [
             GestureDetector(
               onTap: () => Navigator.pop(context),
-              child: const Icon(Icons.arrow_back,
-                  color: Colors.white, size: 22),
+              child: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+                size: 22,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -312,7 +314,9 @@ class _SupplierInfoCard extends StatelessWidget {
                 const SizedBox(height: 5),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 3),
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFD1FAE5),
                     borderRadius: BorderRadius.circular(4),

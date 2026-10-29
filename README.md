@@ -1,17 +1,26 @@
-# flutter_app
+# SolarTradeXHub
 
-A new Flutter project.
+Flutter application for the SolarTradeXHub marketplace.
 
-## Getting Started
+## Architecture
 
-This project is a starting point for a Flutter application.
+- `lib/app/routing/app_router.dart` is the centralized GoRouter configuration and
+  applies the shared fade-and-slide transition to app routes.
+- `lib/app/routing/app_routes.dart` contains route paths.
+- `lib/app/routing/route_data.dart` defines typed data passed between routes.
+- `lib/features/` organizes screens by product feature. Shared UI components and
+  theme values live under `lib/core/`; reusable app data and models live under
+  `lib/data/` and `lib/models/`.
+- Home and Tender keep their bottom-navigation tabs as local stateful shells so
+  their existing tab state and behavior are preserved.
 
-A few resources to get you started if this is your first Flutter project:
+Navigate between app screens with GoRouter, for example:
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+```dart
+context.push(AppRoutes.orderDetails, extra: order);
+context.go(AppRoutes.home);
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Routes that require data validate the route extra and raise a `FlutterError` if
+it is absent or has the wrong type. Dialogs, bottom sheets, and back actions
+continue to use `Navigator.pop`.

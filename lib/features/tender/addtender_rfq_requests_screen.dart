@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/addtender_rfq_request_card.dart';
 import '../../core/widgets/app_bottom_sheet.dart';
 import '../../data/addtender_rfq_data.dart';
 import '../../models/addtender_rfq_request.dart';
-import 'addtender_checkout_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AddTender — RFQ Requests Screen
@@ -55,12 +56,7 @@ class _AddTenderRfqRequestsScreenState
         request: request,
         onProceedToCheckout: () {
           Navigator.pop(context); // close sheet
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const AddTenderCheckoutScreen(),
-            ),
-          );
+          context.push(AppRoutes.addTenderCheckout);
         },
       ),
     );
@@ -166,10 +162,7 @@ class _AddTenderRfqRequestsScreenState
       return Center(
         child: Text(
           'No requests found',
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            color: Colors.grey[400],
-          ),
+          style: GoogleFonts.inter(fontSize: 14, color: Colors.grey[400]),
         ),
       );
     }
@@ -210,9 +203,7 @@ class _TabChip extends StatelessWidget {
           color: isActive ? const Color(0xFF003A8A) : Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isActive
-                ? const Color(0xFF003A8A)
-                : const Color(0xFFE5E7EB),
+            color: isActive ? const Color(0xFF003A8A) : const Color(0xFFE5E7EB),
           ),
         ),
         child: Text(
@@ -328,11 +319,7 @@ class _RfqDetailSheet extends StatelessWidget {
           const SizedBox(height: 6),
           _SummaryRow(label: 'Gst 18%', value: request.gst),
           const SizedBox(height: 6),
-          _SummaryRow(
-            label: 'Total',
-            value: request.total,
-            isBold: true,
-          ),
+          _SummaryRow(label: 'Total', value: request.total, isBold: true),
 
           const SizedBox(height: 20),
 

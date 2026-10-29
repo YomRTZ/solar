@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/widgets.dart';
-import '../../core/widgets/second_app_header.dart';
 import '../../models/order.dart';
-import 'track_status_screen.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
   final Order order;
@@ -68,15 +69,17 @@ class OrderDetailsScreen extends StatelessWidget {
                     AppContinueButton(
                       text: 'Track History',
                       showArrow: false,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                TrackStatusScreen(order: order),
-                          ),
-                        );
-                      },
+                      onPressed: () =>
+                          context.push(AppRoutes.trackStatus, extra: order),
+                    ),
+                    const SizedBox(height: 12),
+                    AppContinueButton(
+                      text: 'Update Status',
+                      showArrow: false,
+                      onPressed: () => context.push(
+                        AppRoutes.orderStatusUpdate,
+                        extra: order,
+                      ),
                     ),
                   ],
                 ),
@@ -99,9 +102,11 @@ class OrderDetailsScreen extends StatelessWidget {
             Expanded(
               child: Text(
                 order.id,
-                style: GoogleFonts.inter(
+                style: GoogleFonts.roboto(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
+                  height: 22 / 14,
+                  letterSpacing: -0.18,
                   color: const Color(0xFF202020),
                 ),
               ),
@@ -110,9 +115,11 @@ class OrderDetailsScreen extends StatelessWidget {
               child: Text(
                 order.productName,
                 textAlign: TextAlign.right,
-                style: GoogleFonts.inter(
+                style: GoogleFonts.roboto(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
+                  height: 22 / 14,
+                  letterSpacing: -0.18,
                   color: const Color(0xFF202020),
                 ),
               ),
@@ -120,26 +127,36 @@ class OrderDetailsScreen extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 14),
-        _infoRow('Delivery Location', order.deliveryLocation),
+        _infoRow(
+          'Delivery Location',
+          order.deliveryLocation,
+          valueColor: const Color(0xFF4E4C4C),
+        ),
         const SizedBox(height: 12),
-        _infoRow('Buyer', order.buyer),
+        _infoRow('Buyer', order.buyer, valueColor: const Color(0xFF000000)),
         const SizedBox(height: 12),
-        _infoRow('Order Date', order.orderDate),
+        _infoRow(
+          'Order Date',
+          order.orderDate,
+          valueColor: const Color(0xFF4E4C4C),
+        ),
       ],
     );
   }
 
-  Widget _infoRow(String label, String value) {
+  Widget _infoRow(String label, String value, {required Color valueColor}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Text(
             label,
-            style: GoogleFonts.inter(
-              fontSize: 14,
+            style: GoogleFonts.roboto(
+              fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF202020),
+              height: 16 / 13,
+              letterSpacing: 0,
+              color: const Color(0xFF000000),
             ),
           ),
         ),
@@ -147,10 +164,12 @@ class OrderDetailsScreen extends StatelessWidget {
           child: Text(
             value,
             textAlign: TextAlign.right,
-            style: GoogleFonts.inter(
+            style: GoogleFonts.roboto(
               fontSize: 13,
-              fontWeight: FontWeight.w400,
-              color: const Color(0xFF6C7278),
+              fontWeight: FontWeight.w600,
+              height: 16 / 13,
+              letterSpacing: 0,
+              color: valueColor,
             ),
           ),
         ),
@@ -193,19 +212,23 @@ class OrderDetailsScreen extends StatelessWidget {
             children: [
               Text(
                 order.productName,
-                style: GoogleFonts.inter(
+                style: GoogleFonts.roboto(
                   fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
+                  height: 22 / 14,
+                  letterSpacing: -0.18,
                   color: const Color(0xFF202020),
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 'Qty : ${order.quantity}',
-                style: GoogleFonts.inter(
-                  fontSize: 13,
+                style: GoogleFonts.roboto(
+                  fontSize: 12,
                   fontWeight: FontWeight.w400,
-                  color: const Color(0xFF6C7278),
+                  height: 22 / 12,
+                  letterSpacing: -0.18,
+                  color: const Color(0xFF666060),
                 ),
               ),
             ],
@@ -215,9 +238,11 @@ class OrderDetailsScreen extends StatelessWidget {
         // Unit price
         Text(
           'Rs. ${_fmt(double.parse(order.price))}',
-          style: GoogleFonts.inter(
+          style: GoogleFonts.roboto(
             fontSize: 14,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
+            height: 22 / 14,
+            letterSpacing: -0.18,
             color: const Color(0xFF202020),
           ),
         ),
@@ -235,22 +260,24 @@ class OrderDetailsScreen extends StatelessWidget {
         const SizedBox(height: 14),
         const Divider(height: 1, color: Color(0xFFEDF1F3)),
         const SizedBox(height: 14),
-        _priceRow('Total', order.total, isBold: true),
+        _priceRow('Total', order.total),
       ],
     );
   }
 
-  Widget _priceRow(String label, double amount, {bool isBold = false}) {
-    final style = GoogleFonts.inter(
-      fontSize: isBold ? 15 : 14,
-      fontWeight: isBold ? FontWeight.w700 : FontWeight.w400,
-      color: const Color(0xFF202020),
+  Widget _priceRow(String label, double amount) {
+    final style = GoogleFonts.roboto(
+      fontSize: 13,
+      fontWeight: FontWeight.w600,
+      height: 16 / 13,
+      letterSpacing: 0,
+      color: const Color(0xFF000000),
     );
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label, style: style),
-        Text('Rs. ${_fmt(amount)}', style: style),
+        Text('Rs. ${_fmt(amount)}', textAlign: TextAlign.right, style: style),
       ],
     );
   }

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/widgets/app_text_field.dart';
 import '../../core/widgets/app_dropdown_field.dart';
 import '../../core/widgets/app_continue_button.dart';
+import '../../core/widgets/second_app_header.dart';
 import '../../models/product.dart';
 
 class EditProductScreen extends StatefulWidget {
@@ -32,10 +33,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
   String? _selectedCategory;
   String? _selectedBrand;
   String? _selectedStock;
-
-  final List<String> _selectedImages = [
-    'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
-  ];
 
   // UI state
   bool _isLoading = false;
@@ -157,18 +154,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
     });
   }
 
-  void _addImage() {
-    setState(() {
-      _selectedImages.add(
-        'assets/images/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
-      );
-    });
-  }
-
-  void _removeImage(int index) {
-    setState(() => _selectedImages.removeAt(index));
-  }
-
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -182,7 +167,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         extendBodyBehindAppBar: true,
         body: Column(
           children: [
-            _buildHeader(context),
+            const SecondAppHeader(title: 'Edit Product'),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(10, 12, 10, 32),
@@ -190,11 +175,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (_showSuccessBanner) ...[
-                      _buildSuccessBanner(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        child: _buildSuccessBanner(),
+                      ),
                       const SizedBox(height: 20),
                     ],
-                    _buildAddImages(),
-                    const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 14),
                       child: Column(
@@ -313,157 +299,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   // ────────────────────────────────────────────────────────────
-  // Header
-  // ────────────────────────────────────────────────────────────
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 133,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 0, 24, 0),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Transform.translate(
-            offset: const Offset(0, 14),
-            child: SizedBox(
-              height: 26,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    tooltip: 'Back',
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints.tightFor(
-                      width: 24,
-                      height: 26,
-                    ),
-                    icon: SvgPicture.asset(
-                      'assets/images/icons/arrow-narrow-left.svg',
-                      width: 24,
-                      height: 24,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 203,
-                    height: 26,
-                    child: Text(
-                      'Edit Product',
-                      style: GoogleFonts.inter(
-                        fontSize: 20,
-                        height: 1.3,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFFEEEEEE),
-                        letterSpacing: -0.4,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAddImages() {
-    return SizedBox(
-      width: double.infinity,
-      height: 64,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Add Images',
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
-              height: 1.6,
-              fontWeight: FontWeight.w500,
-              letterSpacing: -0.24,
-              color: const Color(0xFF6C7278),
-            ),
-          ),
-          const SizedBox(height: 2),
-          SizedBox(
-            height: 41,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                ..._selectedImages.asMap().entries.map((entry) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 6),
-                    child: _buildImageThumb(entry.value, entry.key),
-                  );
-                }),
-                GestureDetector(
-                  onTap: _addImage,
-                  child: SizedBox(
-                    width: 41,
-                    height: 41,
-                    child: Image.asset(
-                      'assets/images/icons/5ceff9d5d9cae078a369c65ead35be73405d7dcd.png',
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildImageThumb(String imagePath, int index) {
-    return Stack(
-      children: [
-        Container(
-          width: 41,
-          height: 41,
-          decoration: BoxDecoration(
-            color: const Color(0x1F084EAD),
-            borderRadius: BorderRadius.circular(5),
-            border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Container(
-              color: const Color(0xFFF5F5F5),
-              child: const Icon(Icons.image, color: Colors.grey),
-            ),
-          ),
-        ),
-        Positioned(
-          top: 2,
-          right: 2,
-          child: GestureDetector(
-            onTap: () => _removeImage(index),
-            child: Container(
-              width: 18,
-              height: 18,
-              decoration: const BoxDecoration(
-                color: Color(0xFF003D82),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.close, color: Colors.white, size: 11),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // ────────────────────────────────────────────────────────────
   // Success Banner
   // ────────────────────────────────────────────────────────────
   Widget _buildSuccessBanner() {
@@ -483,6 +318,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
             right: 37,
             height: 52,
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SvgPicture.asset(
                   'assets/images/icons/green-check-icon.svg',
@@ -506,6 +342,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       const SizedBox(height: 9),
                       Text(
                         'Product has been updated successfully',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.roboto(
                           fontSize: 14,
                           height: 1.69,

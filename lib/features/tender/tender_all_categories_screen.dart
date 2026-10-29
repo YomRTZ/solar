@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/tender_category_card.dart';
 import '../../data/tender_data.dart';
-import 'tender_all_products_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Tender All Categories Screen
@@ -54,11 +55,11 @@ class TenderAllCategoriesScreen extends StatelessWidget {
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 1.1,
-                      ),
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 1.1,
+                          ),
                       itemCount: _allEntries.length,
                       itemBuilder: (context, i) {
                         final entry = _allEntries[i];
@@ -66,12 +67,8 @@ class TenderAllCategoriesScreen extends StatelessWidget {
                           iconPath: entry.category.iconPath,
                           label: entry.category.name,
                           iconContainerSize: 64,
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const TenderAllProductsScreen(),
-                            ),
-                          ),
+                          onTap: () =>
+                              context.push(AppRoutes.tenderAllProducts),
                         );
                       },
                     ),
@@ -104,8 +101,11 @@ class TenderAllCategoriesScreen extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () => Navigator.pop(context),
-              child: const Icon(Icons.arrow_back,
-                  color: Colors.white, size: 22),
+              child: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+                size: 22,
+              ),
             ),
             const SizedBox(width: 12),
             Text(
@@ -126,10 +126,7 @@ class TenderAllCategoriesScreen extends StatelessWidget {
   // ── Promo banner (same style as home) ─────────────────────
   Widget _buildBanner(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const TenderAllProductsScreen()),
-      ),
+      onTap: () => context.push(AppRoutes.tenderAllProducts),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Stack(
@@ -140,10 +137,8 @@ class TenderAllCategoriesScreen extends StatelessWidget {
               child: Image.asset(
                 TenderData.bannerImage,
                 fit: BoxFit.cover,
-                errorBuilder: (ctx, err, st) => Container(
-                  height: 120,
-                  color: const Color(0xFF003A8A),
-                ),
+                errorBuilder: (ctx, err, st) =>
+                    Container(height: 120, color: const Color(0xFF003A8A)),
               ),
             ),
             Container(

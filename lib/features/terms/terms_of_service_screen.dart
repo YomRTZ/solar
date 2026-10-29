@@ -188,60 +188,63 @@ class TermsOfServiceScreen extends StatelessWidget {
 
   // ── Decline + Accept buttons ──────────────────────────────
   Widget _buildBottomButtons(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(24, 12, 24, 28),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 12,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // ── Decline (outlined) ──────────────────────────
-          Expanded(
-            child: SizedBox(
-              height: 48,
-              child: OutlinedButton(
-                onPressed: onDecline ?? () => Navigator.pop(context),
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(
-                    color: Color(0xFF003D82),
-                    width: 1.5,
+    return SafeArea(
+      top: false,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(24, 12, 24, 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 12,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // ── Decline (outlined) ──────────────────────────
+            Expanded(
+              child: SizedBox(
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: onDecline ?? () => Navigator.pop(context),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(
+                      color: Color(0xFF003D82),
+                      width: 1.5,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    foregroundColor: const Color(0xFF003D82),
+                    backgroundColor: Colors.white,
+                    elevation: 0,
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  foregroundColor: const Color(0xFF003D82),
-                  backgroundColor: Colors.white,
-                  elevation: 0,
-                ),
-                child: Text(
-                  'Decline',
-                  style: GoogleFonts.inter(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF003D82),
+                  child: Text(
+                    'Decline',
+                    style: GoogleFonts.inter(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF003D82),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
+            const SizedBox(width: 12),
 
-          // ── Accept (reusable filled button) ────────────
-          Expanded(
-            child: AppContinueButton(
-              text: 'Accept',
-              showArrow: false,
-              onPressed: onAccept ?? () => Navigator.pop(context),
+            // ── Accept (reusable filled button) ────────────
+            Expanded(
+              child: AppContinueButton(
+                text: 'Accept',
+                showArrow: false,
+                onPressed: onAccept ?? () => Navigator.pop(context),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

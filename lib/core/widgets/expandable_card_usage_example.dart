@@ -22,7 +22,7 @@ class SingleExpandableCardExample extends StatelessWidget {
           idNumber: '#MB12345',
           price: '11234',
           onTap: () {
-            print('Card tapped');
+            debugPrint('Card tapped');
           },
         ),
       ),
@@ -52,7 +52,7 @@ class ExpandableCardListExample extends StatelessWidget {
                     idNumber: '#MB12345',
                     price: '11234',
                     onTap: () {
-                      print('Item 1 tapped');
+                      debugPrint('Item 1 tapped');
                     },
                   ),
                   AppExpandableCard.inStock(
@@ -61,7 +61,7 @@ class ExpandableCardListExample extends StatelessWidget {
                     idNumber: '#MB12345',
                     price: '11234',
                     onTap: () {
-                      print('Item 2 tapped');
+                      debugPrint('Item 2 tapped');
                     },
                   ),
                   AppExpandableCard.lowStock(
@@ -70,7 +70,7 @@ class ExpandableCardListExample extends StatelessWidget {
                     idNumber: '#MB12346',
                     price: '5000',
                     onTap: () {
-                      print('Low stock item tapped');
+                      debugPrint('Low stock item tapped');
                     },
                   ),
                   AppExpandableCard.outOfStock(
@@ -79,7 +79,7 @@ class ExpandableCardListExample extends StatelessWidget {
                     idNumber: '#MB12347',
                     price: '10000',
                     onTap: () {
-                      print('Out of stock item tapped');
+                      debugPrint('Out of stock item tapped');
                     },
                   ),
                 ],
@@ -301,7 +301,7 @@ class NoArrowCardExample extends StatelessWidget {
           price: '11234',
           showArrow: false, // No arrow
           onTap: () {
-            print('Card without arrow tapped');
+            debugPrint('Card without arrow tapped');
           },
         ),
       ),

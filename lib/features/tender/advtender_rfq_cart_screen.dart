@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/advtender_rfq_cart_card.dart';
 import '../../core/widgets/app_continue_button.dart';
 import '../../data/advtender_data.dart';
 import '../../models/catalog_product.dart';
-import 'advtender_rfq_status_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AdvTender — My RFQ Cart Screen
@@ -31,8 +32,7 @@ class AdvTenderRfqCartScreen extends StatefulWidget {
   });
 
   @override
-  State<AdvTenderRfqCartScreen> createState() =>
-      _AdvTenderRfqCartScreenState();
+  State<AdvTenderRfqCartScreen> createState() => _AdvTenderRfqCartScreenState();
 }
 
 class _AdvTenderRfqCartScreenState extends State<AdvTenderRfqCartScreen> {
@@ -47,8 +47,7 @@ class _AdvTenderRfqCartScreenState extends State<AdvTenderRfqCartScreen> {
     // Seed quantities — use provided map or default every item to 1
     _quantities = {};
     for (final item in _items) {
-      _quantities[item.id] =
-          widget.initialQuantities?[item.id] ?? 1;
+      _quantities[item.id] = widget.initialQuantities?[item.id] ?? 1;
     }
   }
 
@@ -68,12 +67,7 @@ class _AdvTenderRfqCartScreenState extends State<AdvTenderRfqCartScreen> {
   }
 
   void _sendRFQ() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const AdvTenderRfqStatusScreen(),
-      ),
-    );
+    context.go(AppRoutes.advTenderRfqStatus);
   }
 
   @override
@@ -172,8 +166,7 @@ class _AdvTenderRfqCartScreenState extends State<AdvTenderRfqCartScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.shopping_cart_outlined,
-              size: 64, color: Colors.grey[300]),
+          Icon(Icons.shopping_cart_outlined, size: 64, color: Colors.grey[300]),
           const SizedBox(height: 12),
           Text(
             'Your RFQ cart is empty',

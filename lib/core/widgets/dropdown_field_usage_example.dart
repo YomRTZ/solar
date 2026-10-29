@@ -128,9 +128,9 @@ class _MultipleDropdownFormExampleState
                     AppContinueButton(
                       text: 'Continue',
                       onPressed: () {
-                        print('Brand: $selectedBrand');
-                        print('Capacity: $selectedCapacity');
-                        print('Type: $selectedType');
+                        debugPrint('Brand: $selectedBrand');
+                        debugPrint('Capacity: $selectedCapacity');
+                        debugPrint('Type: $selectedType');
                       },
                     ),
                   ],
@@ -229,7 +229,7 @@ class _MixedFormExampleState extends State<MixedFormExample> {
                     AppContinueButton(
                       text: 'Submit Order',
                       onPressed: () {
-                        print('Order submitted');
+                        debugPrint('Order submitted');
                       },
                     ),
                   ],
@@ -288,7 +288,7 @@ class _CustomObjectDropdownExampleState
                 setState(() {
                   selectedBrand = value;
                 });
-                print('Selected: ${value?.id} - ${value?.name}');
+                debugPrint('Selected: ${value?.id} - ${value?.name}');
               },
             ),
             const SizedBox(height: 24),
@@ -401,8 +401,8 @@ class _DependentDropdownsExampleState extends State<DependentDropdownsExample> {
                       text: 'Continue',
                       onPressed: selectedCategory != null && selectedProduct != null
                           ? () {
-                              print('Category: $selectedCategory');
-                              print('Product: $selectedProduct');
+                              debugPrint('Category: $selectedCategory');
+                              debugPrint('Product: $selectedProduct');
                             }
                           : () {},
                     ),
@@ -491,7 +491,7 @@ class _CompleteFormExampleState extends State<CompleteFormExample> {
                     AppContinueButton(
                       text: 'Submit',
                       onPressed: () {
-                        print('Form submitted');
+                        debugPrint('Form submitted');
                       },
                     ),
                   ],

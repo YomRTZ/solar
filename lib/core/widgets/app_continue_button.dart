@@ -8,7 +8,7 @@ class AppContinueButton extends StatelessWidget {
   final String text;
   
   /// Callback function when button is pressed
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   
   /// Whether to show loading indicator
   final bool isLoading;

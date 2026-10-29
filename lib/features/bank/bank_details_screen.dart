@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/widgets.dart';
-import '../documents/upload_documents_screen.dart';
 
 class BankDetailsScreen extends StatefulWidget {
   const BankDetailsScreen({super.key});
@@ -13,8 +15,7 @@ class BankDetailsScreen extends StatefulWidget {
 class _BankDetailsScreenState extends State<BankDetailsScreen> {
   final TextEditingController accountHolderNameController =
       TextEditingController();
-  final TextEditingController accountNumberController =
-      TextEditingController();
+  final TextEditingController accountNumberController = TextEditingController();
   final TextEditingController ifscCodeController = TextEditingController();
   final TextEditingController bankNameController = TextEditingController();
 
@@ -51,10 +52,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
       return;
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const UploadDocumentsScreen()),
-    );
+    context.push(AppRoutes.uploadDocuments);
   }
 
   @override

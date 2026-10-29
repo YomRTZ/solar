@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/app_header.dart';
 import '../../core/widgets/app_continue_button.dart';
-import '../home/home_screen.dart';
 
 // ── Status enum ────────────────────────────────────────────────────────────
-enum VerificationStatus {
-  inProgress,
-  approved,
-  rejected,
-}
+enum VerificationStatus { inProgress, approved, rejected }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Main Screen
@@ -38,24 +36,22 @@ class VerificationStatusScreen extends StatelessWidget {
 
   // ── Convenience constructors ──────────────────────────────
   const VerificationStatusScreen.inProgress({super.key})
-      : status = VerificationStatus.inProgress,
-        onContinue = null,
-        onUpdateDetails = null,
-        errorDetail = null;
+    : status = VerificationStatus.inProgress,
+      onContinue = null,
+      onUpdateDetails = null,
+      errorDetail = null;
 
-  const VerificationStatusScreen.approved({
-    super.key,
-    this.onContinue,
-  })  : status = VerificationStatus.approved,
-        onUpdateDetails = null,
-        errorDetail = null;
+  const VerificationStatusScreen.approved({super.key, this.onContinue})
+    : status = VerificationStatus.approved,
+      onUpdateDetails = null,
+      errorDetail = null;
 
   const VerificationStatusScreen.rejected({
     super.key,
     this.onUpdateDetails,
     this.errorDetail = 'Invalid Gst Certificate',
-  })  : status = VerificationStatus.rejected,
-        onContinue = null;
+  }) : status = VerificationStatus.rejected,
+       onContinue = null;
 
   @override
   Widget build(BuildContext context) {
@@ -81,9 +77,7 @@ class VerificationStatusScreen extends StatelessWidget {
             ),
 
             // ── Status body ───────────────────────────────
-            Expanded(
-              child: _buildBody(context),
-            ),
+            Expanded(child: _buildBody(context)),
           ],
         ),
       ),
@@ -96,12 +90,7 @@ class VerificationStatusScreen extends StatelessWidget {
         return _InProgressBody();
       case VerificationStatus.approved:
         return _ApprovedBody(
-          onContinue: onContinue ??
-              () => Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (_) => const HomeScreen()),
-                    (route) => false,
-                  ),
+          onContinue: onContinue ?? () => context.go(AppRoutes.home),
         );
       case VerificationStatus.rejected:
         return _RejectedBody(
@@ -135,21 +124,15 @@ class _InProgressBodyState extends State<_InProgressBody>
       duration: const Duration(milliseconds: 1400),
     )..repeat(reverse: true);
 
-    _pulse = Tween<double>(begin: 0.92, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _pulse = Tween<double>(
+      begin: 0.92,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     // ── Auto-redirect to Approved after 3 seconds ─────────
     Future.delayed(const Duration(seconds: 3), () {
       if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          // No onContinue passed — the approved screen's _buildBody
-          // fallback uses its own fresh context to go to HomeScreen
-          builder: (_) => const VerificationStatusScreen.approved(),
-        ),
-      );
+      context.go(AppRoutes.verificationApproved);
     });
   }
 
@@ -168,10 +151,7 @@ class _InProgressBodyState extends State<_InProgressBody>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // ── Animated icon illustration ────────────────
-            ScaleTransition(
-              scale: _pulse,
-              child: _buildIllustration(),
-            ),
+            ScaleTransition(scale: _pulse, child: _buildIllustration()),
             const SizedBox(height: 32),
 
             // ── Title ─────────────────────────────────────
@@ -310,8 +290,10 @@ class _ApprovedBody extends StatelessWidget {
 class _RejectedBody extends StatelessWidget {
   final String errorDetail;
   final VoidCallback onUpdateDetails;
-  const _RejectedBody(
-      {required this.errorDetail, required this.onUpdateDetails});
+  const _RejectedBody({
+    required this.errorDetail,
+    required this.onUpdateDetails,
+  });
 
   @override
   Widget build(BuildContext context) {

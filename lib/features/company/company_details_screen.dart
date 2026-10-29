@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/widgets.dart';
-import '../bank/bank_details_screen.dart';
 
 class CompanyDetailsScreen extends StatefulWidget {
   const CompanyDetailsScreen({super.key});
@@ -60,10 +62,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
     }
 
     // Navigate to Bank Details screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const BankDetailsScreen()),
-    );
+    context.push(AppRoutes.bankDetails);
   }
 
   @override
@@ -145,5 +144,4 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
       ),
     );
   }
-
 }

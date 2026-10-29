@@ -81,7 +81,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // ── Header ──────────────────────────────────────
-            const AppHeader(title: 'Update Profile'),
+            const SecondAppHeader(title: 'Update Profile'),
 
             // ── Scrollable form ──────────────────────────────
             Expanded(

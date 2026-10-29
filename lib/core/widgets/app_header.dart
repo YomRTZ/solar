@@ -39,7 +39,9 @@ class AppHeader extends StatelessWidget {
   /// Visible height below the status bar.
   /// Note: Total header height is always 192px (including status bar).
   /// This parameter is deprecated and only kept for backward compatibility.
-  @Deprecated('Total height is now fixed at 192px. This parameter has no effect.')
+  @Deprecated(
+    'Total height is now fixed at 192px. This parameter has no effect.',
+  )
   final double visibleHeight;
 
   // ── Deprecated params kept for API compatibility ──────────
@@ -75,7 +77,7 @@ class AppHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
-    
+
     // Total height is always 192px (including status bar)
     const totalHeight = 192.0;
 
@@ -94,7 +96,7 @@ class AppHeader extends StatelessWidget {
           left: 16,
           right: 16,
           top: statusBarHeight + 12, // top breathing room below status bar
-          bottom: 14,                // bottom breathing room above screen edge
+          bottom: 14, // bottom breathing room above screen edge
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +104,7 @@ class AppHeader extends StatelessWidget {
             // ── Back arrow — padded from top ───────────────
             if (showBackButton)
               Padding(
-                padding: const EdgeInsets.only(top: 4),
+                padding: const EdgeInsets.only(top: 12),
                 child: GestureDetector(
                   onTap: onBackPressed ?? () => Navigator.pop(context),
                   child: const Icon(
@@ -116,9 +118,9 @@ class AppHeader extends StatelessWidget {
             // ── Spacer pushes title to the bottom ──────────
             const Spacer(),
 
-            // ── Title — padded from bottom ──────────────────
+            // ── Title — slightly raised inside the header ───
             Padding(
-              padding: const EdgeInsets.only(bottom: 4),
+              padding: const EdgeInsets.only(bottom: 10),
               child: Text(
                 title,
                 maxLines: 1,

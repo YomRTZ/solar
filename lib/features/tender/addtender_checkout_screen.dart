@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/app_continue_button.dart';
-import 'addtender_payment_status_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AddTender — Checkout Screen
@@ -28,8 +29,9 @@ enum _PaymentMethod { card, afterpay, klarna }
 class _AddTenderCheckoutScreenState extends State<AddTenderCheckoutScreen> {
   _PaymentMethod _selectedMethod = _PaymentMethod.card;
 
-  final _cardNumberController =
-      TextEditingController(text: '1234 1234 1234 1234');
+  final _cardNumberController = TextEditingController(
+    text: '1234 1234 1234 1234',
+  );
   final _expiryController = TextEditingController();
   final _cvcController = TextEditingController();
 
@@ -42,12 +44,7 @@ class _AddTenderCheckoutScreenState extends State<AddTenderCheckoutScreen> {
   }
 
   void _payNow() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const AddTenderPaymentStatusScreen(isSuccess: true),
-      ),
-    );
+    context.go(AppRoutes.addTenderPaymentStatus, extra: true);
   }
 
   @override
@@ -198,14 +195,16 @@ class _AddTenderCheckoutScreenState extends State<AddTenderCheckoutScreen> {
       children: [
         // Card method toggle row
         GestureDetector(
-          onTap: () =>
-              setState(() => _selectedMethod = _PaymentMethod.card),
+          onTap: () => setState(() => _selectedMethod = _PaymentMethod.card),
           child: Row(
             children: [
               _RadioDot(selected: _selectedMethod == _PaymentMethod.card),
               const SizedBox(width: 10),
-              const Icon(Icons.credit_card_rounded,
-                  color: Color(0xFF003A8A), size: 20),
+              const Icon(
+                Icons.credit_card_rounded,
+                color: Color(0xFF003A8A),
+                size: 20,
+              ),
               const SizedBox(width: 8),
               Text(
                 'Card',
@@ -229,11 +228,15 @@ class _AddTenderCheckoutScreenState extends State<AddTenderCheckoutScreen> {
               const SizedBox(width: 6),
               _CardBrandIcon(Icons.payment, color: const Color(0xFFEB001B)),
               const SizedBox(width: 6),
-              _CardBrandIcon(Icons.account_balance_wallet,
-                  color: const Color(0xFF003A8A)),
+              _CardBrandIcon(
+                Icons.account_balance_wallet,
+                color: const Color(0xFF003A8A),
+              ),
               const SizedBox(width: 6),
-              _CardBrandIcon(Icons.monetization_on,
-                  color: const Color(0xFFFF6B00)),
+              _CardBrandIcon(
+                Icons.monetization_on,
+                color: const Color(0xFFFF6B00),
+              ),
             ],
           ),
 
@@ -324,8 +327,7 @@ class _AddTenderCheckoutScreenState extends State<AddTenderCheckoutScreen> {
           iconData: Icons.account_balance_outlined,
           iconColor: const Color(0xFFFF6900),
           isSelected: _selectedMethod == _PaymentMethod.klarna,
-          onTap: () =>
-              setState(() => _selectedMethod = _PaymentMethod.klarna),
+          onTap: () => setState(() => _selectedMethod = _PaymentMethod.klarna),
         ),
       ],
     );
@@ -362,9 +364,7 @@ class _RadioDot extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: selected
-              ? const Color(0xFF003A8A)
-              : const Color(0xFFD1D5DB),
+          color: selected ? const Color(0xFF003A8A) : const Color(0xFFD1D5DB),
           width: 2,
         ),
       ),
@@ -445,10 +445,7 @@ class _CheckoutTextField extends StatelessWidget {
       child: TextField(
         controller: controller,
         keyboardType: keyboardType,
-        style: GoogleFonts.inter(
-          fontSize: 13,
-          color: const Color(0xFF1A1A1A),
-        ),
+        style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF1A1A1A)),
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: GoogleFonts.inter(

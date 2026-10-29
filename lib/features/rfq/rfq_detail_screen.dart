@@ -55,10 +55,14 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('Reject Quote',
-            style: GoogleFonts.roboto(fontWeight: FontWeight.w700)),
-        content: Text('Are you sure you want to reject this RFQ?',
-            style: GoogleFonts.roboto()),
+        title: Text(
+          'Reject Quote',
+          style: GoogleFonts.roboto(fontWeight: FontWeight.w700),
+        ),
+        content: Text(
+          'Are you sure you want to reject this RFQ?',
+          style: GoogleFonts.roboto(),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -69,8 +73,10 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
               Navigator.pop(context); // close dialog
               Navigator.pop(context); // go back to list
             },
-            child: const Text('Reject',
-                style: TextStyle(color: Color(0xFFB31515))),
+            child: const Text(
+              'Reject',
+              style: TextStyle(color: Color(0xFFB31515)),
+            ),
           ),
         ],
       ),
@@ -109,9 +115,7 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
               },
             ),
             Expanded(
-              child: _showQuoteForm
-                  ? _buildQuoteForm()
-                  : _buildDetailView(),
+              child: _showQuoteForm ? _buildQuoteForm() : _buildDetailView(),
             ),
           ],
         ),
@@ -132,7 +136,7 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
           Container(
             width: double.infinity,
             height: 200,
-            color: const Color(0xFFE8F4FD),
+            color: Colors.white,
             child: Image.asset(
               rfq.imagePath,
               fit: BoxFit.contain,
@@ -160,8 +164,10 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
                           Text(
                             rfq.rfqNumber,
                             style: GoogleFonts.roboto(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              height: 22 / 14,
+                              letterSpacing: -0.18,
                               color: const Color(0xFF202020),
                             ),
                           ),
@@ -169,8 +175,11 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
                           Text(
                             'By ${rfq.buyerName}',
                             style: GoogleFonts.roboto(
-                              fontSize: 12,
-                              color: const Color(0xFF6C7278),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              height: 16 / 13,
+                              letterSpacing: 0,
+                              color: const Color(0xFF000000),
                             ),
                           ),
                         ],
@@ -182,8 +191,10 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
                         Text(
                           rfq.productTitle,
                           style: GoogleFonts.roboto(
-                            fontSize: 13,
+                            fontSize: 14,
                             fontWeight: FontWeight.w700,
+                            height: 22 / 14,
+                            letterSpacing: -0.18,
                             color: const Color(0xFF202020),
                           ),
                         ),
@@ -191,8 +202,11 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
                         Text(
                           rfq.location,
                           style: GoogleFonts.roboto(
-                            fontSize: 12,
-                            color: const Color(0xFF6C7278),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            height: 16 / 13,
+                            letterSpacing: 0,
+                            color: const Color(0xFF4E4C4C),
                           ),
                         ),
                       ],
@@ -210,34 +224,72 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
                 const SizedBox(height: 32),
 
                 // Quote Now button
-                AppContinueButton(
-                  text: 'Quote Now',
-                  showArrow: false,
-                  onPressed: _onQuoteNow,
-                ),
-                const SizedBox(height: 12),
-
-                // Reject Quote button
                 SizedBox(
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
-                    onPressed: _onRejectQuote,
+                    onPressed: _onQuoteNow,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFB31515),
+                      backgroundColor: const Color(0xFF003D82),
                       foregroundColor: Colors.white,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                    ),
-                    child: Text(
-                      'Reject Quote',
-                      style: GoogleFonts.inter(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                      textStyle: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        height: 1.4,
+                        letterSpacing: -0.14,
                       ),
+                    ),
+                    child: const Text('Quote Now', textAlign: TextAlign.center),
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // Reject Quote button
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        const ColoredBox(color: Color(0xFFD01010)),
+                        const DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [Color(0x1FFFFFFF), Color(0x00FFFFFF)],
+                            ),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: _onRejectQuote,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: Colors.white,
+                            shadowColor: Colors.transparent,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            textStyle: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              height: 1.4,
+                              letterSpacing: -0.14,
+                            ),
+                          ),
+                          child: const Text(
+                            'Reject Quote',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -257,15 +309,21 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
           label,
           style: GoogleFonts.roboto(
             fontSize: 13,
-            color: const Color(0xFF6C7278),
+            fontWeight: FontWeight.w600,
+            height: 16 / 13,
+            letterSpacing: 0,
+            color: const Color(0xFF000000),
           ),
         ),
         Text(
           value,
+          textAlign: TextAlign.right,
           style: GoogleFonts.roboto(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: const Color(0xFF202020),
+            height: 16 / 13,
+            letterSpacing: 0,
+            color: const Color(0xFF4E4C4C),
           ),
         ),
       ],
@@ -290,7 +348,7 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
                 height: 56,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: const Color(0xFFE8F4FD),
+                  color: Colors.white,
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: Image.asset(

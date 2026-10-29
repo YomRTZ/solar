@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../auth/login_screen.dart';
-import 'update_profile_screen.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/second_app_header.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -24,7 +25,7 @@ class ProfileScreen extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _ProfileHeader(),
+            const SecondAppHeader(title: 'My Profile'),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(20, 28, 20, 32),
@@ -144,12 +145,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const Spacer(),
                 GestureDetector(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const UpdateProfileScreen(),
-                    ),
-                  ),
+                  onTap: () => context.push(AppRoutes.updateProfile),
                   child: Text(
                     'Edit',
                     style: GoogleFonts.inter(
@@ -216,10 +212,7 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildLogoutRow(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
-          (route) => false,
-        );
+        context.go(AppRoutes.login);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -257,52 +250,6 @@ class ProfileScreen extends StatelessWidget {
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
                 color: const Color(0xFF202020),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Profile Header — matches home screen gradient (0xFF003A8A → 0xFF000F24)
-// height = statusBar + 133 (same visible area as home header)
-// ─────────────────────────────────────────────────────────────────────────────
-class _ProfileHeader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final top = MediaQuery.of(context).padding.top;
-    return Container(
-      width: double.infinity,
-      height: top + 133,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16, top + 16, 16, 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Back arrow
-            const Icon(
-              Icons.arrow_back,
-              color: Color(0xFFEEEEEE),
-              size: 24,
-            ),
-            const SizedBox(height: 18),
-            Text(
-              'My Profile',
-              style: GoogleFonts.inter(
-                fontSize: 26,
-                fontWeight: FontWeight.w700,
-                color: const Color(0xFFEEEEEE),
-                letterSpacing: -0.5,
               ),
             ),
           ],

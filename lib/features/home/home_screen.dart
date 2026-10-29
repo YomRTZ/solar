@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/app_continue_button.dart';
 import '../../core/widgets/app_product_card.dart';
 import '../../data/dashboard_data.dart';
 import '../../models/rfq.dart';
 import '../orders/orders_screen.dart';
-import '../products/add_product_screen.dart';
 import '../products/my_products_screen.dart';
 import '../profile/profile_screen.dart';
-import '../rfq/rfq_detail_screen.dart';
 import '../rfq/rfq_requests_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -29,9 +29,13 @@ class _HomeScreenState extends State<HomeScreen> {
       case 0:
         return _HomeBody(onTabChange: (i) => setState(() => _currentIndex = i));
       case 1:
-        return const MyProductsScreen();
+        return MyProductsScreen(
+          onBackPressed: () => setState(() => _currentIndex = 0),
+        );
       case 2:
-        return const RFQRequestsScreen();
+        return RFQRequestsScreen(
+          onBackPressed: () => setState(() => _currentIndex = 0),
+        );
       case 3:
         return const OrdersScreen();
       case 4:
@@ -94,10 +98,7 @@ class _HomeBody extends StatelessWidget {
                 AppContinueButton(
                   text: 'Create New Product',
                   showArrow: false,
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const AddProductScreen()),
-                  ),
+                  onPressed: () => context.push(AppRoutes.addProduct),
                 ),
                 const SizedBox(height: 18),
 
@@ -131,12 +132,8 @@ class _HomeBody extends StatelessWidget {
                       statusBackgroundColor: entry.value.status.backgroundColor,
                       statusTextColor: entry.value.status.textColor,
                       maxWidth: double.infinity,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => RFQDetailScreen(rfq: entry.value),
-                        ),
-                      ),
+                      onTap: () =>
+                          context.push(AppRoutes.rfqDetail, extra: entry.value),
                     ),
                   ),
                 ),

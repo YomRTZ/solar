@@ -62,7 +62,7 @@ class ExampleScreen3 extends StatelessWidget {
             title: 'Settings',
             onBackPressed: () {
               // Custom back action
-              print('Custom back action');
+              debugPrint('Custom back action');
               Navigator.pop(context);
             },
           ),
@@ -89,7 +89,7 @@ class ExampleScreen4 extends StatelessWidget {
               text: 'Continue',
               onPressed: () {
                 // Navigate to next screen
-                print('Continued');
+                debugPrint('Continued');
               },
             ),
             const SizedBox(height: 16),
@@ -98,7 +98,7 @@ class ExampleScreen4 extends StatelessWidget {
             AppContinueButton(
               text: 'Next',
               onPressed: () {
-                print('Next pressed');
+                debugPrint('Next pressed');
               },
             ),
             const SizedBox(height: 16),
@@ -107,7 +107,7 @@ class ExampleScreen4 extends StatelessWidget {
             AppContinueButton(
               text: 'Submit',
               onPressed: () {
-                print('Submitted');
+                debugPrint('Submitted');
               },
             ),
             const SizedBox(height: 16),
@@ -140,7 +140,7 @@ class ExampleScreen5 extends StatelessWidget {
               text: 'Save',
               showArrow: false,
               onPressed: () {
-                print('Saved');
+                debugPrint('Saved');
               },
             ),
           ],
@@ -166,7 +166,7 @@ class ExampleScreen6 extends StatelessWidget {
               backgroundColor: Colors.red,
               textColor: Colors.white,
               onPressed: () {
-                print('Danger action');
+                debugPrint('Danger action');
               },
             ),
             const SizedBox(height: 16),
@@ -175,7 +175,7 @@ class ExampleScreen6 extends StatelessWidget {
               text: 'Success',
               backgroundColor: Colors.green,
               onPressed: () {
-                print('Success');
+                debugPrint('Success');
               },
             ),
           ],
@@ -325,7 +325,7 @@ class _CompleteExampleScreenState extends State<CompleteExampleScreen> {
                       text: 'Send Message',
                       onPressed: () {
                         // Handle form submission
-                        print('Form submitted');
+                        debugPrint('Form submitted');
                       },
                     ),
                   ],

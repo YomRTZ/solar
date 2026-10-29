@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/tender_category_card.dart';
 import '../../core/widgets/tender_product_card.dart';
 import '../../data/tender_data.dart';
 import '../../models/catalog_product.dart';
-import 'advtender_supplier_details_screen.dart';
-import 'tender_all_categories_screen.dart';
-import 'tender_all_products_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Tender Home Screen
@@ -116,12 +115,8 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const TenderAllProductsScreen(),
-                            ),
-                          ),
+                          onTap: () =>
+                              context.push(AppRoutes.tenderAllProducts),
                           child: Text(
                             'See all',
                             style: GoogleFonts.inter(
@@ -245,11 +240,15 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
               controller: _searchController,
               onChanged: (v) => setState(() => _searchQuery = v),
               style: GoogleFonts.roboto(
-                  fontSize: 14, color: const Color(0xFF202020)),
+                fontSize: 14,
+                color: const Color(0xFF202020),
+              ),
               decoration: InputDecoration(
                 hintText: 'Search Product...',
                 hintStyle: GoogleFonts.roboto(
-                    fontSize: 14, color: const Color(0xFF9E9E9E)),
+                  fontSize: 14,
+                  color: const Color(0xFF9E9E9E),
+                ),
                 border: InputBorder.none,
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
@@ -290,19 +289,9 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
               iconContainerSize: 42,
               onTap: () {
                 if (cat.id == 'cat_more') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const TenderAllCategoriesScreen(),
-                    ),
-                  );
+                  context.push(AppRoutes.tenderCategories);
                 } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const TenderAllProductsScreen(),
-                    ),
-                  );
+                  context.push(AppRoutes.tenderAllProducts);
                 }
               },
             ),
@@ -315,10 +304,7 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
   // ── Promo banner ─────────────────────────────────────────
   Widget _buildBanner(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const TenderAllProductsScreen()),
-      ),
+      onTap: () => context.push(AppRoutes.tenderAllProducts),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Stack(
@@ -330,10 +316,8 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
               child: Image.asset(
                 TenderData.bannerImage,
                 fit: BoxFit.cover,
-                errorBuilder: (ctx, err, st) => Container(
-                  height: 120,
-                  color: const Color(0xFF003A8A),
-                ),
+                errorBuilder: (ctx, err, st) =>
+                    Container(height: 120, color: const Color(0xFF003A8A)),
               ),
             ),
 
@@ -406,8 +390,7 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
           padding: const EdgeInsets.symmetric(vertical: 32),
           child: Text(
             'No products found',
-            style: GoogleFonts.roboto(
-                fontSize: 15, color: Colors.grey[400]),
+            style: GoogleFonts.roboto(fontSize: 15, color: Colors.grey[400]),
           ),
         ),
       );
@@ -434,12 +417,7 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
           name: product.name,
           price: product.price,
           quantity: qty,
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const AdvTenderSupplierDetailsScreen(),
-            ),
-          ),
+          onTap: () => context.push(AppRoutes.tenderSupplierDetails),
           onAdd: () => _add(product.id),
           onIncrement: () => _increment(product.id),
           onDecrement: () => _decrement(product.id),

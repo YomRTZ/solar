@@ -22,7 +22,7 @@ class SingleProductCardExample extends StatelessWidget {
           rfqNumber: '#RFQ123456',
           price: '100000',
           onTap: () {
-            print('Product card tapped');
+            debugPrint('Product card tapped');
           },
         ),
       ),
@@ -44,7 +44,7 @@ class OpenStatusProductCardExample extends StatelessWidget {
           rfqNumber: '#RFQ123456',
           price: '23000',
           onTap: () {
-            print('Open product tapped');
+            debugPrint('Open product tapped');
           },
         ),
       ),
@@ -74,7 +74,7 @@ class ProductListExample extends StatelessWidget {
                     rfqNumber: '#RFQ123456',
                     price: '100000',
                     onTap: () {
-                      print('Product 1 tapped');
+                      debugPrint('Product 1 tapped');
                     },
                   ),
                   const SizedBox(height: 16),
@@ -85,7 +85,7 @@ class ProductListExample extends StatelessWidget {
                     rfqNumber: '#RFQ123456',
                     price: '23000',
                     onTap: () {
-                      print('Product 2 tapped');
+                      debugPrint('Product 2 tapped');
                     },
                   ),
                   const SizedBox(height: 16),
@@ -96,7 +96,7 @@ class ProductListExample extends StatelessWidget {
                     rfqNumber: '#RFQ789012',
                     price: '150000',
                     onTap: () {
-                      print('Product 3 tapped');
+                      debugPrint('Product 3 tapped');
                     },
                   ),
                 ],
@@ -130,7 +130,7 @@ class CustomStatusProductCardExample extends StatelessWidget {
               statusBackgroundColor: const Color(0xFFFFE5E5),
               statusTextColor: const Color(0xFFD32F2F),
               onTap: () {
-                print('Closed product tapped');
+                debugPrint('Closed product tapped');
               },
             ),
             const SizedBox(height: 16),
@@ -144,7 +144,7 @@ class CustomStatusProductCardExample extends StatelessWidget {
               statusBackgroundColor: const Color(0xFFFFF3E0),
               statusTextColor: const Color(0xFFFF6F00),
               onTap: () {
-                print('Hot product tapped');
+                debugPrint('Hot product tapped');
               },
             ),
           ],
@@ -169,7 +169,7 @@ class NetworkImageProductCardExample extends StatelessWidget {
           price: '120000',
           isNetworkImage: true,
           onTap: () {
-            print('Network image product tapped');
+            debugPrint('Network image product tapped');
           },
         ),
       ),

@@ -6,37 +6,37 @@ import 'package:google_fonts/google_fonts.dart';
 class AppExpandableCard extends StatelessWidget {
   /// Path to the product/item image
   final String imagePath;
-  
+
   /// Title text (e.g., "Solar Trade")
   final String title;
-  
+
   /// ID/Reference number (e.g., "#MB12345")
   final String idNumber;
-  
+
   /// Price (will be displayed with "Rs." prefix)
   final String price;
-  
+
   /// Status badge text (e.g., "In Stock", "Out of Stock")
   final String statusText;
-  
+
   /// Status badge background color
   final Color statusBackgroundColor;
-  
+
   /// Status badge text color
   final Color statusTextColor;
-  
+
   /// Whether the image is from network or assets
   final bool isNetworkImage;
-  
+
   /// Callback when the card is tapped
   final VoidCallback? onTap;
-  
+
   /// Maximum width of the card (default: 327)
   final double maxWidth;
-  
+
   /// Height of the card (default: 103)
   final double height;
-  
+
   /// Whether to show the arrow icon (default: true)
   final bool showArrow;
 
@@ -55,6 +55,25 @@ class AppExpandableCard extends StatelessWidget {
     this.height = 103,
     this.showArrow = true,
   });
+
+  double? get _statusBadgeWidth {
+    switch (statusText.trim().toLowerCase()) {
+      case 'new':
+        return 44;
+      case 'open':
+      case 'dispatched':
+        return 75;
+      case 'approved':
+        return 66;
+      case 'reject':
+      case 'rejected':
+        return 62;
+      case 'pending':
+        return 58;
+      default:
+        return null;
+    }
+  }
 
   /// Factory constructor for "In Stock" status
   factory AppExpandableCard.inStock({
@@ -150,10 +169,7 @@ class AppExpandableCard extends StatelessWidget {
         decoration: const BoxDecoration(
           color: Colors.white,
           border: Border(
-            bottom: BorderSide(
-              color: Color(0xFFE0E0E0),
-              width: 1,
-            ),
+            bottom: BorderSide(color: Color(0xFFE0E0E0), width: 1),
           ),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
@@ -185,7 +201,7 @@ class AppExpandableCard extends StatelessWidget {
                     ),
             ),
             const SizedBox(width: 15),
-            
+
             // Product Details
             Expanded(
               child: Column(
@@ -206,7 +222,7 @@ class AppExpandableCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 3),
-                  
+
                   // ID Number
                   Text(
                     idNumber,
@@ -221,7 +237,7 @@ class AppExpandableCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 1),
-                  
+
                   // Price and Status Row
                   Row(
                     children: [
@@ -239,9 +255,10 @@ class AppExpandableCard extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      
+
                       // Status Badge
                       Container(
+                        width: _statusBadgeWidth,
                         height: 22,
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         decoration: BoxDecoration(
@@ -266,7 +283,7 @@ class AppExpandableCard extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             // Arrow Icon
             if (showArrow) ...[
               const SizedBox(width: 8),

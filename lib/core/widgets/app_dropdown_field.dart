@@ -21,7 +21,7 @@ class AppDropdownField<T> extends StatefulWidget {
   final T? value;
   
   /// Callback when value changes
-  final void Function(T?) onChanged;
+  final void Function(T?)? onChanged;
   
   /// Optional validator function
   final String? Function(T?)? validator;
@@ -164,7 +164,7 @@ class AppDropdownFieldString extends StatelessWidget {
   final String? value;
   
   /// Callback when value changes
-  final void Function(String?) onChanged;
+  final void Function(String?)? onChanged;
   
   /// Optional validator function
   final String? Function(String?)? validator;

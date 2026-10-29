@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../app/routing/app_routes.dart';
+import '../../app/routing/route_data.dart';
 import '../../core/constants/app_colors.dart';
-import 'otp_verification_screen.dart';
 
 // ── Phone formatter: XXXX XXX XXXX ────────────────────────────────────────────
 class _PhoneFormatter extends TextInputFormatter {
@@ -57,13 +60,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // Strip the visual spaces before passing the number onward
     final rawDigits = _mobileController.text.replaceAll(' ', '').trim();
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => OtpVerificationScreen(
-          mobileNumber: '+91 $rawDigits',
-          role: _selectedRole,
-        ),
-      ),
+    context.push(
+      AppRoutes.otpVerification,
+      extra: OtpRouteData(mobileNumber: '+91 $rawDigits', role: _selectedRole),
     );
   }
 
@@ -259,9 +258,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     keyboardType: TextInputType.phone,
                                     textInputAction: TextInputAction.done,
                                     onFieldSubmitted: (_) => _continue(),
-                                    inputFormatters: [
-                                      _PhoneFormatter(),
-                                    ],
+                                    inputFormatters: [_PhoneFormatter()],
                                     style: GoogleFonts.inter(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
@@ -316,7 +313,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ),
                                     validator: (value) {
-                                      final number = (value ?? '').replaceAll(' ', '').trim();
+                                      final number = (value ?? '')
+                                          .replaceAll(' ', '')
+                                          .trim();
                                       if (number.isEmpty) {
                                         return 'Enter your mobile number';
                                       }

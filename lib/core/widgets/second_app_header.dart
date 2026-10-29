@@ -11,8 +11,8 @@ import 'package:google_fonts/google_fonts.dart';
 ///
 /// Layout (matches My Products header style):
 ///   • Dark gradient background (0xFF003A8A → 0xFF000F24)
-///   • Back arrow and title sit side-by-side in a Row at the bottom of the
-///     visible area — same layout used by My Products, RFQ Requests, My Orders
+///   • Back arrow and title sit side-by-side in a Row, vertically centered in
+///     the visible area and aligned to the left
 ///
 /// Difference from AppHeader:
 ///   • Total height is statusBarHeight + 133 (shorter than AppHeader's 192px)
@@ -43,11 +43,16 @@ class SecondAppHeader extends StatelessWidget {
   /// Override the back-button behaviour. Defaults to [Navigator.pop].
   final VoidCallback? onBackPressed;
 
+  /// Whether to vertically center the arrow and title in the header.
+  /// Set to false to keep the content aligned near the bottom.
+  final bool centerContentVertically;
+
   const SecondAppHeader({
     super.key,
     required this.title,
     this.showBackButton = true,
     this.onBackPressed,
+    this.centerContentVertically = true,
   });
 
   @override
@@ -70,14 +75,16 @@ class SecondAppHeader extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.only(
-          left: 16,
+          left: showBackButton ? 19 : 16,
           right: 16,
-          top: statusBarHeight + 12, // breathing room below status bar
-          bottom: 16,                // breathing room at bottom
+          top: statusBarHeight + 24, // breathing room below status bar
+          bottom: 16, // breathing room at bottom
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: centerContentVertically
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.end,
           children: [
             // ── Back arrow + Title in a Row ─────────────────
             Row(
@@ -86,11 +93,12 @@ class SecondAppHeader extends StatelessWidget {
                 if (showBackButton) ...[
                   GestureDetector(
                     onTap: onBackPressed ?? () => Navigator.pop(context),
-                    child: const Padding(
-                      padding: EdgeInsets.only(top: 2, bottom: 2),
+                    child: const SizedBox(
+                      width: 24,
+                      height: 24,
                       child: Icon(
                         Icons.arrow_back,
-                        color: Colors.white,
+                        color: Color(0xFFEEEEEE),
                         size: 24,
                       ),
                     ),
@@ -103,11 +111,11 @@ class SecondAppHeader extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.inter(
-                      fontSize: 28,
+                      fontSize: 20,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      letterSpacing: -0.5,
-                      height: 1.2,
+                      color: const Color(0xFFEEEEEE),
+                      letterSpacing: -0.4,
+                      height: 1.3,
                     ),
                   ),
                 ),

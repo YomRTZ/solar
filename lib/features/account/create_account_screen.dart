@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/app_text_field.dart';
 import '../../core/widgets/app_header.dart';
 import '../../core/widgets/app_continue_button.dart';
-import '../plan/choose_plan_screen.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -55,10 +57,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 return Column(
                   children: [
                     // Reusable header widget
-                    const AppHeader(
-                      title: 'Create Account',
-                      height: 133,
-                    ),
+                    const AppHeader(title: 'Create Account', height: 133),
                     const SizedBox(height: 16),
                     Expanded(
                       child: Container(
@@ -117,13 +116,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   AppContinueButton(
                                     text: 'Continue',
                                     onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const ChoosePlanScreen(),
-                                        ),
-                                      );
+                                      context.push(AppRoutes.choosePlan);
                                     },
                                   ),
                                   SizedBox(height: screenHeight * 0.02),

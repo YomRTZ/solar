@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/app_continue_button.dart';
 import '../../core/widgets/app_header.dart';
 
@@ -19,10 +21,7 @@ class AdvTenderRfqStatusScreen extends StatelessWidget {
   /// Pass false to show a failure state.
   final bool isSuccess;
 
-  const AdvTenderRfqStatusScreen({
-    super.key,
-    this.isSuccess = true,
-  });
+  const AdvTenderRfqStatusScreen({super.key, this.isSuccess = true});
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +39,7 @@ class AdvTenderRfqStatusScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const AppHeader(title: 'RFQ Status', showBackButton: false),
-            Expanded(
-              child: _buildBody(context),
-            ),
+            Expanded(child: _buildBody(context)),
           ],
         ),
       ),
@@ -67,9 +64,7 @@ class AdvTenderRfqStatusScreen extends StatelessWidget {
 
           // ── Headline ───────────────────────────────────
           Text(
-            isSuccess
-                ? 'RFQ Send Successfully!'
-                : 'Submission Failed',
+            isSuccess ? 'RFQ Send Successfully!' : 'Submission Failed',
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
               fontSize: 20,
@@ -100,10 +95,7 @@ class AdvTenderRfqStatusScreen extends StatelessWidget {
           AppContinueButton(
             text: 'Go to dashboard',
             showArrow: false,
-            onPressed: () {
-              // Pop back to root — works whether pushed or replaced
-              Navigator.of(context).popUntil((route) => route.isFirst);
-            },
+            onPressed: () => context.go(AppRoutes.tenderMain),
           ),
         ],
       ),
@@ -132,25 +124,18 @@ class _StatusIllustration extends StatelessWidget {
     final iconColor = isSuccess
         ? const Color(0xFF065F46)
         : const Color(0xFF9F1239);
-    final iconData =
-        isSuccess ? Icons.check_rounded : Icons.close_rounded;
+    final iconData = isSuccess ? Icons.check_rounded : Icons.close_rounded;
 
     return Center(
       child: Container(
         width: 160,
         height: 160,
-        decoration: BoxDecoration(
-          color: outerColor,
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: outerColor, shape: BoxShape.circle),
         child: Center(
           child: Container(
             width: 120,
             height: 120,
-            decoration: BoxDecoration(
-              color: midColor,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: midColor, shape: BoxShape.circle),
             child: Center(
               child: Container(
                 width: 88,
@@ -166,11 +151,7 @@ class _StatusIllustration extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Icon(
-                  iconData,
-                  color: iconColor,
-                  size: 48,
-                ),
+                child: Icon(iconData, color: iconColor, size: 48),
               ),
             ),
           ),

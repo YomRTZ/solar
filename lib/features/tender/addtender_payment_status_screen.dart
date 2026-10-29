@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/app_continue_button.dart';
 import '../../core/widgets/app_header.dart';
 
@@ -18,10 +20,7 @@ class AddTenderPaymentStatusScreen extends StatelessWidget {
   /// Pass false to show the failure state.
   final bool isSuccess;
 
-  const AddTenderPaymentStatusScreen({
-    super.key,
-    this.isSuccess = true,
-  });
+  const AddTenderPaymentStatusScreen({super.key, this.isSuccess = true});
 
   @override
   Widget build(BuildContext context) {
@@ -96,8 +95,7 @@ class AddTenderPaymentStatusScreen extends StatelessWidget {
           AppContinueButton(
             text: 'Go to dashboard',
             showArrow: false,
-            onPressed: () =>
-                Navigator.of(context).popUntil((route) => route.isFirst),
+            onPressed: () => context.go(AppRoutes.tenderMain),
           ),
         ],
       ),
@@ -114,31 +112,29 @@ class _PaymentIllustration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final outerColor =
-        isSuccess ? const Color(0xFFD1FAE5) : const Color(0xFFFFE4E6);
-    final midColor =
-        isSuccess ? const Color(0xFF6EE7B7) : const Color(0xFFFCA5A5);
-    final innerColor =
-        isSuccess ? const Color(0xFF34D399) : const Color(0xFFF87171);
-    final iconColor =
-        isSuccess ? const Color(0xFF065F46) : const Color(0xFF9F1239);
+    final outerColor = isSuccess
+        ? const Color(0xFFD1FAE5)
+        : const Color(0xFFFFE4E6);
+    final midColor = isSuccess
+        ? const Color(0xFF6EE7B7)
+        : const Color(0xFFFCA5A5);
+    final innerColor = isSuccess
+        ? const Color(0xFF34D399)
+        : const Color(0xFFF87171);
+    final iconColor = isSuccess
+        ? const Color(0xFF065F46)
+        : const Color(0xFF9F1239);
 
     return Center(
       child: Container(
         width: 160,
         height: 160,
-        decoration: BoxDecoration(
-          color: outerColor,
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: outerColor, shape: BoxShape.circle),
         child: Center(
           child: Container(
             width: 120,
             height: 120,
-            decoration: BoxDecoration(
-              color: midColor,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: midColor, shape: BoxShape.circle),
             child: Center(
               child: Container(
                 width: 88,

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/app_header.dart';
 import '../../core/widgets/app_file_upload_field.dart';
 import '../../core/widgets/app_continue_button.dart';
-import '../terms/terms_of_service_screen.dart';
-import '../verification/verification_status_screen.dart';
 
 class UploadDocumentsScreen extends StatefulWidget {
   const UploadDocumentsScreen({super.key});
@@ -50,24 +51,7 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
     setState(() => _isLoading = false);
 
     // Navigate forward to Terms of Service
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => TermsOfServiceScreen(
-          onAccept: () {
-            // Terms accepted → Verification Status (in progress)
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const VerificationStatusScreen.inProgress(),
-              ),
-              (route) => false,
-            );
-          },
-          onDecline: () => Navigator.pop(context),
-        ),
-      ),
-    );
+    context.push(AppRoutes.termsOfService);
   }
 
   @override

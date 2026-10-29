@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/app_expandable_card.dart';
 import '../../core/widgets/second_app_header.dart';
 import '../../data/rfq_data.dart';
 import '../../models/rfq.dart';
-import 'rfq_detail_screen.dart';
 
 class RFQRequestsScreen extends StatefulWidget {
   final bool showBackButton;
-  const RFQRequestsScreen({super.key, this.showBackButton = false});
+  final VoidCallback? onBackPressed;
+
+  const RFQRequestsScreen({
+    super.key,
+    this.showBackButton = true,
+    this.onBackPressed,
+  });
 
   @override
   State<RFQRequestsScreen> createState() => _RFQRequestsScreenState();
@@ -39,6 +47,13 @@ class _RFQRequestsScreenState extends State<RFQRequestsScreen> {
             SecondAppHeader(
               title: 'RFQ Requests',
               showBackButton: widget.showBackButton,
+              onBackPressed:
+                  widget.onBackPressed ??
+                  () {
+                    if (Navigator.of(context).canPop()) {
+                      Navigator.of(context).pop();
+                    }
+                  },
             ),
             const SizedBox(height: 20),
             _buildFilterTabs(),
@@ -60,12 +75,8 @@ class _RFQRequestsScreenState extends State<RFQRequestsScreen> {
                           statusBackgroundColor: rfq.status.backgroundColor,
                           statusTextColor: rfq.status.textColor,
                           maxWidth: double.infinity,
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => RFQDetailScreen(rfq: rfq),
-                            ),
-                          ),
+                          onTap: () =>
+                              context.push(AppRoutes.rfqDetail, extra: rfq),
                         );
                       },
                     ),

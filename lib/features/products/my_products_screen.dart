@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/app_expandable_card.dart';
 import '../../core/widgets/second_app_header.dart';
 import '../../models/product.dart';
@@ -9,7 +12,13 @@ import '../../data/products_data.dart';
 
 class MyProductsScreen extends StatefulWidget {
   final bool showBackButton;
-  const MyProductsScreen({super.key, this.showBackButton = false});
+  final VoidCallback? onBackPressed;
+
+  const MyProductsScreen({
+    super.key,
+    this.showBackButton = true,
+    this.onBackPressed,
+  });
 
   @override
   State<MyProductsScreen> createState() => _MyProductsScreenState();
@@ -27,14 +36,17 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
   }
 
   List<Product> get filteredProducts {
-    List<Product> products =
-        ProductsData.getProductsByCategory(selectedCategory);
+    List<Product> products = ProductsData.getProductsByCategory(
+      selectedCategory,
+    );
     if (searchQuery.isNotEmpty) {
       final q = searchQuery.toLowerCase();
       products = products
-          .where((p) =>
-              p.title.toLowerCase().contains(q) ||
-              p.idNumber.toLowerCase().contains(q))
+          .where(
+            (p) =>
+                p.title.toLowerCase().contains(q) ||
+                p.idNumber.toLowerCase().contains(q),
+          )
           .toList();
     }
     return products;
@@ -59,6 +71,13 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
             SecondAppHeader(
               title: 'My Products',
               showBackButton: widget.showBackButton,
+              onBackPressed:
+                  widget.onBackPressed ??
+                  () {
+                    if (Navigator.of(context).canPop()) {
+                      Navigator.of(context).pop();
+                    }
+                  },
             ),
 
             // ── Search Bar ───────────────────────────────────
@@ -111,8 +130,8 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
         children: [
           SvgPicture.asset(
             'assets/images/icons/search.svg',
-            width: 20,
-            height: 20,
+            width: 24,
+            height: 24,
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -151,7 +170,11 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
                 searchController.clear();
                 searchQuery = '';
               }),
-              child: const Icon(Icons.clear, color: Color(0xFF6C7278), size: 18),
+              child: const Icon(
+                Icons.clear,
+                color: Color(0xFF6C7278),
+                size: 18,
+              ),
             ),
         ],
       ),
@@ -188,10 +211,7 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
         decoration: BoxDecoration(
           color: isSelected ? const Color(0xFF003A8A) : Colors.white,
           borderRadius: BorderRadius.circular(4),
-          border: Border.all(
-            color: const Color(0xFF003A8A),
-            width: 1,
-          ),
+          border: Border.all(color: const Color(0xFF003A8A), width: 1),
         ),
         alignment: Alignment.center,
         child: Text(
@@ -201,7 +221,7 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
             fontSize: 12,
             fontWeight: FontWeight.w600,
             color: isSelected ? Colors.white : const Color(0xFF003A8A),
-            height: 18 / 12,        // line-height: 18px
+            height: 18 / 12, // line-height: 18px
             letterSpacing: -0.14,
           ),
         ),
@@ -218,7 +238,7 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
           title: product.title,
           idNumber: product.idNumber,
           price: product.price,
-          onTap: () => _viewProductDetails(product),
+          onTap: () => _editProduct(product),
         );
       case ProductStatus.lowStock:
         return AppExpandableCard.lowStock(
@@ -226,7 +246,7 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
           title: product.title,
           idNumber: product.idNumber,
           price: product.price,
-          onTap: () => _viewProductDetails(product),
+          onTap: () => _editProduct(product),
         );
       case ProductStatus.outOfStock:
         return AppExpandableCard.outOfStock(
@@ -234,7 +254,7 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
           title: product.title,
           idNumber: product.idNumber,
           price: product.price,
-          onTap: () => _viewProductDetails(product),
+          onTap: () => _editProduct(product),
         );
     }
   }
@@ -258,40 +278,15 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
           const SizedBox(height: 6),
           Text(
             'Try adjusting your search or filters',
-            style: GoogleFonts.roboto(
-                fontSize: 13, color: Colors.grey[400]),
+            style: GoogleFonts.roboto(fontSize: 13, color: Colors.grey[400]),
           ),
         ],
       ),
     );
   }
 
-  // ── Product details ────────────────────────────────────────
-  void _viewProductDetails(Product product) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(product.title),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('ID: ${product.idNumber}'),
-            const SizedBox(height: 4),
-            Text('Price: Rs. ${product.price}'),
-            const SizedBox(height: 4),
-            Text('Category: ${product.category.displayName}'),
-            const SizedBox(height: 4),
-            Text('Status: ${product.status.displayName}'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
+  // ── Edit product ──────────────────────────────────────────
+  void _editProduct(Product product) {
+    context.push(AppRoutes.editProduct, extra: product);
   }
 }

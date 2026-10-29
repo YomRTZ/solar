@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../app/routing/app_routes.dart';
+import '../../core/widgets/second_app_header.dart';
+import '../../data/order_dispatch_updates.dart';
 import '../../models/order.dart';
-import '../home/home_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA MODEL
@@ -52,12 +57,14 @@ class TrackEvent {
   final TrackStep step;
   final String? dateTime;
   final List<String> imagePaths;
+  final Uint8List? imageBytes;
   final String? subText; // e.g. OTP line
 
   const TrackEvent({
     required this.step,
     this.dateTime,
     this.imagePaths = const [],
+    this.imageBytes,
     this.subText,
   });
 
@@ -81,10 +88,7 @@ class TrackStatusScreen extends StatelessWidget {
       step: TrackStep.dispatched,
       dateTime: '20 Oct 2026 | 09:10 AM',
       imagePaths: [
-        'assets/images/photo_5979016740496674866_m.jpg',
-        'assets/images/photo_5979016740496674867_y.jpg',
-        'assets/images/photo_5979016740496674868_x.jpg',
-        'assets/images/photo_5979016740496674891_x.jpg',
+        'assets/images/solarimages/03f133a91b6e5ade2638722f368e27d2f92f051b.png',
       ],
     ),
     const TrackEvent(
@@ -116,7 +120,10 @@ class TrackStatusScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // ── Header ──────────────────────────────────────
-            _TrackHeader(),
+            const SecondAppHeader(
+              title: 'Track Status',
+              centerContentVertically: false,
+            ),
 
             // ── Timeline ─────────────────────────────────────
             Expanded(
@@ -130,13 +137,7 @@ class TrackStatusScreen extends StatelessWidget {
                     const SizedBox(height: 36),
 
                     // ── Back to dashboard ──────────────────
-                    _DashboardButton(
-                      onTap: () => Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (_) => const HomeScreen()),
-                        (route) => false,
-                      ),
-                    ),
+                    _DashboardButton(onTap: () => context.go(AppRoutes.home)),
                   ],
                 ),
               ),
@@ -148,68 +149,38 @@ class TrackStatusScreen extends StatelessWidget {
   }
 
   List<Widget> _buildTimeline() {
+    final dispatchUpdate = OrderDispatchUpdates.forOrder(order.id);
+    final events = _events.map((event) {
+      if (event.step != TrackStep.dispatched || dispatchUpdate == null) {
+        return event;
+      }
+
+      return TrackEvent(
+        step: TrackStep.dispatched,
+        dateTime: dispatchUpdate.dispatchDate,
+        imagePaths: dispatchUpdate.proofImageAssetPath == null
+            ? const []
+            : [dispatchUpdate.proofImageAssetPath!],
+        imageBytes: dispatchUpdate.proofImageBytes,
+        subText:
+            'Transporter: ${dispatchUpdate.transporter} · Tracking Number: ${dispatchUpdate.trackingNumber}',
+      );
+    }).toList();
+
     final widgets = <Widget>[];
-    for (int i = 0; i < _events.length; i++) {
-      final event = _events[i];
-      final isLast = i == _events.length - 1;
+    for (int i = 0; i < events.length; i++) {
+      final event = events[i];
+      final isLast = i == events.length - 1;
       widgets.add(
         _TimelineRow(
           event: event,
           showConnector: !isLast,
           // next event's active state determines if connector is active
-          connectorActive: !isLast && _events[i + 1].isActive,
+          connectorActive: !isLast && events[i + 1].isActive,
         ),
       );
     }
     return widgets;
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// HEADER
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _TrackHeader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final top = MediaQuery.of(context).padding.top;
-    return Container(
-      width: double.infinity,
-      height: top + 133,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16, top + 16, 16, 0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: () => Navigator.maybePop(context),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-                size: 24,
-              ),
-            ),
-            const SizedBox(width: 14),
-            Text(
-              'Track Status',
-              style: GoogleFonts.inter(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-                letterSpacing: -0.3,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
 
@@ -235,7 +206,12 @@ class _TimelineRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final isActive = event.isActive;
     final iconColor = isActive ? _activeBlue : _inactiveGrey;
-    final titleColor = isActive ? _activeBlue : _inactiveGrey;
+    final titleColor =
+        event.step == TrackStep.inTransit || event.step == TrackStep.delivered
+        ? const Color(0xFF808080)
+        : isActive
+        ? _activeBlue
+        : _inactiveGrey;
     final subTextColor = isActive ? _activeBlue : _inactiveGrey;
     final connectorColor = connectorActive ? _activeBlue : _inactiveGrey;
 
@@ -248,24 +224,41 @@ class _TimelineRow extends StatelessWidget {
             width: 36,
             child: Column(
               children: [
-                // Step icon circle
-                Container(
+                SizedBox(
                   width: 36,
                   height: 36,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: isActive
-                        ? _activeBlue.withValues(alpha: 0.10)
-                        : const Color(0xFFF0F0F0),
-                    border: Border.all(
-                      color: iconColor,
-                      width: 1.5,
-                    ),
-                  ),
-                  child: Icon(
-                    event.step.icon,
-                    color: iconColor,
-                    size: 18,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/images/icons/Ellipse 65.svg',
+                        width: 32,
+                        height: 32,
+                      ),
+                      switch (event.step) {
+                        TrackStep.orderConfirmed => SvgPicture.asset(
+                          'assets/images/icons/location-tick1.svg',
+                          width: 32,
+                          height: 32,
+                        ),
+                        TrackStep.dispatched => Image.asset(
+                          'assets/images/icons/shop.png',
+                          width: 18,
+                          height: 18,
+                        ),
+                        TrackStep.inTransit => SvgPicture.asset(
+                          'assets/images/icons/truck-fast.svg',
+                          width: 18,
+                          height: 18,
+                        ),
+                        TrackStep.delivered => SvgPicture.asset(
+                          'assets/images/icons/Vector1.svg',
+                          width: 16.56,
+                          height: 19.1427,
+                        ),
+                        _ => Icon(event.step.icon, color: iconColor, size: 18),
+                      },
+                    ],
                   ),
                 ),
                 // Dashed vertical connector
@@ -284,9 +277,7 @@ class _TimelineRow extends StatelessWidget {
           // ── Right column: title + date + images ────────────
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(
-                bottom: showConnector ? 20 : 0,
-              ),
+              padding: EdgeInsets.only(bottom: showConnector ? 20 : 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -295,9 +286,11 @@ class _TimelineRow extends StatelessWidget {
                   // Step title
                   Text(
                     event.step.title,
-                    style: GoogleFonts.inter(
-                      fontSize: 15,
+                    style: GoogleFonts.nunito(
+                      fontSize: 16,
                       fontWeight: FontWeight.w700,
+                      height: 1.5,
+                      letterSpacing: 0,
                       color: titleColor,
                     ),
                   ),
@@ -307,10 +300,12 @@ class _TimelineRow extends StatelessWidget {
                     const SizedBox(height: 3),
                     Text(
                       event.dateTime!,
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xFF6C7278),
+                      style: GoogleFonts.nunito(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        height: 1.9,
+                        letterSpacing: 0,
+                        color: const Color(0xFF7A7A7A),
                       ),
                     ),
                   ],
@@ -329,7 +324,8 @@ class _TimelineRow extends StatelessWidget {
                   ],
 
                   // Dispatch photo thumbnails
-                  if (event.imagePaths.isNotEmpty) ...[
+                  if (event.imagePaths.isNotEmpty ||
+                      event.imageBytes != null) ...[
                     const SizedBox(height: 10),
                     SizedBox(
                       height: 56,
@@ -337,12 +333,17 @@ class _TimelineRow extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: event.imagePaths.length,
+                        itemCount:
+                            event.imagePaths.length +
+                            (event.imageBytes == null ? 0 : 1),
                         separatorBuilder: (context, index) =>
                             const SizedBox(width: 6),
-                        itemBuilder: (context, index) => _Thumbnail(
-                          path: event.imagePaths[index],
-                        ),
+                        itemBuilder: (context, index) {
+                          if (index >= event.imagePaths.length) {
+                            return _Thumbnail(bytes: event.imageBytes!);
+                          }
+                          return _Thumbnail(path: event.imagePaths[index]);
+                        },
                       ),
                     ),
                   ],
@@ -409,26 +410,33 @@ class _DashedLinePainter extends CustomPainter {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _Thumbnail extends StatelessWidget {
-  final String path;
-  const _Thumbnail({required this.path});
+  final String? path;
+  final Uint8List? bytes;
+
+  const _Thumbnail({this.path, this.bytes});
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(6),
-      child: Image.asset(
-        path,
-        width: 56,
-        height: 56,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stack) => Container(
-          width: 56,
-          height: 56,
-          color: Colors.grey[200],
-          child: const Icon(Icons.image_outlined,
-              size: 24, color: Colors.grey),
-        ),
-      ),
+      child: bytes != null
+          ? Image.memory(bytes!, width: 56, height: 56, fit: BoxFit.cover)
+          : Image.asset(
+              path!,
+              width: 56,
+              height: 56,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stack) => Container(
+                width: 56,
+                height: 56,
+                color: Colors.grey[200],
+                child: const Icon(
+                  Icons.image_outlined,
+                  size: 24,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
     );
   }
 }
@@ -457,10 +465,7 @@ class _DashboardButton extends StatelessWidget {
         ),
         child: Text(
           'Back to dashboard',
-          style: GoogleFonts.inter(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-          ),
+          style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w600),
         ),
       ),
     );

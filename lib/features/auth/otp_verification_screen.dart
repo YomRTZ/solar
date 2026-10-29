@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../app/routing/app_routes.dart';
 import '../../core/constants/app_colors.dart';
-import '../account/create_account_screen.dart';
-import '../company/company_details_screen.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   final String mobileNumber;
@@ -44,13 +45,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     // Vendor → tender create account + plan flow
     // Supplier → original supplier company details flow
     if (widget.role == 'Vendor') {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const CreateAccountScreen()),
-      );
+      context.push(AppRoutes.createAccount);
     } else {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const CompanyDetailsScreen()),
-      );
+      context.push(AppRoutes.companyDetails);
     }
   }
 
@@ -64,8 +61,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         textAlign: TextAlign.center,
         textAlignVertical: TextAlignVertical.center,
         keyboardType: TextInputType.number,
-        textInputAction:
-            index == 5 ? TextInputAction.done : TextInputAction.next,
+        textInputAction: index == 5
+            ? TextInputAction.done
+            : TextInputAction.next,
         maxLength: 1,
         inputFormatters: [
           FilteringTextInputFormatter.digitsOnly,
@@ -84,10 +82,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           fillColor: Colors.white,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(
-              color: Color(0x66B8B8B8),
-              width: 1,
-            ),
+            borderSide: const BorderSide(color: Color(0x66B8B8B8), width: 1),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
@@ -209,11 +204,14 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                 SizedBox(
                                   height: 45,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      for (var index = 0; index < 6; index++) ...[
-                                        _buildOtpField(index),
-                                      ],
+                                      for (
+                                        var index = 0;
+                                        index < 6;
+                                        index++
+                                      ) ...[_buildOtpField(index)],
                                     ],
                                   ),
                                 ),

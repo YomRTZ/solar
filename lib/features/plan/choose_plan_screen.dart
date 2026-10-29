@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
-import '../terms/addtender_terms_of_service_screen.dart';
+import '../../app/routing/app_routes.dart';
 import '../../core/widgets/app_continue_button.dart';
-import '../tender/tender_main_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AddTender — Choose a Plan Screen
@@ -148,8 +148,7 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
                       period: 'Month',
                       saveBadge: null,
                       isSelected: _selected == _PlanType.trial,
-                      onTap: () =>
-                          setState(() => _selected = _PlanType.trial),
+                      onTap: () => setState(() => _selected = _PlanType.trial),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -160,8 +159,7 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
                       period: 'Year',
                       saveBadge: 'Save Rs: 2589/-',
                       isSelected: _selected == _PlanType.yearly,
-                      onTap: () =>
-                          setState(() => _selected = _PlanType.yearly),
+                      onTap: () => setState(() => _selected = _PlanType.yearly),
                     ),
                   ),
                 ],
@@ -177,12 +175,7 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
                 text: 'Continue',
                 showArrow: false,
                 onPressed: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      builder: (_) => const TenderMainScreen(),
-                    ),
-                    (route) => false,
-                  );
+                  context.go(AppRoutes.tenderMain);
                 },
               ),
             ),
@@ -196,13 +189,7 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            const AddTenderTermsOfServiceScreen(),
-                      ),
-                    ),
+                    onTap: () => context.push(AppRoutes.addTenderTerms),
                     child: Text(
                       'Terms of use',
                       style: GoogleFonts.inter(
@@ -261,11 +248,7 @@ class _FeatureRow extends StatelessWidget {
             color: const Color(0xFF003A8A),
             borderRadius: BorderRadius.circular(5),
           ),
-          child: const Icon(
-            Icons.check_rounded,
-            color: Colors.white,
-            size: 14,
-          ),
+          child: const Icon(Icons.check_rounded, color: Colors.white, size: 14),
         ),
         const SizedBox(width: 12),
         Text(
@@ -309,9 +292,7 @@ class _PlanCard extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isSelected
-              ? const Color(0xFFEEF4FF)
-              : const Color(0xFFF9FAFB),
+          color: isSelected ? const Color(0xFFEEF4FF) : const Color(0xFFF9FAFB),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
@@ -382,8 +363,7 @@ class _PlanCard extends StatelessWidget {
             if (saveBadge != null) ...[
               const SizedBox(height: 6),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                 decoration: BoxDecoration(
                   color: const Color(0xFF003A8A),
                   borderRadius: BorderRadius.circular(5),

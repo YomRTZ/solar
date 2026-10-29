@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import '../../core/widgets/second_app_header.dart';
 import 'withdraw_balance_sheet.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -56,8 +56,13 @@ class MyWalletScreen extends StatelessWidget {
         backgroundColor: const Color(0xFFF2F2F7),
         body: Column(
           children: [
-            _WalletHeader(
-              onWithdrawTap: () => _showWithdrawSheet(context),
+            SecondAppHeader(
+              title: 'My Wallet',
+              onBackPressed: () => Navigator.maybePop(context),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+              child: _BalanceCard(onWithdrawTap: () => _showWithdrawSheet(context)),
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -103,71 +108,6 @@ class MyWalletScreen extends StatelessWidget {
         Navigator.pop(context);
         // TODO: handle withdrawal — pass to your BLoC / provider
       },
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Header (dark gradient + balance card)
-// ─────────────────────────────────────────────────────────────────────────────
-class _WalletHeader extends StatelessWidget {
-  final VoidCallback onWithdrawTap;
-  const _WalletHeader({required this.onWithdrawTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final top = MediaQuery.of(context).padding.top;
-
-    return Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(height: top + 12),
-
-          // ── Back arrow + title ──────────────────────────
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.maybePop(context),
-                  child: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                    size: 22,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  'My Wallet',
-                  style: GoogleFonts.inter(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                    letterSpacing: -0.3,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          // ── Balance card ────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-            child: _BalanceCard(onWithdrawTap: onWithdrawTap),
-          ),
-        ],
-      ),
     );
   }
 }
