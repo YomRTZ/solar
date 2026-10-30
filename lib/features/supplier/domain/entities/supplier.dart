@@ -1,6 +1,6 @@
 import 'package:flutter_app/features/catalog/domain/entities/catalog_product.dart';
 
-/// Supplier details shown in the vendor product-browsing flow.
+// Supplier details shown in the vendor product-browsing flow.
 class Supplier {
   final String id;
   final String name;

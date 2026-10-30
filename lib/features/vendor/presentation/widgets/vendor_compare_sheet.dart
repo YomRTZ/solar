@@ -6,36 +6,21 @@ import 'package:flutter_app/features/vendor/presentation/widgets/vendor_add_to_r
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_price_badge.dart';
 import 'package:flutter_app/features/catalog/domain/entities/catalog_product.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Vendor Compare Sheet
-//
-// Bottom sheet that shows a side-by-side comparison table.
-// Up to [maxSlots] products can be compared (default 2).
-// The last slot is an "Add Product" placeholder if not full.
-//
-// Usage:
-//   VendorCompareSheet.show(
-//     context: context,
-//     products: compareList,        // List<CatalogProduct>, 1–maxSlots items
-//     rfqCartCounts: rfqCart,       // Map<String, int>
-//     cartCount: totalCartCount,
-//     onAddToRFQ: (product) { ... },
-//   );
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Vendor Compare
 class VendorCompareSheet extends StatelessWidget {
-  /// Products currently in the compare list (1 to [maxSlots]).
+  // Products currently in the compare list (1 to [maxSlots]).
   final List<CatalogProduct> products;
 
-  /// Current RFQ cart quantities — used to show "Add to RFQ" state.
+  // Current RFQ cart quantities — used to show "Add to RFQ" state.
   final Map<String, int> rfqCartCounts;
 
-  /// Total items in the RFQ cart (for the header badge).
+  // Total items in the RFQ cart (for the header badge).
   final int cartCount;
 
-  /// Called when "Add to RFQ" is tapped for a product.
+  // Called when "Add to RFQ" is tapped for a product.
   final void Function(CatalogProduct product) onAddToRFQ;
 
-  /// Maximum number of comparison slots (default 2).
+  // Maximum number of comparison slots (default 2).
   final int maxSlots;
 
   const VendorCompareSheet({
@@ -120,9 +105,7 @@ class VendorCompareSheet extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Image slot row
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Image slot row
 class _ImageSlotRow extends StatelessWidget {
   final List<CatalogProduct> products;
   final int maxSlots;
@@ -221,9 +204,7 @@ class _AddProductSlot extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Comparison table
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Comparison table
 class _CompareTable extends StatelessWidget {
   final List<CatalogProduct> products;
   final int maxSlots;
@@ -347,9 +328,7 @@ class _StockChip extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// "Add to RFQ" button row
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── "Add to RFQ"
 class _AddToRFQRow extends StatelessWidget {
   final List<CatalogProduct> products;
   final int maxSlots;
@@ -387,9 +366,7 @@ class _AddToRFQRow extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Cart badge (reused from detail sheet to avoid cross-file private dep)
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Cart badge (reused
 class _CartBadge extends StatelessWidget {
   final int count;
   const _CartBadge({required this.count});

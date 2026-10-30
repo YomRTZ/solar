@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Order status enum
+// Order status enum
 enum OrderStatus {
   pending,
   delivered;
@@ -33,7 +33,7 @@ enum OrderStatus {
   }
 }
 
-/// Order data model
+// Order data model
 class Order {
   final String id;
   final String productName;

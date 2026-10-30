@@ -73,7 +73,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
             // Form Content
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.fromLTRB(19, 23, 14, 25),
                 child: Column(
                   children: [
                     AppTextField(
@@ -81,26 +81,23 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
                       hint: 'Solar Trade',
                       controller: accountHolderNameController,
                     ),
-                    const SizedBox(height: 24),
                     AppTextField(
                       label: 'Account Number',
                       hint: '123456789',
                       controller: accountNumberController,
                       keyboardType: TextInputType.number,
                     ),
-                    const SizedBox(height: 24),
                     AppTextField(
                       label: 'Ifsc Code',
                       hint: 'Hdfc1002',
                       controller: ifscCodeController,
                     ),
-                    const SizedBox(height: 24),
                     AppTextField(
                       label: 'Bank Name',
                       hint: 'Hdfc Bank',
                       controller: bankNameController,
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 18),
                     AppContinueButton(
                       text: 'Continue',
                       onPressed: _handleContinue,

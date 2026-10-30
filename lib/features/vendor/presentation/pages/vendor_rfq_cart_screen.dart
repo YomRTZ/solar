@@ -10,20 +10,12 @@ import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/supplier/data/datasources/supplier_data.dart';
 import 'package:flutter_app/features/catalog/domain/entities/catalog_product.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Vendor — My RFQ Cart Screen
-//
-// Layout:
-//  • Dark-gradient header with back arrow + "My RFQ Cart"
-//  • Scrollable list of VendorRfqCartCard items with live qty state
-//  • Sticky "Send RFQ" button pinned to the bottom
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Vendor — My RFQ
 class VendorRfqCartScreen extends StatefulWidget {
-  /// Products already in the cart.  Falls back to [SupplierData.rfqCartItems]
-  /// when not provided (useful for standalone navigation).
+  // Products already in the cart
   final List<CatalogProduct>? cartItems;
 
-  /// Initial quantities map (productId → qty).  Defaults to 1 for each item.
+  // Initial quantities map (productId → qty).  Defaults to 1 for each item.
   final Map<String, int>? initialQuantities;
 
   const VendorRfqCartScreen({

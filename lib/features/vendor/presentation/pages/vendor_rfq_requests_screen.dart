@@ -11,11 +11,7 @@ import 'package:flutter_app/features/vendor/presentation/widgets/vendor_price_ba
 import 'package:flutter_app/features/vendor/data/datasources/vendor_rfq_data.dart';
 import 'package:flutter_app/features/vendor/domain/entities/vendor_rfq_request.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Vendor — RFQ Requests Screen
-//
-// Uses the My Orders layout while retaining RFQ request content and actions.
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Vendor — RFQ
 class VendorRfqRequestsScreen extends StatefulWidget {
   final VoidCallback? onBackPressed;
 
@@ -143,9 +139,7 @@ class _VendorRfqRequestsScreenState extends State<VendorRfqRequestsScreen> {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Filter tab chip
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Filter tab chip
 class _TabChip extends StatelessWidget {
   final String label;
   final bool isActive;
@@ -186,9 +180,7 @@ class _TabChip extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// RFQ Detail Bottom Sheet content
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── RFQ Detail Bottom
 class _RfqDetailSheet extends StatelessWidget {
   final VendorRfqRequest request;
   final VoidCallback onProceedToCheckout;
@@ -296,9 +288,7 @@ class _RfqDetailSheet extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Summary row helper
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Summary row helper
 class _SummaryRow extends StatelessWidget {
   final String label;
   final String value;

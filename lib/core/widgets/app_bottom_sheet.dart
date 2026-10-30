@@ -1,36 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// A generic bottom-sheet shell that provides:
-///  - A drag handle
-///  - An optional title
-///  - Consistent padding + safe-area inset
-///  - A static [show] helper so callers never need to repeat
-///    [showModalBottomSheet] boilerplate
-///
-/// Usage:
-/// ```dart
-/// AppBottomSheet.show(
-///   context: context,
-///   title: 'My Sheet',
-///   child: MySheetContent(),
-/// );
-/// ```
+// A generic bottom-sheet shell that provides
 class AppBottomSheet extends StatelessWidget {
-  /// Text shown as the sheet title. Pass `null` to omit.
+  // Text shown as the sheet title. Pass `null` to omit.
   final String? title;
 
-  /// Content rendered below the title. Required.
+  // Content rendered below the title. Required.
   final Widget child;
 
-  /// Horizontal padding around [child] (default 20).
+  // Horizontal padding around [child] (default 20).
   final double horizontalPadding;
 
-  /// Extra space added at the very bottom on top of the safe-area inset
-  /// (default 20).
+  // Extra space added at the very bottom on top of the safe-area inset (default 20).
   final double bottomPadding;
 
-  /// Whether to show the drag handle at the top (default true).
+  // Whether to show the drag handle at the top (default true).
   final bool showHandle;
 
   const AppBottomSheet({

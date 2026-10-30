@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/features/products/presentation/pages/my_products_screen.dart';
 
-/// Demo app to test the My Products screen
+// Demo app to test the My Products screen
 class ProductsDemoApp extends StatelessWidget {
   const ProductsDemoApp({super.key});
 
@@ -19,7 +19,7 @@ class ProductsDemoApp extends StatelessWidget {
   }
 }
 
-/// Run this to test the products screen
+// Run this to test the products screen
 void main() {
   runApp(const ProductsDemoApp());
 }

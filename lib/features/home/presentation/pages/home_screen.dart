@@ -68,9 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// HOME BODY
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── HOME BODY
 class _HomeBody extends StatelessWidget {
   final void Function(int) onTabChange;
   const _HomeBody({required this.onTabChange});
@@ -298,18 +296,14 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// BOTTOM NAV BAR
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── BOTTOM NAV BAR
 class _AppNavBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
 
   const _AppNavBar({required this.currentIndex, required this.onTap});
 
-  // Each entry: svgPath/pngPath, label, isPng flag
-  // Vector.svg is a pure path SVG — tint with colorFilter for active/inactive
-  // The other 4 embed PNG bitmaps — rendered via Image.asset with ColorFiltered
+  // Each entry: svgPath/pngPath, label, isPng flag Vector.svg is a pure path SVG — tint with
   static const List<_NavItem> _items = [
     _NavItem(svgPath: 'assets/icons/Vector.svg', label: 'Home', isPng: false),
     _NavItem(

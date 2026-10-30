@@ -5,10 +5,10 @@ import 'package:flutter_app/core/widgets/app_header.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 
 class TermsOfServiceScreen extends StatelessWidget {
-  /// Called when the user taps Accept
+  // Called when the user taps Accept
   final VoidCallback? onAccept;
 
-  /// Called when the user taps Decline
+  // Called when the user taps Decline
   final VoidCallback? onDecline;
 
   const TermsOfServiceScreen({super.key, this.onAccept, this.onDecline});

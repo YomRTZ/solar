@@ -1,7 +1,4 @@
-/// REUSABLE WIDGETS USAGE GUIDE
-/// 
-/// This file demonstrates how to use the reusable widgets across different screens
-/// DO NOT import this file - it's just for reference!
+// REUSABLE WIDGETS USAGE GUIDE This file demonstrates how to use the reusable widgets across
 library;
 
 import 'package:flutter/material.dart';
@@ -9,7 +6,7 @@ import 'package:flutter_app/core/widgets/app_header.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/core/widgets/app_text_field.dart';
 
-/// Example 1: Using AppHeader with different titles
+// Example 1: Using AppHeader with different titles
 class ExampleScreen1 extends StatelessWidget {
   const ExampleScreen1({super.key});
 
@@ -29,7 +26,7 @@ class ExampleScreen1 extends StatelessWidget {
   }
 }
 
-/// Example 2: Using AppHeader without back button
+// Example 2: Using AppHeader without back button
 class ExampleScreen2 extends StatelessWidget {
   const ExampleScreen2({super.key});
 
@@ -49,7 +46,7 @@ class ExampleScreen2 extends StatelessWidget {
   }
 }
 
-/// Example 3: Using AppHeader with custom back action
+// Example 3: Using AppHeader with custom back action
 class ExampleScreen3 extends StatelessWidget {
   const ExampleScreen3({super.key});
 
@@ -73,7 +70,7 @@ class ExampleScreen3 extends StatelessWidget {
   }
 }
 
-/// Example 4: Using AppContinueButton with different texts
+// Example 4: Using AppContinueButton with different texts
 class ExampleScreen4 extends StatelessWidget {
   const ExampleScreen4({super.key});
 
@@ -125,7 +122,7 @@ class ExampleScreen4 extends StatelessWidget {
   }
 }
 
-/// Example 5: Using AppContinueButton without arrow
+// Example 5: Using AppContinueButton without arrow
 class ExampleScreen5 extends StatelessWidget {
   const ExampleScreen5({super.key});
 
@@ -150,7 +147,7 @@ class ExampleScreen5 extends StatelessWidget {
   }
 }
 
-/// Example 6: Using AppContinueButton with custom colors
+// Example 6: Using AppContinueButton with custom colors
 class ExampleScreen6 extends StatelessWidget {
   const ExampleScreen6({super.key});
 
@@ -185,7 +182,7 @@ class ExampleScreen6 extends StatelessWidget {
   }
 }
 
-/// Example 7: Using AppTextField with different configurations
+// Example 7: Using AppTextField with different configurations
 class ExampleScreen7 extends StatefulWidget {
   const ExampleScreen7({super.key});
 
@@ -256,7 +253,7 @@ class _ExampleScreen7State extends State<ExampleScreen7> {
   }
 }
 
-/// Example 8: Complete screen using all three widgets
+// Example 8: Complete screen using all three widgets
 class CompleteExampleScreen extends StatefulWidget {
   const CompleteExampleScreen({super.key});
 
@@ -339,32 +336,4 @@ class _CompleteExampleScreenState extends State<CompleteExampleScreen> {
   }
 }
 
-/* 
-SUMMARY OF REUSABLE WIDGETS:
-
-1. AppHeader - Gradient header with back button
-   - title: String (required) - The header title
-   - showBackButton: bool (optional) - Show/hide back button (default: true)
-   - onBackPressed: VoidCallback (optional) - Custom back action
-   - height: double (optional) - Header height (default: 192)
-   - maxContentWidth: double (optional) - Max width (default: 327)
-
-2. AppContinueButton - Styled button with arrow icon
-   - text: String (required) - Button text
-   - onPressed: VoidCallback (required) - Action on press
-   - isLoading: bool (optional) - Show loading indicator (default: false)
-   - width: double (optional) - Custom width (default: full width)
-   - height: double (optional) - Custom height (default: 48)
-   - showArrow: bool (optional) - Show arrow icon (default: true)
-   - backgroundColor: Color (optional) - Custom background color
-   - textColor: Color (optional) - Custom text color
-
-3. AppTextField - Input field with label
-   - label: String (required) - Field label
-   - hint: String (required) - Placeholder text
-   - controller: TextEditingController (required)
-   - keyboardType: TextInputType (optional)
-   - obscureText: bool (optional) - Hide text for passwords
-   - suffixIcon: Widget (optional) - Icon at the end
-   - validator: Function (optional) - Validation function
-*/
+// SUMMARY OF REUSABLE WIDGETS: 1

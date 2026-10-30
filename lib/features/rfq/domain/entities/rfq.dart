@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// RFQ (Request For Quote) model
+// RFQ (Request For Quote) model
 class RFQ {
   final String id;
   final String rfqNumber;
@@ -45,7 +45,7 @@ extension RFQStatusExtension on RFQStatus {
     }
   }
 
-  /// Badge background color
+  // Badge background color
   Color get backgroundColor {
     switch (this) {
       case RFQStatus.newRequest:
@@ -61,7 +61,7 @@ extension RFQStatusExtension on RFQStatus {
     }
   }
 
-  /// Badge text color
+  // Badge text color
   Color get textColor {
     switch (this) {
       case RFQStatus.newRequest:

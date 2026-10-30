@@ -2,31 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/core/constants/app_colors.dart';
 
-/// Reusable dropdown field widget with the same styling as AppTextField
-/// but with dropdown functionality and arrow icon
+// Reusable dropdown field widget with the same styling as AppTextField but with dropdown
 class AppDropdownField<T> extends StatefulWidget {
-  /// The label text displayed above the dropdown
+  // The label text displayed above the dropdown
   final String label;
   
-  /// The hint text shown when no value is selected
+  // The hint text shown when no value is selected
   final String hint;
   
-  /// List of items to display in dropdown
+  // List of items to display in dropdown
   final List<T> items;
   
-  /// Function to convert item to display string
+  // Function to convert item to display string
   final String Function(T) itemToString;
   
-  /// Currently selected value
+  // Currently selected value
   final T? value;
   
-  /// Callback when value changes
+  // Callback when value changes
   final void Function(T?)? onChanged;
   
-  /// Optional validator function
+  // Optional validator function
   final String? Function(T?)? validator;
   
-  /// Whether the dropdown is enabled (default: true)
+  // Whether the dropdown is enabled (default: true)
   final bool enabled;
 
   const AppDropdownField({
@@ -149,27 +148,27 @@ class _AppDropdownFieldState<T> extends State<AppDropdownField<T>> {
   }
 }
 
-/// Simplified dropdown field for String values
+// Simplified dropdown field for String values
 class AppDropdownFieldString extends StatelessWidget {
-  /// The label text displayed above the dropdown
+  // The label text displayed above the dropdown
   final String label;
   
-  /// The hint text shown when no value is selected
+  // The hint text shown when no value is selected
   final String hint;
   
-  /// List of string items to display in dropdown
+  // List of string items to display in dropdown
   final List<String> items;
   
-  /// Currently selected value
+  // Currently selected value
   final String? value;
   
-  /// Callback when value changes
+  // Callback when value changes
   final void Function(String?)? onChanged;
   
-  /// Optional validator function
+  // Optional validator function
   final String? Function(String?)? validator;
   
-  /// Whether the dropdown is enabled (default: true)
+  // Whether the dropdown is enabled (default: true)
   final bool enabled;
 
   const AppDropdownFieldString({

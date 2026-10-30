@@ -69,7 +69,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                           ),
                         ),
                         child: SingleChildScrollView(
-                          padding: const EdgeInsets.only(top: 7, bottom: 24),
+                          padding: const EdgeInsets.fromLTRB(19, 23, 14, 25),
                           child: Center(
                             child: SizedBox(
                               width: screenWidth < 327 ? screenWidth : 327,
@@ -85,26 +85,22 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                         hint: 'Solar Trade',
                                         controller: businessNameController,
                                       ),
-                                      const SizedBox(height: 24),
                                       AppTextField(
                                         label: 'Contact Person',
                                         hint: 'Rahul Roy',
                                         controller: contactPersonController,
                                       ),
-                                      const SizedBox(height: 24),
                                       AppTextField(
                                         label: 'Delivery Address',
                                         hint: '123-33 New Delhi - 112234',
                                         controller: deliveryAddressController,
                                       ),
-                                      const SizedBox(height: 24),
                                       AppTextField(
                                         label: 'Gst Number',
                                         hint: '9876546879',
                                         controller: gstNumberController,
                                         keyboardType: TextInputType.number,
                                       ),
-                                      const SizedBox(height: 24),
                                       AppTextField(
                                         label: 'Pan Number',
                                         hint: '12345678',
@@ -112,7 +108,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 24),
+                                  const SizedBox(height: 18),
                                   AppContinueButton(
                                     text: 'Continue',
                                     onPressed: () {

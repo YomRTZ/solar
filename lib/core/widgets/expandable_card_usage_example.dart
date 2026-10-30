@@ -1,14 +1,11 @@
-/// EXPANDABLE CARD WIDGET USAGE EXAMPLES
-/// 
-/// This file demonstrates how to use the AppExpandableCard widget
-/// DO NOT import this file - it's just for reference!
+// EXPANDABLE CARD WIDGET USAGE EXAMPLES This file demonstrates how to use the AppExpandableCard
 library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/widgets/app_expandable_card.dart';
 import 'package:flutter_app/core/widgets/app_header.dart';
 
-/// Example 1: Single Card with "In Stock" status
+// Example 1: Single Card with "In Stock" status
 class SingleExpandableCardExample extends StatelessWidget {
   const SingleExpandableCardExample({super.key});
 
@@ -30,7 +27,7 @@ class SingleExpandableCardExample extends StatelessWidget {
   }
 }
 
-/// Example 2: List of Expandable Cards
+// Example 2: List of Expandable Cards
 class ExpandableCardListExample extends StatelessWidget {
   const ExpandableCardListExample({super.key});
 
@@ -92,7 +89,7 @@ class ExpandableCardListExample extends StatelessWidget {
   }
 }
 
-/// Example 3: Different Status Types
+// Example 3: Different Status Types
 class DifferentStatusCardsExample extends StatelessWidget {
   const DifferentStatusCardsExample({super.key});
 
@@ -135,7 +132,7 @@ class DifferentStatusCardsExample extends StatelessWidget {
   }
 }
 
-/// Example 4: Custom Status Colors
+// Example 4: Custom Status Colors
 class CustomStatusCardExample extends StatelessWidget {
   const CustomStatusCardExample({super.key});
 
@@ -175,7 +172,7 @@ class CustomStatusCardExample extends StatelessWidget {
   }
 }
 
-/// Example 5: Dynamic List from Data
+// Example 5: Dynamic List from Data
 class DynamicExpandableListExample extends StatelessWidget {
   const DynamicExpandableListExample({super.key});
 
@@ -286,7 +283,7 @@ class DynamicExpandableListExample extends StatelessWidget {
   }
 }
 
-/// Example 6: Without Arrow Icon
+// Example 6: Without Arrow Icon
 class NoArrowCardExample extends StatelessWidget {
   const NoArrowCardExample({super.key});
 
@@ -309,7 +306,7 @@ class NoArrowCardExample extends StatelessWidget {
   }
 }
 
-/// Example 7: Network Images
+// Example 7: Network Images
 class NetworkImageCardExample extends StatelessWidget {
   const NetworkImageCardExample({super.key});
 
@@ -330,7 +327,7 @@ class NetworkImageCardExample extends StatelessWidget {
   }
 }
 
-/// Example 8: Filterable List
+// Example 8: Filterable List
 class FilterableExpandableListExample extends StatefulWidget {
   const FilterableExpandableListExample({super.key});
 
@@ -468,31 +465,4 @@ class _FilterableExpandableListExampleState
   }
 }
 
-/*
-SUMMARY:
-
-AppExpandableCard Properties:
-- imagePath (required): Asset or network image path
-- title (required): Item title
-- idNumber (required): ID/reference number
-- price (required): Price (without Rs. prefix)
-- statusText (required): Status badge text
-- statusBackgroundColor: Badge background color
-- statusTextColor: Badge text color
-- isNetworkImage: true for network images
-- onTap: Callback when card is tapped
-- maxWidth: Card width (default: 327)
-- height: Card height (default: 103)
-- showArrow: Show/hide arrow icon (default: true)
-
-Factory Constructors:
-- AppExpandableCard.inStock(): Green badge
-- AppExpandableCard.lowStock(): Orange badge
-- AppExpandableCard.outOfStock(): Red badge
-
-Features:
-- Bottom border separator
-- 90° rotated arrow icon (pointing right)
-- Automatic image placeholder on error
-- Consistent styling across all cards
-*/
+// SUMMARY: AppExpandableCard Properties

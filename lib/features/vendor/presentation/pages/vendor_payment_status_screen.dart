@@ -7,14 +7,9 @@ import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/core/widgets/app_header.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Vendor — Payment Status Screen
-//
-// The status body follows the account-approved layout while retaining
-// payment-specific messages and actions.
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Vendor — Payment
 class VendorPaymentStatusScreen extends StatelessWidget {
-  /// Pass false to show the failure state.
+  // Pass false to show the failure state.
   final bool isSuccess;
 
   const VendorPaymentStatusScreen({super.key, this.isSuccess = true});

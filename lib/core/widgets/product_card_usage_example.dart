@@ -1,14 +1,11 @@
-/// PRODUCT CARD WIDGET USAGE EXAMPLES
-/// 
-/// This file demonstrates how to use the AppProductCard widget
-/// DO NOT import this file - it's just for reference!
+// PRODUCT CARD WIDGET USAGE EXAMPLES This file demonstrates how to use the AppProductCard widget
 library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/widgets/app_product_card.dart';
 import 'package:flutter_app/core/widgets/app_header.dart';
 
-/// Example 1: Single Product Card with "New" status
+// Example 1: Single Product Card with "New" status
 class SingleProductCardExample extends StatelessWidget {
   const SingleProductCardExample({super.key});
 
@@ -30,7 +27,7 @@ class SingleProductCardExample extends StatelessWidget {
   }
 }
 
-/// Example 2: Single Product Card with "Open" status
+// Example 2: Single Product Card with "Open" status
 class OpenStatusProductCardExample extends StatelessWidget {
   const OpenStatusProductCardExample({super.key});
 
@@ -52,7 +49,7 @@ class OpenStatusProductCardExample extends StatelessWidget {
   }
 }
 
-/// Example 3: List of Product Cards
+// Example 3: List of Product Cards
 class ProductListExample extends StatelessWidget {
   const ProductListExample({super.key});
 
@@ -109,7 +106,7 @@ class ProductListExample extends StatelessWidget {
   }
 }
 
-/// Example 4: Product Cards with Custom Status
+// Example 4: Product Cards with Custom Status
 class CustomStatusProductCardExample extends StatelessWidget {
   const CustomStatusProductCardExample({super.key});
 
@@ -154,7 +151,7 @@ class CustomStatusProductCardExample extends StatelessWidget {
   }
 }
 
-/// Example 5: Product Cards with Network Images
+// Example 5: Product Cards with Network Images
 class NetworkImageProductCardExample extends StatelessWidget {
   const NetworkImageProductCardExample({super.key});
 
@@ -177,7 +174,7 @@ class NetworkImageProductCardExample extends StatelessWidget {
   }
 }
 
-/// Example 6: Dynamic Product List from Data
+// Example 6: Dynamic Product List from Data
 class DynamicProductListExample extends StatelessWidget {
   const DynamicProductListExample({super.key});
 
@@ -283,7 +280,7 @@ class DynamicProductListExample extends StatelessWidget {
   }
 }
 
-/// Example 7: Scrollable Horizontal Product Cards
+// Example 7: Scrollable Horizontal Product Cards
 class HorizontalProductCardsExample extends StatelessWidget {
   const HorizontalProductCardsExample({super.key});
 
@@ -342,7 +339,7 @@ class HorizontalProductCardsExample extends StatelessWidget {
   }
 }
 
-/// Example 8: Product Cards in GridView
+// Example 8: Product Cards in GridView
 class GridProductCardsExample extends StatelessWidget {
   const GridProductCardsExample({super.key});
 
@@ -395,26 +392,4 @@ class GridProductCardsExample extends StatelessWidget {
   }
 }
 
-/*
-SUMMARY:
-
-AppProductCard Properties:
-- imagePath (required): Asset or network image path
-- title (required): Product name
-- rfqNumber (required): RFQ/reference number
-- price (required): Product price (without Rs. prefix)
-- statusText (required): Badge text
-- statusBackgroundColor: Badge background color
-- statusTextColor: Badge text color
-- isNetworkImage: true for network images, false for assets
-- onTap: Callback when card is tapped
-- maxWidth: Card width (default: 327)
-- height: Card height (default: 103)
-
-Factory Constructors:
-- AppProductCard.newStatus(): Green badge for new items
-- AppProductCard.openStatus(): Blue badge for open items
-
-Custom Status:
-- Use the main constructor with custom colors for other statuses
-*/
+// SUMMARY: AppProductCard Properties

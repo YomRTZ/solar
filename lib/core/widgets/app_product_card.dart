@@ -1,43 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Reusable product card widget for displaying product information
-/// with image, title, RFQ number, price, and status badge
+// Reusable product card widget for displaying product information with image, title, RFQ number
 class AppProductCard extends StatelessWidget {
-  /// Path to the product image (can be asset path or network URL)
+  // Path to the product image (can be asset path or network URL)
   final String imagePath;
 
-  /// Product title/name
+  // Product title/name
   final String title;
 
-  /// RFQ/Reference number
+  // RFQ/Reference number
   final String rfqNumber;
 
-  /// Product price (will be displayed with "Rs." prefix)
+  // Product price (will be displayed with "Rs." prefix)
   final String price;
 
-  /// Status badge text (e.g., "New", "Open", "Closed")
+  // Status badge text (e.g., "New", "Open", "Closed")
   final String statusText;
 
-  /// Status badge background color
+  // Status badge background color
   final Color statusBackgroundColor;
 
-  /// Status badge text color
+  // Status badge text color
   final Color statusTextColor;
 
-  /// Whether the image is from network or assets (default: false for assets)
+  // Whether the image is from network or assets (default: false for assets)
   final bool isNetworkImage;
 
-  /// Callback when the card is tapped
+  // Callback when the card is tapped
   final VoidCallback? onTap;
 
-  /// Maximum width of the card (default: 327)
+  // Maximum width of the card (default: 327)
   final double maxWidth;
 
-  /// Height of the card (default: 103)
+  // Height of the card (default: 103)
   final double height;
 
-  /// Vertical offset for the status badge
+  // Vertical offset for the status badge
   final double statusBadgeOffsetY;
 
   const AppProductCard({
@@ -56,7 +55,7 @@ class AppProductCard extends StatelessWidget {
     this.statusBadgeOffsetY = 0,
   });
 
-  /// Factory constructor for "New" status
+  // Factory constructor for "New" status
   factory AppProductCard.newStatus({
     required String imagePath,
     required String title,
@@ -82,7 +81,7 @@ class AppProductCard extends StatelessWidget {
     );
   }
 
-  /// Factory constructor for "Open" status
+  // Factory constructor for "Open" status
   factory AppProductCard.openStatus({
     required String imagePath,
     required String title,
@@ -246,7 +245,7 @@ class AppProductCard extends StatelessWidget {
     );
   }
 
-  /// Placeholder widget when image fails to load
+  // Placeholder widget when image fails to load
   Widget _buildPlaceholder() {
     return Container(
       color: Colors.grey[200],

@@ -10,16 +10,7 @@ import 'package:flutter_app/features/catalog/domain/entities/catalog_product.dar
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_compare_sheet.dart';
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_product_detail_sheet.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Vendor All Products Screen
-//
-// Flow:
-//  1. Tap a product card → VendorProductDetailSheet opens
-//     • Qty stepper, spec table, "Add to Compare" + "Add to RFQ"
-//  2. Tap "Add to Compare" inside detail sheet
-//     → detail sheet closes, VendorCompareSheet opens
-//  3. Tap "Add to RFQ" in either sheet → adds to cart, closes sheet
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Vendor All
 class VendorAllProductsScreen extends StatefulWidget {
   const VendorAllProductsScreen({super.key});
 
@@ -87,8 +78,7 @@ class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
 
   // ── Sheet launchers ────────────────────────────────────────
 
-  /// Opens the product detail sheet. Passes callbacks so the sheet can
-  /// trigger the compare sheet or mutate cart without knowing the screen.
+  // Opens the product detail sheet
   void _openDetailSheet(BuildContext context, CatalogProduct product) {
     // Ensure at least qty 1 when opening the sheet
     if ((_rfqCart[product.id] ?? 0) == 0) {

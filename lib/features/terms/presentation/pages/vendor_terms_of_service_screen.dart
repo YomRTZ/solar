@@ -3,14 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/core/widgets/app_header.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Vendor — Terms of Service Screen
-//
-// Layout:
-//  • White background, back arrow
-//  • "Terms of Service" large bold title
-//  • Scrollable rich-text content with numbered sections + bullet lists
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Vendor — Terms of
 class VendorTermsOfServiceScreen extends StatelessWidget {
   const VendorTermsOfServiceScreen({super.key});
 
@@ -50,9 +43,7 @@ class VendorTermsOfServiceScreen extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Terms content
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Terms content
 class _TermsContent extends StatelessWidget {
   const _TermsContent();
 
@@ -133,9 +124,7 @@ class _TermsContent extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Small building blocks
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Small building
 
 class _SectionHeading extends StatelessWidget {
   final String number;

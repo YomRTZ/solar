@@ -39,4 +39,6 @@ abstract final class AppRoutes {
   static const vendorCart = '/vendor/rfq-cart';
   static const vendorRfqStatus = '/vendor/rfq-status';
   static const vendorTerms = '/vendor/terms';
+  static const vendorUploadDocuments = '/vendor/documents/upload';
+  static const vendorBankDetails = '/vendor/bank/details';
 }

@@ -1,6 +1,6 @@
 import 'package:flutter_app/features/vendor/domain/entities/vendor_rfq_request.dart';
 
-/// Mock data for the vendor RFQ / Payment screens
+// Mock data for the vendor RFQ / Payment screens
 class VendorRfqData {
   static const List<VendorRfqRequest> requests = [
     VendorRfqRequest(

@@ -1,7 +1,7 @@
 import 'package:flutter_app/features/vendor/domain/entities/vendor_category.dart';
 import 'package:flutter_app/features/catalog/domain/entities/catalog_product.dart';
 
-/// Mock data used across the three Vendor screens
+// Mock data used across the three Vendor screens
 class VendorData {
   // ── Categories ─────────────────────────────────────────────
   static const List<VendorCategory> categories = [

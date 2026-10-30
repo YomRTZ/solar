@@ -24,9 +24,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       body: Stack(
         children: [
@@ -65,49 +62,57 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           ),
 
-          // Keep the text below the logo's bottom margin.
+          // ── Text block: stacked below logo ───────────────
+          // Logo bottom edge = screen_height - 497
+          // "Connecting"  : 14px below logo   → left:44, right:53
+          // "Solar..."    : 10px below above   → left:59, right:45
+          // "A Trusted…"  : 10px below above   → left:7,  right:6
           Positioned(
-            top: screenHeight - 497 + screenHeight * 0.03,
+            top: MediaQuery.of(context).size.height - 497 + 14,
             left: 0,
             right: 0,
-            child: SizedBox(
-              width: screenWidth,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                // "Connecting"
-                Text(
-                  'Connecting',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.roboto(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 24,
-                    height: 1.0,
-                    letterSpacing: 0,
-                    color: const Color(0xFFFFFFFF),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // "Connecting" — left:44, right:53
+                Padding(
+                  padding: const EdgeInsets.only(left: 44, right: 53),
+                  child: Text(
+                    'Connecting',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.roboto(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 24,
+                      height: 1.0,
+                      letterSpacing: 0,
+                      color: const Color(0xFFFFFFFF),
+                    ),
                   ),
                 ),
 
-                const SizedBox(height: 6),
+                const SizedBox(height: 10),
 
-                // "Solar Supplier & Vendor"
-                Text(
-                  'Solar Supplier & Vendor',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.roboto(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 24,
-                    height: 1.0,
-                    letterSpacing: 0,
-                    color: const Color(0xFFFFFFFF),
+                // "Solar Supplier & Vendor" — left:59, right:45
+                Padding(
+                  padding: const EdgeInsets.only(left: 59, right: 45),
+                  child: Text(
+                    'Solar Supplier & Vendor',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.roboto(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 24,
+                      height: 1.0,
+                      letterSpacing: 0,
+                      color: const Color(0xFFFFFFFF),
+                    ),
                   ),
                 ),
 
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
 
-                // "A Trusted B2B Marketplace…"
-                SizedBox(
-                  width: screenWidth * 0.88,
+                // "A Trusted B2B Marketplace…" — left:7, right:6
+                Padding(
+                  padding: const EdgeInsets.only(left: 7, right: 6),
                   child: Text(
                     'A Trusted B2B Marketplace For\nTransforming Trade Through Technology',
                     textAlign: TextAlign.center,
@@ -120,8 +125,8 @@ class _SplashScreenState extends State<SplashScreen> {
                       color: const Color(0xFFFFFFFF),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
@@ -129,3 +134,4 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
+

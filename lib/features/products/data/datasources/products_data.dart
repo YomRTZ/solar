@@ -1,6 +1,6 @@
 import 'package:flutter_app/features/products/domain/entities/product.dart';
 
-/// Sample products data
+// Sample products data
 class ProductsData {
   static final List<Product> products = [
     Product(
@@ -95,7 +95,7 @@ class ProductsData {
     ),
   ];
 
-  /// Get products by category
+  // Get products by category
   static List<Product> getProductsByCategory(ProductCategory category) {
     if (category == ProductCategory.all) {
       return products;
@@ -103,7 +103,7 @@ class ProductsData {
     return products.where((product) => product.category == category).toList();
   }
 
-  /// Search products by title or ID
+  // Search products by title or ID
   static List<Product> searchProducts(String query) {
     if (query.isEmpty) {
       return products;
@@ -116,20 +116,20 @@ class ProductsData {
     }).toList();
   }
 
-  /// Get products by status
+  // Get products by status
   static List<Product> getProductsByStatus(ProductStatus status) {
     return products.where((product) => product.status == status).toList();
   }
 
-  /// Get in stock products count
+  // Get in stock products count
   static int get inStockCount =>
       products.where((p) => p.status == ProductStatus.inStock).length;
 
-  /// Get low stock products count
+  // Get low stock products count
   static int get lowStockCount =>
       products.where((p) => p.status == ProductStatus.lowStock).length;
 
-  /// Get out of stock products count
+  // Get out of stock products count
   static int get outOfStockCount =>
       products.where((p) => p.status == ProductStatus.outOfStock).length;
 }

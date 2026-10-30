@@ -1,6 +1,4 @@
-/// Central export file for all reusable widgets
-/// Import this file to access all custom widgets in one line:
-/// import 'package:flutter_app/core/widgets/widgets.dart';
+// Central export file for all reusable widgets
 library;
 
 export 'package:flutter_app/core/widgets/app_header.dart';

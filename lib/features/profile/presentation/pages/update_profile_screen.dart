@@ -86,7 +86,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             // ── Scrollable form ──────────────────────────────
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 28, 24, 32),
+                padding: const EdgeInsets.fromLTRB(19, 23, 14, 25),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -95,37 +95,29 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       hint: 'Solar Trade',
                       controller: _businessController,
                     ),
-                    const SizedBox(height: 20),
-
                     AppTextField(
                       label: 'Contact Person',
                       hint: 'Rahul Roy',
                       controller: _contactPersonController,
                     ),
-                    const SizedBox(height: 20),
-
                     AppTextField(
                       label: 'Delivery Address',
                       hint: '123-33 New Delhi - 112234',
                       controller: _deliveryAddressController,
                     ),
-                    const SizedBox(height: 20),
-
                     AppTextField(
                       label: 'Gst Number',
                       hint: '9876546879',
                       controller: _gstNumberController,
                       keyboardType: TextInputType.text,
                     ),
-                    const SizedBox(height: 20),
-
                     AppTextField(
                       label: 'Pan  Number',
                       hint: '12345678',
                       controller: _panNumberController,
                       keyboardType: TextInputType.text,
                     ),
-                    const SizedBox(height: 36),
+                    const SizedBox(height: 18),
 
                     // ── Update button ────────────────────────
                     AppContinueButton(

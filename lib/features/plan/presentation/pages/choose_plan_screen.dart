@@ -8,17 +8,7 @@ import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/widgets/app_header.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Vendor — Choose a Plan Screen
-//
-// Layout:
-//  • Responsive photo background with a lower white fade
-//  • Shared header with "Choose a Plan" title
-//  • Feature checklist (Access to RFQs, Compare Products, Place Orders)
-//  • Two plan cards: 3-Day Free Trial (selected) | Yearly Access
-//  • Continue button
-//  • "Terms of use | Privacy Policy" footer links
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Vendor — Choose a
 class ChoosePlanScreen extends StatefulWidget {
   const ChoosePlanScreen({super.key});
 
@@ -104,24 +94,36 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 20,
+                                    padding: const EdgeInsets.only(
+                                      top: 171,
+                                      left: 21,
+                                      right: 46,
                                     ),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
-                                      children: _features
-                                          .map(
-                                            (feature) => Padding(
-                                              padding: const EdgeInsets.only(
-                                                bottom: 10,
-                                              ),
-                                              child: _FeatureRow(
-                                                label: feature,
-                                              ),
+                                      children: [
+                                        // 'Access to RFQs' — positioned at top:171, left:21, right:46, bottom margin:26
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 26,
+                                          ),
+                                          child: _FeatureRow(
+                                            label: _features[0],
+                                          ),
+                                        ),
+                                        // Remaining features with original spacing
+                                        ..._features.skip(1).map(
+                                          (feature) => Padding(
+                                            padding: const EdgeInsets.only(
+                                              bottom: 10,
                                             ),
-                                          )
-                                          .toList(),
+                                            child: _FeatureRow(
+                                              label: feature,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   const SizedBox(height: 20),
@@ -254,9 +256,7 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Feature row — blue checkbox + label
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Feature row — blue
 class _FeatureRow extends StatelessWidget {
   final String label;
   const _FeatureRow({required this.label});
@@ -296,9 +296,7 @@ class _FeatureRow extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Plan card
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Plan card
 class _PlanCard extends StatelessWidget {
   final String tag;
   final String price;

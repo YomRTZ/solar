@@ -10,15 +10,7 @@ import 'package:flutter_app/features/vendor/presentation/widgets/vendor_product_
 import 'package:flutter_app/features/vendor/data/datasources/vendor_data.dart';
 import 'package:flutter_app/features/catalog/domain/entities/catalog_product.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Vendor Home Screen
-// Mirrors the layout of home_screen.dart:
-//  • Dark-gradient header (logo + bell)
-//  • Search bar
-//  • Four-column, two-row category grid
-//  • Promo banner
-//  • "All Products" section heading + 2-col product grid
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Vendor Home Screen
 class VendorHomeScreen extends StatefulWidget {
   const VendorHomeScreen({super.key});
 
@@ -419,8 +411,7 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
       );
     }
 
-    // Use a GridView inside a ShrinkWrap so it plays nicely inside
-    // the outer SingleChildScrollView.
+    // Use a GridView inside a ShrinkWrap so it plays nicely inside the outer SingleChildScrollView.
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

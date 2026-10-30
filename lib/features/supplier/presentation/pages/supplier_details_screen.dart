@@ -10,16 +10,7 @@ import 'package:flutter_app/features/vendor/presentation/widgets/vendor_product_
 import 'package:flutter_app/features/supplier/data/datasources/supplier_data.dart';
 import 'package:flutter_app/features/supplier/domain/entities/supplier.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Vendor — Supplier Details Screen
-//
-// Layout:
-//  • Dark-gradient header with back arrow + "Supplier Details" + cart badge
-//  • Supplier info card (avatar, name, verified badge)
-//  • Rating + Orders stats row
-//  • "About Supplier" section
-//  • "Main Products" heading + 2-col VendorProductCard grid
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Vendor — Supplier
 class SupplierDetailsScreen extends StatefulWidget {
   final Supplier? supplier;
 
@@ -211,9 +202,7 @@ class _SupplierDetailsScreenState extends State<SupplierDetailsScreen> {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Supplier info card
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Supplier info card
 class _SupplierInfoCard extends StatelessWidget {
   final Supplier supplier;
   const _SupplierInfoCard({required this.supplier});
@@ -299,9 +288,7 @@ class _SupplierInfoCard extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Stats row
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Stats row
 class _StatsRow extends StatelessWidget {
   final double rating;
   final int totalOrders;
@@ -382,9 +369,7 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Section title
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Section title
 class _SectionTitle extends StatelessWidget {
   final String title;
   const _SectionTitle({required this.title});

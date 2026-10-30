@@ -1,31 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Reusable continue button with consistent styling across screens
-/// Features an arrow icon and can be customized with different text
+// Reusable continue button with consistent styling across screens Features an arrow icon and can
 class AppContinueButton extends StatelessWidget {
-  /// The text to display on the button
+  // The text to display on the button
   final String text;
   
-  /// Callback function when button is pressed
+  // Callback function when button is pressed
   final VoidCallback? onPressed;
   
-  /// Whether to show loading indicator
+  // Whether to show loading indicator
   final bool isLoading;
   
-  /// Custom width (default: full width)
+  // Custom width (default: full width)
   final double? width;
   
-  /// Custom height (default: 48)
+  // Custom height (default: 48)
   final double height;
   
-  /// Whether to show the arrow icon (default: true)
+  // Whether to show the arrow icon (default: true)
   final bool showArrow;
   
-  /// Custom background color (default: Color(0xFF003D82))
+  // Custom background color (default: Color(0xFF003D82))
   final Color? backgroundColor;
   
-  /// Custom text color (default: white)
+  // Custom text color (default: white)
   final Color? textColor;
 
   const AppContinueButton({
@@ -55,8 +54,10 @@ class AppContinueButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           textStyle: GoogleFonts.inter(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            height: 1.4,
+            letterSpacing: 14 * -0.01,
           ),
         ),
         child: isLoading
@@ -68,19 +69,16 @@ class AppContinueButton extends StatelessWidget {
                   strokeWidth: 2,
                 ),
               )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(text),
-                  if (showArrow) ...[
-                    const SizedBox(width: 8),
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      size: 18,
-                      color: textColor ?? Colors.white,
-                    ),
-                  ],
-                ],
+            : Text(
+                text,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  height: 1.4,
+                  letterSpacing: 14 * -0.01,
+                  color: textColor ?? const Color(0xFFFFFFFF),
+                ),
               ),
       ),
     );

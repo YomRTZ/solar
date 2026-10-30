@@ -3,22 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_price_badge.dart';
 
-/// Reusable horizontal RFQ cart item card used in the vendor cart screen.
-///
-/// Shows: thumbnail | name + subtitle + price badge | qty stepper [🗑 count +]
-///
-/// Usage:
-/// ```dart
-/// VendorRfqCartCard(
-///   imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
-///   name: 'Solar Trade',
-///   subtitle: 'By SunTech Sol.',
-///   price: 'Rs.10000+',
-///   quantity: qty,
-///   onDecrement: () { ... },
-///   onIncrement: () { ... },
-/// );
-/// ```
+// Reusable horizontal RFQ cart item card used in the vendor cart screen
 class VendorRfqCartCard extends StatelessWidget {
   final String imagePath;
   final String name;
@@ -26,16 +11,16 @@ class VendorRfqCartCard extends StatelessWidget {
   final String price;
   final int quantity;
 
-  /// Called when the delete / minus icon is tapped.
+  // Called when the delete / minus icon is tapped.
   final VoidCallback onDecrement;
 
-  /// Called when the + icon is tapped.
+  // Called when the + icon is tapped.
   final VoidCallback onIncrement;
 
-  /// Optional tap on the whole card.
+  // Optional tap on the whole card.
   final VoidCallback? onTap;
 
-  /// Whether [imagePath] is a network URL (default: false).
+  // Whether [imagePath] is a network URL (default: false).
   final bool isNetworkImage;
 
   const VendorRfqCartCard({

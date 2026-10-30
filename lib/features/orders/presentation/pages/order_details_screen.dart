@@ -282,7 +282,7 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  /// Format a double as integer string with comma for thousands
+  // Format a double as integer string with comma for thousands
   String _fmt(double v) {
     final intVal = v.toInt();
     if (intVal >= 1000) {

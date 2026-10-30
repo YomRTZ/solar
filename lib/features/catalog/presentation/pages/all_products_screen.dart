@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/core/widgets/app_catalog_card.dart';
 import 'package:flutter_app/features/catalog/data/datasources/catalog_data.dart';
@@ -103,10 +104,11 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
             // Back button
             GestureDetector(
               onTap: () => Navigator.pop(context),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-                size: 24,
+              child: SvgPicture.asset(
+                'assets/icons/arrow-narrow-left.svg',
+                width: 24,
+                height: 24,
+                fit: BoxFit.contain,
               ),
             ),
             const SizedBox(width: 12),

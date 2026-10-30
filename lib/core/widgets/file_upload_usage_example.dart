@@ -1,7 +1,4 @@
-/// FILE UPLOAD WIDGET USAGE EXAMPLES
-/// 
-/// This file demonstrates how to use the AppFileUploadField widget
-/// DO NOT import this file - it's just for reference!
+// FILE UPLOAD WIDGET USAGE EXAMPLES This file demonstrates how to use the AppFileUploadField
 library;
 
 import 'package:flutter/material.dart';
@@ -11,7 +8,7 @@ import 'package:flutter_app/core/widgets/app_file_upload_field.dart';
 import 'package:flutter_app/core/widgets/app_header.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 
-/// Example 1: Basic File Upload (PDF, Images, etc.)
+// Example 1: Basic File Upload (PDF, Images, etc.)
 class BasicFileUploadExample extends StatefulWidget {
   const BasicFileUploadExample({super.key});
 
@@ -59,7 +56,7 @@ class _BasicFileUploadExampleState extends State<BasicFileUploadExample> {
   }
 }
 
-/// Example 2: Multiple File Upload Fields
+// Example 2: Multiple File Upload Fields
 class MultipleFileUploadExample extends StatefulWidget {
   const MultipleFileUploadExample({super.key});
 
@@ -138,7 +135,7 @@ class _MultipleFileUploadExampleState extends State<MultipleFileUploadExample> {
   }
 }
 
-/// Example 3: Image Only Upload
+// Example 3: Image Only Upload
 class ImageUploadExample extends StatefulWidget {
   const ImageUploadExample({super.key});
 
@@ -205,7 +202,7 @@ class _ImageUploadExampleState extends State<ImageUploadExample> {
   }
 }
 
-/// Example 4: Custom File Types and Size Limits
+// Example 4: Custom File Types and Size Limits
 class CustomFileUploadExample extends StatefulWidget {
   const CustomFileUploadExample({super.key});
 
@@ -268,7 +265,7 @@ class _CustomFileUploadExampleState extends State<CustomFileUploadExample> {
   }
 }
 
-/// Example 5: Complete Form with File Upload
+// Example 5: Complete Form with File Upload
 class CompleteFormWithFileUpload extends StatefulWidget {
   const CompleteFormWithFileUpload({super.key});
 
@@ -357,8 +354,7 @@ class _CompleteFormWithFileUploadState
                 padding: const EdgeInsets.all(24),
                 child: Column(
                   children: [
-                    // Text fields would go here
-                    // AppTextField(...),
+                    // Text fields would go here AppTextField(...),
                     
                     const SizedBox(height: 24),
                     
@@ -392,7 +388,7 @@ class _CompleteFormWithFileUploadState
   }
 }
 
-/// Example 6: With Validation
+// Example 6: With Validation
 class FileUploadWithValidation extends StatefulWidget {
   const FileUploadWithValidation({super.key});
 
@@ -476,21 +472,4 @@ class _FileUploadWithValidationState extends State<FileUploadWithValidation> {
   }
 }
 
-/*
-IMPORTANT NOTES:
-
-1. Add these packages to pubspec.yaml:
-   dependencies:
-     file_picker: ^6.0.0
-     image_picker: ^1.0.0
-
-2. For iOS, add to Info.plist:
-   <key>NSPhotoLibraryUsageDescription</key>
-   <string>We need access to select photos</string>
-   <key>NSCameraUsageDescription</key>
-   <string>We need access to take photos</string>
-
-3. For Android, add to AndroidManifest.xml:
-   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-   <uses-permission android:name="android.permission.CAMERA"/>
-*/
+// IMPORTANT NOTES: 1

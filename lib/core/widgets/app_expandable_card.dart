@@ -1,43 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Reusable expandable card widget with image, title, ID, price, status badge and arrow
-/// Used for lists where items can be expanded or navigated
+// Reusable expandable card widget with image, title, ID, price, status badge and arrow
 class AppExpandableCard extends StatelessWidget {
-  /// Path to the product/item image
+  // Path to the product/item image
   final String imagePath;
 
-  /// Title text (e.g., "Solar Trade")
+  // Title text (e.g., "Solar Trade")
   final String title;
 
-  /// ID/Reference number (e.g., "#MB12345")
+  // ID/Reference number (e.g., "#MB12345")
   final String idNumber;
 
-  /// Price (will be displayed with "Rs." prefix)
+  // Price (will be displayed with "Rs." prefix)
   final String price;
 
-  /// Status badge text (e.g., "In Stock", "Out of Stock")
+  // Status badge text (e.g., "In Stock", "Out of Stock")
   final String statusText;
 
-  /// Status badge background color
+  // Status badge background color
   final Color statusBackgroundColor;
 
-  /// Status badge text color
+  // Status badge text color
   final Color statusTextColor;
 
-  /// Whether the image is from network or assets
+  // Whether the image is from network or assets
   final bool isNetworkImage;
 
-  /// Callback when the card is tapped
+  // Callback when the card is tapped
   final VoidCallback? onTap;
 
-  /// Maximum width of the card (default: 327)
+  // Maximum width of the card (default: 327)
   final double maxWidth;
 
-  /// Height of the card (default: 103)
+  // Height of the card (default: 103)
   final double height;
 
-  /// Whether to show the arrow icon (default: true)
+  // Whether to show the arrow icon (default: true)
   final bool showArrow;
 
   const AppExpandableCard({
@@ -75,7 +74,7 @@ class AppExpandableCard extends StatelessWidget {
     }
   }
 
-  /// Factory constructor for "In Stock" status
+  // Factory constructor for "In Stock" status
   factory AppExpandableCard.inStock({
     required String imagePath,
     required String title,
@@ -103,7 +102,7 @@ class AppExpandableCard extends StatelessWidget {
     );
   }
 
-  /// Factory constructor for "Out of Stock" status
+  // Factory constructor for "Out of Stock" status
   factory AppExpandableCard.outOfStock({
     required String imagePath,
     required String title,
@@ -131,7 +130,7 @@ class AppExpandableCard extends StatelessWidget {
     );
   }
 
-  /// Factory constructor for "Low Stock" status
+  // Factory constructor for "Low Stock" status
   factory AppExpandableCard.lowStock({
     required String imagePath,
     required String title,
@@ -302,7 +301,7 @@ class AppExpandableCard extends StatelessWidget {
     );
   }
 
-  /// Placeholder widget when image fails to load
+  // Placeholder widget when image fails to load
   Widget _buildPlaceholder() {
     return Container(
       color: Colors.grey[200],

@@ -3,18 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter_app/features/vendor/domain/entities/vendor_rfq_request.dart';
 
-/// Reusable RFQ request list card used in [VendorRfqRequestsScreen].
-///
-/// Shows: supplied image | supplier, amount, date, and request status.
-///
-/// Usage:
-/// ```dart
-/// VendorRfqRequestCard(
-///   request: rfqRequest,
-///   imagePath: 'assets/solarimages/request.png',
-///   onTap: () { ... },
-/// );
-/// ```
+// Reusable RFQ request list card used in [VendorRfqRequestsScreen]
 class VendorRfqRequestCard extends StatelessWidget {
   final VendorRfqRequest request;
   final String imagePath;

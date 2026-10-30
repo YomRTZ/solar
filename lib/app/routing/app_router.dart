@@ -35,6 +35,8 @@ import 'package:flutter_app/features/vendor/presentation/pages/vendor_all_catego
 import 'package:flutter_app/features/vendor/presentation/pages/vendor_all_products_screen.dart';
 import 'package:flutter_app/features/vendor/presentation/pages/vendor_home_screen.dart';
 import 'package:flutter_app/features/vendor/presentation/pages/vendor_main_screen.dart';
+import 'package:flutter_app/features/vendor/presentation/pages/vendor_upload_documents_screen.dart';
+import 'package:flutter_app/features/vendor/presentation/pages/vendor_bank_details_screen.dart';
 import 'package:flutter_app/features/terms/presentation/pages/vendor_terms_of_service_screen.dart';
 import 'package:flutter_app/features/terms/presentation/pages/terms_of_service_screen.dart';
 import 'package:flutter_app/features/verification/presentation/pages/verification_status_screen.dart';
@@ -146,6 +148,8 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
       }),
       _route(AppRoutes.vendorRfqStatus, (_) => const VendorRfqStatusScreen()),
       _route(AppRoutes.vendorTerms, (_) => const VendorTermsOfServiceScreen()),
+      _route(AppRoutes.vendorUploadDocuments, (_) => const VendorUploadDocumentsScreen()),
+      _route(AppRoutes.vendorBankDetails, (_) => const VendorBankDetailsScreen()),
     ],
   );
   return router;

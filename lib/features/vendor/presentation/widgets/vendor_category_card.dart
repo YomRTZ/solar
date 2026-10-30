@@ -2,44 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Reusable square category card used in the Vendor screens.
-///
-/// Shows a bordered category tile with an icon and label.
-///
-/// Usage:
-/// ```dart
-/// VendorCategoryCard(
-///   iconPath: 'assets/icons/solarpanel.png',
-///   label: 'Solar Panels',
-///   onTap: () { ... },
-/// );
-/// ```
+// Reusable square category card used in the Vendor screens
 class VendorCategoryCard extends StatelessWidget {
-  /// Asset path for the category icon image.
+  // Asset path for the category icon image.
   final String iconPath;
 
-  /// Label shown below the icon.
+  // Label shown below the icon.
   final String label;
 
-  /// Called when the card is tapped.
+  // Called when the card is tapped.
   final VoidCallback? onTap;
 
-  /// Whether the icon image is from the network (default: false).
+  // Whether the icon image is from the network (default: false).
   final bool isNetworkImage;
 
-  /// Size of the icon (default: 56).
+  // Size of the icon (default: 56).
   final double iconContainerSize;
 
-  /// Total card width (default: unconstrained — fills parent).
+  // Total card width (default: unconstrained — fills parent).
   final double? width;
 
-  /// Total card height (default: sized to its contents).
+  // Total card height (default: sized to its contents).
   final double? height;
 
-  /// Whether this is the compact Vendor home-screen tile.
+  // Whether this is the compact Vendor home-screen tile.
   final bool compact;
 
-  /// Draws only horizontal edges instead of a full rectangular frame.
+  // Draws only horizontal edges instead of a full rectangular frame.
   final bool horizontalBordersOnly;
 
   const VendorCategoryCard({

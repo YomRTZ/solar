@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/app/routing/app_router.dart';
 import 'package:flutter_app/app/routing/app_routes.dart';
 
-/// Demo app to test Company and Bank Details screens
+// Demo app to test Company and Bank Details screens
 class CompanyBankDemoApp extends StatelessWidget {
   const CompanyBankDemoApp({super.key});
 
@@ -20,7 +20,7 @@ class CompanyBankDemoApp extends StatelessWidget {
   }
 }
 
-/// Run this to test the screens
+// Run this to test the screens
 void main() {
   runApp(const CompanyBankDemoApp());
 }

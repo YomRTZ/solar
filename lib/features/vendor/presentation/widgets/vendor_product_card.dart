@@ -5,48 +5,28 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_add_to_rfq_button.dart';
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_price_badge.dart';
 
-/// Reusable vertical product card used in the Vendor "All Products" grid.
-///
-/// Two visual states driven by [quantity]:
-///   - `0`  → shows a full-width "Add to RFQ" button
-///   - `>0` → shows a quantity row: [🗑] [count] [+]
-///
-/// The card matches the design in the screenshot:
-/// light-blue image background, white content area, price badge, action row.
-///
-/// Usage:
-/// ```dart
-/// VendorProductCard(
-///   imagePath: 'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
-///   name: '100 X 100 Solar Panel Matched Premium',
-///   price: 'Rs.10000/-',
-///   quantity: qty,
-///   onAdd: () { ... },
-///   onIncrement: () { ... },
-///   onDecrement: () { ... },
-/// );
-/// ```
+// Reusable vertical product card used in the Vendor "All Products" grid
 class VendorProductCard extends StatelessWidget {
   final String imagePath;
   final String name;
   final String price;
 
-  /// Current quantity in the RFQ cart (0 = not yet added).
+  // Current quantity in the RFQ cart (0 = not yet added).
   final int quantity;
 
-  /// Fires when the "Add to RFQ" button is tapped (quantity == 0).
+  // Fires when the "Add to RFQ" button is tapped (quantity == 0).
   final VoidCallback onAdd;
 
-  /// Fires when + is tapped (quantity > 0).
+  // Fires when + is tapped (quantity > 0).
   final VoidCallback onIncrement;
 
-  /// Fires when 🗑/− is tapped (quantity > 0).
+  // Fires when 🗑/− is tapped (quantity > 0).
   final VoidCallback onDecrement;
 
-  /// Tapped anywhere on the card (optional — e.g. open detail page).
+  // Tapped anywhere on the card (optional — e.g. open detail page).
   final VoidCallback? onTap;
 
-  /// Whether [imagePath] is a network URL (default: false).
+  // Whether [imagePath] is a network URL (default: false).
   final bool isNetworkImage;
 
   const VendorProductCard({
@@ -159,9 +139,7 @@ class VendorProductCard extends StatelessWidget {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Sub-widgets (private)
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Sub-widgets
 
 class _AddToRFQButton extends StatelessWidget {
   final VoidCallback onTap;

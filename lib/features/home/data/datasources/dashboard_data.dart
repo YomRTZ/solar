@@ -1,6 +1,6 @@
 import 'package:flutter_app/features/rfq/domain/entities/rfq.dart';
 
-/// Mock data used exclusively on the Dashboard / Home screen
+// Mock data used exclusively on the Dashboard / Home screen
 class DashboardData {
   // ── Stats ──────────────────────────────────────────────────
   static const int allProducts = 234;

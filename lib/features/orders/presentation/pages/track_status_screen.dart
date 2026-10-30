@@ -9,9 +9,7 @@ import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/orders/data/datasources/order_dispatch_updates.dart';
 import 'package:flutter_app/features/orders/domain/entities/order.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DATA MODEL
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── DATA MODEL
 
 enum TrackStep { orderConfirmed, dispatched, inTransit, delivered }
 
@@ -62,9 +60,7 @@ class TrackEvent {
       step == TrackStep.delivered || dateTime != null || subText != null;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SCREEN
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── SCREEN
 
 class TrackStatusScreen extends StatelessWidget {
   final Order order;
@@ -162,9 +158,7 @@ class TrackStatusScreen extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TIMELINE ROW
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── TIMELINE ROW
 
 class _TimelineRow extends StatelessWidget {
   final TrackEvent event;
@@ -335,9 +329,7 @@ class _TimelineRow extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DASHED VERTICAL LINE
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── DASHED VERTICAL
 
 class _DashedLine extends StatelessWidget {
   final Color color;
@@ -383,9 +375,7 @@ class _DashedLinePainter extends CustomPainter {
       oldDelegate.color != color;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// THUMBNAIL
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── THUMBNAIL
 
 class _Thumbnail extends StatelessWidget {
   final String? path;
@@ -419,9 +409,7 @@ class _Thumbnail extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// BACK TO DASHBOARD BUTTON
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── BACK TO DASHBOARD
 
 class _DashboardButton extends StatelessWidget {
   final VoidCallback onTap;

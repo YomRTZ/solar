@@ -6,9 +6,7 @@ import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/rfq/domain/entities/rfq.dart';
 
-/// Two-phase screen:
-///  Phase 1 — shows product detail + "Quote Now" / "Reject Quote" buttons
-///  Phase 2 — shows quote form (Quantity, Unit Price, Gst, Delivery Date) + "Send Quote"
+// Two-phase screen: Phase 1 — shows product detail + "Quote Now" / "Reject Quote" buttons Phase 2
 class RFQDetailScreen extends StatefulWidget {
   final RFQ rfq;
 
@@ -19,7 +17,7 @@ class RFQDetailScreen extends StatefulWidget {
 }
 
 class _RFQDetailScreenState extends State<RFQDetailScreen> {
-  /// false = detail view, true = quote form view
+  // false = detail view, true = quote form view
   bool _showQuoteForm = false;
 
   // Quote form controllers
@@ -123,9 +121,7 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
     );
   }
 
-  // ══════════════════════════════════════════════════════════
-  // PHASE 1 — Detail View
-  // ══════════════════════════════════════════════════════════
+  // ══════════════════════════════════════════════════════════ PHASE 1 — Detail View
   Widget _buildDetailView() {
     final rfq = widget.rfq;
     return SingleChildScrollView(
@@ -330,9 +326,7 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
     );
   }
 
-  // ══════════════════════════════════════════════════════════
-  // PHASE 2 — Quote Form
-  // ══════════════════════════════════════════════════════════
+  // ══════════════════════════════════════════════════════════ PHASE 2 — Quote Form
   Widget _buildQuoteForm() {
     final rfq = widget.rfq;
     return SingleChildScrollView(
@@ -434,7 +428,7 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
     );
   }
 
-  /// Read-only styled box (Quantity is pre-filled, not editable)
+  // Read-only styled box (Quantity is pre-filled, not editable)
   Widget _readOnlyField(String value) {
     return Container(
       height: 46,

@@ -6,28 +6,7 @@ import 'package:flutter_app/features/vendor/presentation/widgets/vendor_add_to_r
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_price_badge.dart';
 import 'package:flutter_app/features/catalog/domain/entities/catalog_product.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Vendor Product Detail Sheet
-//
-// Bottom sheet shown when a product card is tapped.
-// Contains:
-//   • Brand label + product name + image + price badge + stock status
-//   • Quantity stepper (delete | count | +)
-//   • Spec rows: Model Number, Category, Warranty, Dispatch Dist.
-//   • Two action buttons: "Add to Compare"  |  "Add to RFQ"
-//
-// Usage via convenience launcher:
-//   VendorProductDetailSheet.show(
-//     context: context,
-//     product: product,
-//     quantity: qty,
-//     cartCount: totalInCart,
-//     onIncrement: () { ... },
-//     onDecrement: () { ... },
-//     onAddToRFQ: () { ... },
-//     onAddToCompare: () { ... },
-//   );
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Vendor Product
 class VendorProductDetailSheet extends StatelessWidget {
   final CatalogProduct product;
   final int quantity;
@@ -131,9 +110,7 @@ class VendorProductDetailSheet extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Sub-widgets
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Sub-widgets
 
 class _CartBadge extends StatelessWidget {
   final int count;

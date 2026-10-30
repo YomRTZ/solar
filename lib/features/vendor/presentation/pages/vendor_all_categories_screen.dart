@@ -8,20 +8,13 @@ import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_category_card.dart';
 import 'package:flutter_app/features/vendor/data/datasources/vendor_data.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Vendor All Categories Screen
-// Shows:
-//  • Dark-gradient header with back arrow + "All Categories" title
-//  • Promo banner (matching Vendor home)
-//  • 2-column grid of 152 × 141 VendorCategoryCard widgets
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Vendor All
 class VendorAllCategoriesScreen extends StatelessWidget {
   final VoidCallback? onBackPressed;
 
   const VendorAllCategoriesScreen({super.key, this.onBackPressed});
 
-  // All categories repeated twice to fill the grid (mimics the screenshot
-  // which shows the same four categories listed multiple times).
+  // All categories repeated twice to fill the grid (mimics the screenshot which shows the same
   static final List<_CategoryEntry> _allEntries = [
     ...VendorData.categories.map((c) => _CategoryEntry(category: c)),
     ...VendorData.categories.map((c) => _CategoryEntry(category: c)),

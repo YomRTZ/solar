@@ -1,7 +1,7 @@
 import 'package:flutter_app/features/supplier/domain/entities/supplier.dart';
 import 'package:flutter_app/features/catalog/domain/entities/catalog_product.dart';
 
-/// Mock data for the vendor screens.
+// Mock data for the vendor screens.
 class SupplierData {
   static const String _img =
       'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png';

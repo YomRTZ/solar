@@ -9,18 +9,9 @@ import 'package:flutter_app/features/vendor/presentation/pages/vendor_rfq_reques
 import 'package:flutter_app/features/orders/presentation/pages/orders_screen.dart';
 import 'package:flutter_app/features/profile/presentation/pages/vendor_profile_screen.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Vendor Main Screen — root shell with bottom navigation bar
-//
-// Tabs:
-//   0  Home          → VendorHomeScreen
-//   1  Categories    → VendorAllCategoriesScreen
-//   2  My RFQs       → VendorRfqRequestsScreen
-//   3  Orders        → OrdersScreen
-//   4  Profile       → VendorProfileScreen
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Vendor Main Screen
 class VendorMainScreen extends StatefulWidget {
-  /// Optionally start on a specific tab index (default: 0 = Home).
+  // Optionally start on a specific tab index (default: 0 = Home).
   final int initialIndex;
 
   const VendorMainScreen({super.key, this.initialIndex = 0});
@@ -74,9 +65,7 @@ class _VendorMainScreenState extends State<VendorMainScreen> {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Bottom navigation bar
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Bottom navigation
 class _VendorNavBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;

@@ -25,8 +25,7 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
 
   // ── Simulate file picking ──────────────────────────────────
   void _pickFile(void Function(String fileName) onPicked) {
-    // In production replace with file_picker package call.
-    // For now we just simulate a picked filename.
+    // In production replace with file_picker package call. For now we just simulate a picked filename.
     onPicked('document_selected.pdf');
   }
 
@@ -77,7 +76,7 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
             // ── Scrollable form body ─────────────────────────
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+                padding: const EdgeInsets.fromLTRB(19, 23, 14, 25),
                 child: Column(
                   children: [
                     // ── Gst Certificate ──────────────────────
@@ -91,7 +90,7 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                         (f) => setState(() => _gstCertificateFile = f),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 10),
 
                     // ── Pan Card ─────────────────────────────
                     AppFileUploadField(
@@ -103,7 +102,7 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                       onTap: () =>
                           _pickFile((f) => setState(() => _panCardFile = f)),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 10),
 
                     // ── Business Registration ─────────────────
                     AppFileUploadField(
@@ -116,7 +115,7 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                         (f) => setState(() => _businessRegistrationFile = f),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 10),
 
                     // ── Cancelled Cheque ──────────────────────
                     AppFileUploadField(

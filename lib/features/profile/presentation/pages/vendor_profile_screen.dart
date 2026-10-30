@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:flutter_app/app/routing/app_routes.dart';
 
-/// Profile tab used inside [VendorMainScreen] (no back arrow — it's a root tab).
+// Profile tab used inside [VendorMainScreen] (no back arrow — it's a root tab).
 class VendorProfileScreen extends StatelessWidget {
   const VendorProfileScreen({super.key});
 
@@ -21,71 +21,123 @@ class VendorProfileScreen extends StatelessWidget {
       ),
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        body: Stack(
           children: [
-            _VendorProfileHeader(),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(20, 28, 20, 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildAvatarSection(),
-                    const SizedBox(height: 28),
-                    _buildBusinessCard(context),
-                    const SizedBox(height: 32),
-                    _buildLogoutRow(context),
-                  ],
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _VendorProfileHeader(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    // top padding leaves space for the avatar overlap
+                    padding: const EdgeInsets.fromLTRB(20, 60, 17, 32),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 28),
+                        _buildBusinessCard(context),
+                        const SizedBox(height: 16),
+                        _buildLinkRow(
+                          context,
+                          icon: Icons.account_circle_outlined,
+                          label: 'Account Details',
+                          onTap: () => context.push(AppRoutes.vendorBankDetails),
+                        ),
+                        const SizedBox(height: 16),
+                        _buildLinkRow(
+                          context,
+                          icon: Icons.description_outlined,
+                          label: 'Documents',
+                          onTap: () => context.push(AppRoutes.vendorUploadDocuments),
+                        ),
+                        const SizedBox(height: 16),
+                        _buildLogoutRow(context),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+              ],
+            ),
+
+            // ── Avatar circle ─────────────────────────────
+            // top = header height + 31, left:132, right:138
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final statusBarHeight = MediaQuery.of(context).padding.top;
+                final headerHeight = statusBarHeight + 80;
+                final avatarTop = headerHeight + 31;
+                return Stack(
+                  children: [
+                    // Avatar circle
+                    Positioned(
+                      top: avatarTop,
+                      left: 132,
+                      right: 138,
+                      child: Container(
+                        width: 84,
+                        height: 84,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFD6E4F7),
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'ST',
+                          style: GoogleFonts.inter(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF003A8A),
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // ── "Solar Trade" name ──────────────────
+                    // left:134.5, right:131.5, 12px below avatar
+                    // bottom:2 gap before "Rahul Roy"
+                    Positioned(
+                      top: avatarTop + 84 + 12,
+                      left: 134.5,
+                      right: 131.5,
+                      child: Text(
+                        'Solar Trade',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          height: 1.2,
+                          letterSpacing: 16 * 0.002,
+                          color: const Color(0xFF262422),
+                        ),
+                      ),
+                    ),
+
+                    // ── "Solar@gmail.com" email ────────────
+                    // left:112, right:109, 2px below name (~19px name height)
+                    Positioned(
+                      top: avatarTop + 84 + 12 + 19 + 2,
+                      left: 112,
+                      right: 109,
+                      child: Text(
+                        'Solar@gmail.com',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          height: 1.2,
+                          letterSpacing: 13 * 0.002,
+                          color: const Color(0xFFABABAB),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildAvatarSection() {
-    return Column(
-      children: [
-        Container(
-          width: 84,
-          height: 84,
-          decoration: const BoxDecoration(
-            color: Color(0xFFD6E4F7),
-            shape: BoxShape.circle,
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            'ST',
-            style: GoogleFonts.inter(
-              fontSize: 28,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF003A8A),
-              letterSpacing: 1,
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          'Solar Trade',
-          style: GoogleFonts.inter(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: const Color(0xFF202020),
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Rahul Roy',
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            fontWeight: FontWeight.w400,
-            color: const Color(0xFF6C7278),
-          ),
-        ),
-      ],
     );
   }
 
@@ -111,8 +163,8 @@ class VendorProfileScreen extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  width: 36,
-                  height: 36,
+                  width: 32,
+                  height: 32,
                   decoration: BoxDecoration(
                     color: const Color(0xFFD6E4F7),
                     borderRadius: BorderRadius.circular(8),
@@ -126,20 +178,24 @@ class VendorProfileScreen extends StatelessWidget {
                 const SizedBox(width: 10),
                 Text(
                   'Business Information',
-                  style: GoogleFonts.inter(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
+                  style: GoogleFonts.nunito(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    height: 1.5,
+                    letterSpacing: 0,
                     color: const Color(0xFF003A8A),
                   ),
                 ),
                 const Spacer(),
                 GestureDetector(
-                  onTap: () => context.push(AppRoutes.updateProfile),
+                  onTap: () => context.push(AppRoutes.companyDetails),
                   child: Text(
                     'Edit',
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                    style: GoogleFonts.nunito(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      height: 1.5,
+                      letterSpacing: 0,
                       color: const Color(0xFF003A8A),
                     ),
                   ),
@@ -148,9 +204,10 @@ class VendorProfileScreen extends StatelessWidget {
             ),
           ),
           const Divider(height: 1, color: Color(0xFFEDF1F3)),
-          _infoRow('Business', 'Solar Trade'),
-          _infoRow('Contact Person', 'Rahul Roy'),
+          _infoRow('Company Name', 'Solar Trade'),
+          _infoRow('Email Address', 'Solar@gmail.com'),
           _infoRow('Address', '13-223 Saket, New Delhi'),
+          _infoRow('Dispatch Location', '13-223 Saket, New Delhi'),
           _infoRow('Gst Number', '9876546879'),
           _infoRow('Pan Number', '12345678', isLast: true),
         ],
@@ -162,28 +219,45 @@ class VendorProfileScreen extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+          child: Stack(
             children: [
-              SizedBox(
-                width: 120,
+              // Label on the left
+              Text(
+                label,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  height: 1.6,
+                  letterSpacing: 12 * -0.02,
+                  color: const Color(0xFF6C7278),
+                ),
+              ),
+              // Value fixed at left:170 from the row padding reference
+              Positioned(
+                left: 170 - 16, // subtract row horizontal padding
+                top: 0,
+                right: 0,
                 child: Text(
-                  label,
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
+                  value,
+                  style: GoogleFonts.roboto(
+                    fontSize: 12,
                     fontWeight: FontWeight.w400,
-                    color: const Color(0xFF6C7278),
+                    height: 16 / 12,
+                    letterSpacing: 0,
+                    color: const Color(0xFF2A2A2A),
                   ),
                 ),
               ),
-              Expanded(
+              // Invisible spacer to give the row its natural height
+              Opacity(
+                opacity: 0,
                 child: Text(
-                  value,
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
+                  label,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: const Color(0xFF202020),
+                    height: 1.6,
                   ),
                 ),
               ),
@@ -195,11 +269,16 @@ class VendorProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLogoutRow(BuildContext context) {
+  Widget _buildLinkRow(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
     return GestureDetector(
-      onTap: () => context.go(AppRoutes.login),
+      onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.fromLTRB(40, 23, 103, 15),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -215,8 +294,57 @@ class VendorProfileScreen extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 36,
-              height: 36,
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: const Color(0xFFD6E4F7),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                icon,
+                color: const Color(0xFF003A8A),
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              label,
+              style: GoogleFonts.nunito(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                height: 1.5,
+                letterSpacing: 0,
+                color: const Color(0xFF003A8A),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLogoutRow(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.go(AppRoutes.login),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(40, 23, 103, 15),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFEDF1F3)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: const Color(0xFFD6E4F7),
                 borderRadius: BorderRadius.circular(8),
@@ -230,10 +358,12 @@ class VendorProfileScreen extends StatelessWidget {
             const SizedBox(width: 12),
             Text(
               'Logout',
-              style: GoogleFonts.inter(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                color: const Color(0xFF202020),
+              style: GoogleFonts.nunito(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                height: 1.5,
+                letterSpacing: 0,
+                color: const Color(0xFF003A8A),
               ),
             ),
           ],

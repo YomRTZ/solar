@@ -1,4 +1,4 @@
-/// Product model class to store product data
+// Product model class to store product data
 class Product {
   final String id;
   final String title;
@@ -18,23 +18,23 @@ class Product {
     required this.category,
   });
 
-  /// Check if product is in stock
+  // Check if product is in stock
   bool get isInStock => status == ProductStatus.inStock;
 
-  /// Check if product is low stock
+  // Check if product is low stock
   bool get isLowStock => status == ProductStatus.lowStock;
 
-  /// Check if product is out of stock
+  // Check if product is out of stock
   bool get isOutOfStock => status == ProductStatus.outOfStock;
 }
 
-/// Product status enum
+// Product status enum
 enum ProductStatus { inStock, lowStock, outOfStock }
 
-/// Product category enum
+// Product category enum
 enum ProductCategory { all, panel, battery, inverter }
 
-/// Extension to get display name for category
+// Extension to get display name for category
 extension ProductCategoryExtension on ProductCategory {
   String get displayName {
     switch (this) {
@@ -50,7 +50,7 @@ extension ProductCategoryExtension on ProductCategory {
   }
 }
 
-/// Extension to get display name for status
+// Extension to get display name for status
 extension ProductStatusExtension on ProductStatus {
   String get displayName {
     switch (this) {

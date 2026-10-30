@@ -9,8 +9,7 @@ import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/products/domain/entities/product.dart';
 
 class EditProductScreen extends StatefulWidget {
-  /// Pass an existing product to pre-fill the form.
-  /// If null, fields start empty.
+  // Pass an existing product to pre-fill the form. If null, fields start empty.
   final Product? product;
 
   const EditProductScreen({super.key, this.product});
@@ -298,9 +297,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     );
   }
 
-  // ────────────────────────────────────────────────────────────
-  // Success Banner
-  // ────────────────────────────────────────────────────────────
+  // ──────────────────────────────────────────────────────────── Success Banner
   Widget _buildSuccessBanner() {
     return Container(
       width: double.infinity,

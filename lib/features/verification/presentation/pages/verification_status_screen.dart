@@ -10,20 +10,11 @@ import 'package:flutter_app/core/widgets/app_continue_button.dart';
 // ── Status enum ────────────────────────────────────────────────────────────
 enum VerificationStatus { inProgress, approved, rejected }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Main Screen
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Main Screen ────────────────────────────────────────────────────────────
 class VerificationStatusScreen extends StatelessWidget {
   final VerificationStatus status;
-
-  /// Button callback for Approved → Continue
   final VoidCallback? onContinue;
-
-  /// Button callback for Rejected → Update Details
   final VoidCallback? onUpdateDetails;
-
-  /// Error detail shown only in rejected state
-  /// e.g. "Invalid Gst Certificate"
   final String? errorDetail;
 
   const VerificationStatusScreen({
@@ -34,7 +25,6 @@ class VerificationStatusScreen extends StatelessWidget {
     this.errorDetail,
   });
 
-  // ── Convenience constructors ──────────────────────────────
   const VerificationStatusScreen.inProgress({super.key})
     : status = VerificationStatus.inProgress,
       onContinue = null,
@@ -68,15 +58,11 @@ class VerificationStatusScreen extends StatelessWidget {
         extendBodyBehindAppBar: true,
         body: Column(
           children: [
-            // ── Reusable gradient header ──────────────────
             AppHeader(
               title: 'Verification Status',
               height: 133,
-              // Only show back on rejected screen
               showBackButton: status == VerificationStatus.rejected,
             ),
-
-            // ── Status body ───────────────────────────────
             Expanded(child: _buildBody(context)),
           ],
         ),
@@ -101,9 +87,91 @@ class VerificationStatusScreen extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// STATE 1 — In Progress
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Shared layout wrapper ──────────────────────────────────────────────────
+// All content sits inside a container: left:19, top:143 from header, right:14
+// The header is 192px, so top from screen = 192 + 143 = 335.
+// Inside the container:
+//   icon:        left:108, right:108, bottom:27
+//   title:       left:53.5, right:53.5, bottom:8 (below icon)
+//   description: left:57, right:57
+class _StatusLayout extends StatelessWidget {
+  final Widget icon;
+  final Widget title;
+  final Widget description;
+  final Widget? button;
+
+  const _StatusLayout({
+    required this.icon,
+    required this.title,
+    required this.description,
+    this.button,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Stack(
+          children: [
+            // ── Content wrapper ──────────────────────────
+            Positioned(
+              top: 143,
+              left: 19,
+              right: 14,
+              bottom: 0,
+              child: Stack(
+                children: [
+                  // ── Icon ─────────────────────────────
+                  // left:108, right:108, bottom:27 from wrapper
+                  Positioned(
+                    left: 108,
+                    right: 108,
+                    top: 0,
+                    bottom: 27,
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: icon,
+                    ),
+                  ),
+
+                  // ── Title ────────────────────────────
+                  // left:53.5, right:53.5 from wrapper
+                  // positioned below icon area
+                  Positioned(
+                    left: 53.5,
+                    right: 53.5,
+                    top: 138, // icon height ~111 + 27 bottom gap
+                    child: title,
+                  ),
+
+                  // ── Description ──────────────────────
+                  // left:57, right:57 from wrapper
+                  Positioned(
+                    left: 57,
+                    right: 57,
+                    top: 194, // title top + ~48 (title height + 8 gap)
+                    child: description,
+                  ),
+                ],
+              ),
+            ),
+
+            // ── Button ───────────────────────────────────
+            if (button != null)
+              Positioned(
+                left: 19,
+                right: 14,
+                bottom: 48,
+                child: button!,
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// ── STATE 1 — In Progress ─────────────────────────────────────────────────
 class _InProgressBody extends StatefulWidget {
   @override
   State<_InProgressBody> createState() => _InProgressBodyState();
@@ -117,19 +185,15 @@ class _InProgressBodyState extends State<_InProgressBody>
   @override
   void initState() {
     super.initState();
-
-    // ── Pulse animation ───────────────────────────────────
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1400),
     )..repeat(reverse: true);
 
-    _pulse = Tween<double>(
-      begin: 0.92,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    _pulse = Tween<double>(begin: 0.92, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
 
-    // ── Auto-redirect to Approved after 3 seconds ─────────
     Future.delayed(const Duration(seconds: 3), () {
       if (!mounted) return;
       context.go(AppRoutes.verificationApproved);
@@ -144,34 +208,93 @@ class _InProgressBodyState extends State<_InProgressBody>
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // ── Animated icon illustration ────────────────
-            ScaleTransition(scale: _pulse, child: _buildIllustration()),
-            const SizedBox(height: 32),
+    return _StatusLayout(
+      icon: ScaleTransition(
+        scale: _pulse,
+        child: Image.asset(
+          'assets/icons/image_1_1.png',
+          width: 111,
+          height: 111,
+          fit: BoxFit.contain,
+        ),
+      ),
+      title: Text(
+        'Verification in Progress',
+        textAlign: TextAlign.center,
+        style: GoogleFonts.inter(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: const Color(0xFF003A8A),
+          height: 1.3,
+          letterSpacing: 20 * -0.02,
+        ),
+      ),
+      description: Text(
+        'We are verifying your documents\nand business details.',
+        textAlign: TextAlign.center,
+        style: GoogleFonts.inter(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: const Color(0xFF808080),
+          height: 1.3,
+          letterSpacing: 14 * -0.02,
+        ),
+      ),
+    );
+  }
+}
 
-            // ── Title ─────────────────────────────────────
-            Text(
-              'Verification in Progress',
-              textAlign: TextAlign.center,
+// ── STATE 2 — Approved ────────────────────────────────────────────────────
+class _ApprovedBody extends StatelessWidget {
+  final VoidCallback onContinue;
+  const _ApprovedBody({required this.onContinue});
+
+  @override
+  Widget build(BuildContext context) {
+    return _StatusLayout(
+      icon: Image.asset(
+        'assets/icons/image_1.png',
+        width: 111,
+        height: 111,
+        fit: BoxFit.contain,
+      ),
+      title: Text(
+        'Account Approved!',
+        textAlign: TextAlign.center,
+        style: GoogleFonts.inter(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: const Color(0xFF008000),
+          height: 1.3,
+          letterSpacing: 20 * -0.02,
+        ),
+      ),
+      description: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: 'Your ',
               style: GoogleFonts.inter(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: const Color(0xFF003A8A),
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF808080),
                 height: 1.3,
-                letterSpacing: 20 * -0.02,
+                letterSpacing: 14 * -0.02,
               ),
             ),
-            const SizedBox(height: 12),
-
-            // ── Subtitle ──────────────────────────────────
-            Text(
-              'We are verifying your documents\nand business details.',
-              textAlign: TextAlign.center,
+            TextSpan(
+              text: 'Supplier',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFF808080),
+                height: 1.3,
+                letterSpacing: 14 * -0.02,
+              ),
+            ),
+            TextSpan(
+              text: ' account has been verified',
               style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -183,102 +306,16 @@ class _InProgressBodyState extends State<_InProgressBody>
           ],
         ),
       ),
-    );
-  }
-
-  // PNG illustration for in-progress state
-  Widget _buildIllustration() {
-    return Image.asset('assets/icons/image_1_1.png', width: 111, height: 111);
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// STATE 2 — Approved
-// ─────────────────────────────────────────────────────────────────────────────
-class _ApprovedBody extends StatelessWidget {
-  final VoidCallback onContinue;
-  const _ApprovedBody({required this.onContinue});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // ── Approved PNG illustration ─────────────────────
-          Image.asset('assets/icons/image_1.png', width: 327, height: 111),
-          const SizedBox(height: 16),
-
-          // ── Title ─────────────────────────────────────────
-          Text(
-            'Account Approved!',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.inter(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF008000),
-              height: 1.3,
-              letterSpacing: 20 * -0.02,
-            ),
-          ),
-          const SizedBox(height: 10),
-
-          // ── Subtitle ──────────────────────────────────────
-          RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: 'Your ',
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF808080),
-                    height: 1.3,
-                    letterSpacing: 14 * -0.02,
-                  ),
-                ),
-                TextSpan(
-                  text: 'Supplier',
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF808080),
-                    height: 1.3,
-                    letterSpacing: 14 * -0.02,
-                  ),
-                ),
-                TextSpan(
-                  text: ' account has been verified',
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF808080),
-                    height: 1.3,
-                    letterSpacing: 14 * -0.02,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 40),
-
-          // ── Reusable Continue button ───────────────────────
-          AppContinueButton(
-            text: 'Continue',
-            showArrow: false,
-            onPressed: onContinue,
-          ),
-        ],
+      button: AppContinueButton(
+        text: 'Continue',
+        showArrow: false,
+        onPressed: onContinue,
       ),
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// STATE 3 — Rejected / Action Required
-// ─────────────────────────────────────────────────────────────────────────────
+// ── STATE 3 — Rejected ────────────────────────────────────────────────────
 class _RejectedBody extends StatelessWidget {
   final String errorDetail;
   final VoidCallback onUpdateDetails;
@@ -289,28 +326,27 @@ class _RejectedBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    return _StatusLayout(
+      icon: Image.asset(
+        'assets/icons/image_1_2.png',
+        width: 111,
+        height: 111,
+        fit: BoxFit.contain,
+      ),
+      title: Text(
+        'Action Required!',
+        textAlign: TextAlign.center,
+        style: GoogleFonts.inter(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: const Color(0xFFB31515),
+          height: 1.3,
+          letterSpacing: 20 * -0.02,
+        ),
+      ),
+      description: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // ── Rejected PNG illustration ─────────────────────
-          Image.asset('assets/icons/image_1_2.png', width: 110, height: 110),
-          const SizedBox(height: 32),
-
-          // ── Title ─────────────────────────────────────────
-          Text(
-            'Action Required!',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.inter(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFFB31515),
-            ),
-          ),
-          const SizedBox(height: 10),
-
-          // ── Subtitle ──────────────────────────────────────
           Text(
             'Your application need corrections',
             textAlign: TextAlign.center,
@@ -322,8 +358,6 @@ class _RejectedBody extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-
-          // ── Error detail (e.g. "Invalid Gst Certificate") ─
           Text(
             errorDetail,
             textAlign: TextAlign.center,
@@ -334,15 +368,12 @@ class _RejectedBody extends StatelessWidget {
               height: 1.6,
             ),
           ),
-          const SizedBox(height: 40),
-
-          // ── Reusable Update Details button ────────────────
-          AppContinueButton(
-            text: 'Update Details',
-            showArrow: false,
-            onPressed: onUpdateDetails,
-          ),
         ],
+      ),
+      button: AppContinueButton(
+        text: 'Update Details',
+        showArrow: false,
+        onPressed: onUpdateDetails,
       ),
     );
   }

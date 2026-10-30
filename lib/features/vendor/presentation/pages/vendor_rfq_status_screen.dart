@@ -7,18 +7,9 @@ import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/core/widgets/app_header.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Vendor — RFQ Status Screen
-//
-// Layout:
-//  • Dark-gradient top section with "RFQ Status" title
-//  • White body with the account status illustration
-//  • "RFQ Send Successfully!" headline + subtitle
-//  • "Go to dashboard" button
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Vendor — RFQ
 class VendorRfqStatusScreen extends StatelessWidget {
-  /// Whether the RFQ was sent successfully (default: true).
-  /// Pass false to show a failure state.
+  // Whether the RFQ was sent successfully (default: true). Pass false to show a failure state.
   final bool isSuccess;
 
   const VendorRfqStatusScreen({super.key, this.isSuccess = true});
@@ -101,9 +92,7 @@ class VendorRfqStatusScreen extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Uses the same illustrations as the account approval and rejection states.
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Uses the same
 class _StatusIllustration extends StatelessWidget {
   final bool isSuccess;
   const _StatusIllustration({required this.isSuccess});

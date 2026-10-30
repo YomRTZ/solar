@@ -4,9 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/wallet/presentation/widgets/withdraw_balance_sheet.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Model
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Model
 enum _TransactionType { credit, debit }
 
 class _Transaction {
@@ -23,9 +21,7 @@ class _Transaction {
   });
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Screen
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Screen
 class MyWalletScreen extends StatelessWidget {
   const MyWalletScreen({super.key});
 
@@ -120,9 +116,7 @@ class MyWalletScreen extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Balance card
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Balance card
 class _BalanceCard extends StatelessWidget {
   final VoidCallback onWithdrawTap;
   const _BalanceCard({required this.onWithdrawTap});
@@ -212,9 +206,7 @@ class _BalanceCard extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Transaction card
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Transaction card
 class _TransactionCard extends StatelessWidget {
   final _Transaction transaction;
   const _TransactionCard({required this.transaction});

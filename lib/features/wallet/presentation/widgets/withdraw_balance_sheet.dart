@@ -3,9 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter_app/core/widgets/app_bottom_sheet.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Public model — callers build their own account list
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Public model —
 class BankAccountModel {
   final String name;
   final String maskedNumber;
@@ -13,24 +11,7 @@ class BankAccountModel {
   const BankAccountModel({required this.name, required this.maskedNumber});
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Withdraw Balance Sheet
-//
-// Fully parameterised — every piece of data and behaviour is injected.
-//
-// Minimal usage:
-//   AppBottomSheet.show(
-//     context: context,
-//     title: 'Withdraw Balance',
-//     child: WithdrawBalanceContent(
-//       accounts: myAccounts,
-//       onWithdraw: (amount, account) { ... },
-//     ),
-//   );
-//
-// Or use the convenience launcher:
-//   WithdrawBalanceSheet.show(context: context, accounts: myAccounts);
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Withdraw Balance
 class WithdrawBalanceSheet extends StatelessWidget {
   final List<BankAccountModel> accounts;
   final String initialAmount;
@@ -39,9 +20,7 @@ class WithdrawBalanceSheet extends StatelessWidget {
   final String accountLabel;
   final String buttonLabel;
 
-  /// Called when the user taps the action button.
-  /// [amount] is the current text-field value.
-  /// [account] is the selected [BankAccountModel].
+  // Called when the user taps the action button
   final void Function(String amount, BankAccountModel account)? onWithdraw;
 
   const WithdrawBalanceSheet({
@@ -55,8 +34,7 @@ class WithdrawBalanceSheet extends StatelessWidget {
     this.onWithdraw,
   }) : assert(accounts.length > 0, 'Provide at least one bank account');
 
-  /// Convenience launcher — wraps [AppBottomSheet.show] so callers
-  /// don't need to import [AppBottomSheet] separately.
+  // Convenience launcher — wraps [AppBottomSheet.show] so callers don't need to import
   static Future<void> show({
     required BuildContext context,
     required List<BankAccountModel> accounts,
@@ -84,9 +62,7 @@ class WithdrawBalanceSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // When used via the convenience launcher the title is already rendered by
-    // AppBottomSheet. When used standalone (e.g. embedded directly in a page)
-    // we wrap ourselves in AppBottomSheet so the shell is always present.
+    // When used via the convenience launcher the title is already rendered by AppBottomSheet
     final content = _WithdrawBalanceContent(
       accounts: accounts,
       initialAmount: initialAmount,
@@ -96,21 +72,17 @@ class WithdrawBalanceSheet extends StatelessWidget {
       onWithdraw: onWithdraw,
     );
 
-    // If a non-empty title was passed the caller is using WithdrawBalanceSheet
-    // directly (not via show()), so we render the full shell ourselves.
+    // If a non-empty title was passed the caller is using WithdrawBalanceSheet directly (not via
     if (title.isNotEmpty) {
       return AppBottomSheet(title: title, child: content);
     }
 
-    // Called from show() — AppBottomSheet is already the parent, so just
-    // return the content.
+    // Called from show() — AppBottomSheet is already the parent, so just return the content.
     return content;
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Stateful content — owns the text controller + selection state
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Stateful content —
 class _WithdrawBalanceContent extends StatefulWidget {
   final List<BankAccountModel> accounts;
   final String initialAmount;
@@ -256,9 +228,7 @@ class _WithdrawBalanceContentState extends State<_WithdrawBalanceContent> {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Account tile
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Account tile
 class _AccountTile extends StatelessWidget {
   final BankAccountModel account;
   final bool isSelected;

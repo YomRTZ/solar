@@ -9,8 +9,7 @@ import 'package:flutter_app/core/constants/app_colors.dart';
 class OtpVerificationScreen extends StatefulWidget {
   final String mobileNumber;
 
-  /// The role selected on the login screen — 'Supplier' or 'Vendor'.
-  /// Determines which screen to navigate to after OTP verification.
+  // The role selected on the login screen — 'Supplier' or 'Vendor'
   final String role;
 
   const OtpVerificationScreen({
@@ -42,8 +41,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   }
 
   void _continue() {
-    // Vendor → vendor create account + plan flow
-    // Supplier → original supplier company details flow
+    // Vendor → vendor create account + plan flow Supplier → original supplier company details flow
     if (widget.role == 'Vendor') {
       context.push(AppRoutes.createAccount);
     } else {
@@ -118,153 +116,166 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       ),
       child: Scaffold(
         backgroundColor: Colors.white,
+        resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final contentWidth = constraints.maxWidth < 359
-                  ? constraints.maxWidth - 32
-                  : 327.0;
+              return Stack(
+                children: [
+                  // ── Logo ───────────────────────────────────
+                  Positioned(
+                    top: 77,
+                    bottom: 575,
+                    left: 88.5,
+                    right: 89.5,
+                    child: Image.asset(
+                      'assets/images/photo_5979016740496674893_x.jpg',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
 
-              return SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 77, 16, 24),
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: SizedBox(
-                    width: contentWidth,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(minHeight: 469),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Center(
-                            child: Image.asset(
-                              'assets/images/photo_5979016740496674893_x.jpg',
-                              width: 182,
-                              height: 148,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Verify OTP',
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.inter(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: -0.56,
-                                  color: AppColors.primaryBlue,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'An OTP has been sent to',
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  height: 1.5,
-                                  color: const Color(0xFF6C7278),
-                                ),
-                              ),
-                              Text(
-                                widget.mobileNumber,
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  height: 1.5,
-                                  fontWeight: FontWeight.w600,
-                                  color: const Color(0xFF1A1C1E),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 24),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 104,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                SizedBox(
-                                  height: 16,
-                                  child: Text(
-                                    'OTP',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                      color: const Color(0xFF3D4348),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                SizedBox(
-                                  height: 45,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      for (
-                                        var index = 0;
-                                        index < 6;
-                                        index++
-                                      ) ...[_buildOtpField(index)],
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 17),
-                                SizedBox(
-                                  height: 16,
-                                  child: Text(
-                                    'Resend Otp In 01:00',
-                                    textAlign: TextAlign.right,
-                                    style: GoogleFonts.inter(
-                                      fontSize: 11,
-                                      height: 1.4,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: -0.11,
-                                      color: const Color(0xFF003A8A),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          SizedBox(
-                            height: 48,
-                            child: ElevatedButton(
-                              onPressed: _continue,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primaryBlue,
-                                foregroundColor: Colors.white,
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                textStyle: GoogleFonts.inter(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text('Continue'),
-                                  SizedBox(width: 8),
-                                  Icon(Icons.arrow_forward_rounded, size: 18),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                  // ── "Verify OTP" title ─────────────────────
+                  Positioned(
+                    top: constraints.maxHeight - 575 + 24,
+                    left: 48,
+                    right: 49,
+                    child: Text(
+                      'Verify OTP',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.inter(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.56,
+                        color: AppColors.primaryBlue,
                       ),
                     ),
                   ),
-                ),
+
+                  // ── Subtitle: 12px below title (~34px title height) ──
+                  Positioned(
+                    top: constraints.maxHeight - 575 + 24 + 34 + 12,
+                    left: 68.5,
+                    right: 69.5,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'An OTP has been sent to',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            height: 1.5,
+                            letterSpacing: 12 * -0.01,
+                            color: const Color(0xFF6C7278),
+                          ),
+                        ),
+                        Text(
+                          widget.mobileNumber,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            height: 1.5,
+                            letterSpacing: 12 * -0.01,
+                            color: const Color(0xFF6C7278),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // ── OTP label + fields ─────────────────────
+                  // top:11 from above, bottom:10 to resend text
+                  Positioned(
+                    top: constraints.maxHeight - 575 + 24 + 34 + 12 + 42 + 24 + 11,
+                    left: 16,
+                    right: 17,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          'OTP',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            height: 1.6,
+                            letterSpacing: 12 * -0.02,
+                            color: const Color(0xFF6C7278),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 45,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              for (var index = 0; index < 6; index++)
+                                ...[_buildOtpField(index)],
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // ── Resend OTP text ─────────────────────────
+                  // 10px below input cards, 24px above Continue button
+                  // Continue button: bottom:254, height:48 → resend bottom = 254 + 48 + 24 = 326
+                  Positioned(
+                    left: 16,
+                    right: 17,
+                    bottom: 326,
+                    child: Text(
+                      'Resend Otp In 01:00',
+                      textAlign: TextAlign.right,
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        height: 1.4,
+                        letterSpacing: 11 * -0.01,
+                        color: const Color(0xFF003A8A),
+                      ),
+                    ),
+                  ),
+
+                  // ── Continue button ────────────────────────
+                  Positioned(
+                    left: 16,
+                    right: 17,
+                    bottom: 254,
+                    child: SizedBox(
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: _continue,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryBlue,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          textStyle: GoogleFonts.inter(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        child: Text(
+                          'Continue',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            height: 1.4,
+                            letterSpacing: 14 * -0.01,
+                            color: const Color(0xFFFFFFFF),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               );
             },
           ),

@@ -1,29 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Reusable catalog product card — 156×217px
-/// Shows two states controlled by [quantity]:
-///   0  → "Add to RFQ" button
-///   >0 → delete icon  |  count  |  + icon  (quantity row)
+// Reusable catalog product card — 156×217px
 class AppCatalogCard extends StatelessWidget {
   final String imagePath;
   final String name;
   final String subtitle;
   final String price;
 
-  /// Current quantity in RFQ (0 = not added)
+  // Current quantity in RFQ (0 = not added)
   final int quantity;
 
-  /// Called when "Add to RFQ" is tapped (quantity == 0)
+  // Called when "Add to RFQ" is tapped (quantity == 0)
   final VoidCallback onAdd;
 
-  /// Called when + is tapped (quantity > 0)
+  // Called when + is tapped (quantity > 0)
   final VoidCallback onIncrement;
 
-  /// Called when delete/− is tapped (quantity > 0)
+  // Called when delete/− is tapped (quantity > 0)
   final VoidCallback onDecrement;
 
-  /// Whether image comes from network
+  // Whether image comes from network
   final bool isNetworkImage;
 
   const AppCatalogCard({

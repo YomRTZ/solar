@@ -1,4 +1,4 @@
-/// Catalog / Vendor product model
+// Catalog / Vendor product model
 class CatalogProduct {
   final String id;
   final String name;

@@ -240,9 +240,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 
-  // ────────────────────────────────────────────────────────────
-  // Add Images Row
-  // ────────────────────────────────────────────────────────────
+  // ──────────────────────────────────────────────────────────── Add Images Row
   Widget _buildAddImages() {
     return SizedBox(
       width: double.infinity,

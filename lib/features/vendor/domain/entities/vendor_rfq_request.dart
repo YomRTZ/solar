@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Status of an RFQ request
+// Status of an RFQ request
 enum VendorRfqStatus { received, pending }
 
 extension VendorRfqStatusX on VendorRfqStatus {
@@ -32,7 +32,7 @@ extension VendorRfqStatusX on VendorRfqStatus {
   }
 }
 
-/// A single RFQ request shown in the RFQ Requests list
+// A single RFQ request shown in the RFQ Requests list
 class VendorRfqRequest {
   final String id;
   final String supplierName;
@@ -40,7 +40,7 @@ class VendorRfqRequest {
   final String dateLabel; // e.g. "Valid till 26th Oct'25"
   final VendorRfqStatus status;
 
-  /// Line items in the order breakdown sheet
+  // Line items in the order breakdown sheet
   final List<VendorOrderItem> items;
   final String subTotal;
   final String gst;
@@ -59,7 +59,7 @@ class VendorRfqRequest {
   });
 }
 
-/// A single line item in the order breakdown
+// A single line item in the order breakdown
 class VendorOrderItem {
   final String productName;
   final String qty; // e.g. "10x1 ="

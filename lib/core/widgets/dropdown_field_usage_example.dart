@@ -1,7 +1,4 @@
-/// DROPDOWN FIELD WIDGET USAGE EXAMPLES
-/// 
-/// This file demonstrates how to use the AppDropdownField widget
-/// DO NOT import this file - it's just for reference!
+// DROPDOWN FIELD WIDGET USAGE EXAMPLES This file demonstrates how to use the AppDropdownField
 library;
 
 import 'package:flutter/material.dart';
@@ -10,7 +7,7 @@ import 'package:flutter_app/core/widgets/app_text_field.dart';
 import 'package:flutter_app/core/widgets/app_header.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 
-/// Example 1: Simple String Dropdown
+// Example 1: Simple String Dropdown
 class SimpleDropdownExample extends StatefulWidget {
   const SimpleDropdownExample({super.key});
 
@@ -54,7 +51,7 @@ class _SimpleDropdownExampleState extends State<SimpleDropdownExample> {
   }
 }
 
-/// Example 2: Multiple Dropdowns in a Form
+// Example 2: Multiple Dropdowns in a Form
 class MultipleDropdownFormExample extends StatefulWidget {
   const MultipleDropdownFormExample({super.key});
 
@@ -144,7 +141,7 @@ class _MultipleDropdownFormExampleState
   }
 }
 
-/// Example 3: Mixing Text Fields and Dropdowns
+// Example 3: Mixing Text Fields and Dropdowns
 class MixedFormExample extends StatefulWidget {
   const MixedFormExample({super.key});
 
@@ -243,7 +240,7 @@ class _MixedFormExampleState extends State<MixedFormExample> {
   }
 }
 
-/// Example 4: Custom Object Dropdown
+// Example 4: Custom Object Dropdown
 class CustomObjectDropdownExample extends StatefulWidget {
   const CustomObjectDropdownExample({super.key});
 
@@ -305,7 +302,7 @@ class _CustomObjectDropdownExampleState
   }
 }
 
-/// Example 5: Disabled Dropdown
+// Example 5: Disabled Dropdown
 class DisabledDropdownExample extends StatelessWidget {
   const DisabledDropdownExample({super.key});
 
@@ -331,7 +328,7 @@ class DisabledDropdownExample extends StatelessWidget {
   }
 }
 
-/// Example 6: Dependent Dropdowns
+// Example 6: Dependent Dropdowns
 class DependentDropdownsExample extends StatefulWidget {
   const DependentDropdownsExample({super.key});
 
@@ -417,7 +414,7 @@ class _DependentDropdownsExampleState extends State<DependentDropdownsExample> {
   }
 }
 
-/// Example 7: Complete Form with All Field Types
+// Example 7: Complete Form with All Field Types
 class CompleteFormExample extends StatefulWidget {
   const CompleteFormExample({super.key});
 
@@ -505,34 +502,4 @@ class _CompleteFormExampleState extends State<CompleteFormExample> {
   }
 }
 
-/*
-SUMMARY:
-
-AppDropdownFieldString (for String values):
-- label: Label text above dropdown
-- hint: Placeholder when nothing selected
-- items: List of string options
-- value: Currently selected value
-- onChanged: Callback when selection changes
-- enabled: Enable/disable dropdown
-
-AppDropdownField<T> (for custom objects):
-- label: Label text above dropdown
-- hint: Placeholder when nothing selected
-- items: List of objects
-- itemToString: Function to convert object to display text
-- value: Currently selected value
-- onChanged: Callback when selection changes
-- enabled: Enable/disable dropdown
-
-Arrow Behavior:
-- Shows down arrow when closed
-- Shows up arrow when opened
-- Automatically changes direction
-
-Same Styling as AppTextField:
-- Same label style (Plus Jakarta Sans)
-- Same height (46px)
-- Same border and colors
-- Consistent with all input fields
-*/
+// SUMMARY: AppDropdownFieldString (for String values)

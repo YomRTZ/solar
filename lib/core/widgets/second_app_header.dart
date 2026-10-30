@@ -1,56 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Secondary reusable gradient header widget.
-///
-/// Design Specs:
-///   • Width: 360 (full screen width on design, responsive via double.infinity)
-///   • Height: 133px visible + status bar (TOTAL = statusBarHeight + 133)
-///   • Angle: 0 deg
-///   • Opacity: 1
-///
-/// Layout (matches My Products header style):
-///   • Dark gradient background (0xFF003A8A → 0xFF000F24)
-///   • Back arrow and title sit side-by-side in a Row, vertically centered in
-///     the visible area and aligned to the left
-///
-/// Difference from AppHeader:
-///   • Total height is statusBarHeight + 133 (shorter than AppHeader's 192px)
-///   • Arrow and title are in a Row (inline), not stacked in a Column
-///
-/// Used by: add product, my product, edit product, RFQ request, RFQ detail,
-///          my order, order detail, order status, order updates, track status,
-///          my wallet, my profile
-///
-/// Usage:
-/// ```dart
-/// // Simple
-/// const SecondAppHeader(title: 'My Products')
-///
-/// // No back button
-/// const SecondAppHeader(title: 'My Profile', showBackButton: false)
-///
-/// // Custom back handler
-/// SecondAppHeader(title: 'Edit Product', onBackPressed: () { ... })
-/// ```
+// Secondary reusable gradient header widget. Design Specs:
 class SecondAppHeader extends StatelessWidget {
-  /// Title shown inline with the back arrow.
+  // Title shown inline with the back arrow.
   final String title;
 
-  /// Optional secondary line shown beneath the title.
+  // Optional secondary line shown beneath the title.
   final String? subtitle;
 
-  /// Whether to show the back arrow (default: true).
+  // Whether to show the back arrow (default: true).
   final bool showBackButton;
 
-  /// Override the back-button behaviour. Defaults to [Navigator.pop].
+  // Override the back-button behaviour. Defaults to [Navigator.pop].
   final VoidCallback? onBackPressed;
 
-  /// Optional action displayed after the title.
+  // Optional action displayed after the title.
   final Widget? trailing;
 
-  /// Whether to vertically center the arrow and title in the header.
-  /// Set to false to keep the content aligned near the bottom.
+  // Whether to vertically center the arrow and title in the header
   final bool centerContentVertically;
 
   const SecondAppHeader({
@@ -101,14 +70,11 @@ class SecondAppHeader extends StatelessWidget {
                 if (showBackButton) ...[
                   GestureDetector(
                     onTap: onBackPressed ?? () => Navigator.pop(context),
-                    child: const SizedBox(
+                    child: SvgPicture.asset(
+                      'assets/icons/arrow-narrow-left.svg',
                       width: 24,
                       height: 24,
-                      child: Icon(
-                        Icons.arrow_back,
-                        color: Color(0xFFEEEEEE),
-                        size: 24,
-                      ),
+                      fit: BoxFit.contain,
                     ),
                   ),
                   const SizedBox(width: 12),

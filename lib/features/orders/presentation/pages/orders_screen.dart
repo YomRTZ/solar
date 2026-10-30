@@ -56,9 +56,7 @@ extension _FilterExt on _Filter {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// ORDERS SCREEN
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── ORDERS SCREEN
 class OrdersScreen extends StatefulWidget {
   final bool showBackButton;
 
@@ -213,6 +211,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 
-  /// Format a double as rupee amount string (e.g. 100000 → "100000")
+  // Format a double as rupee amount string (e.g. 100000 → "100000")
   String _fmtPrice(double v) => v.toInt().toString();
 }

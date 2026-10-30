@@ -7,16 +7,7 @@ import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Vendor — Checkout Screen
-//
-// Layout:
-//  • Dark-gradient header + back arrow + "Checkout" title + note
-//  • Delivery Address section (edit link)
-//  • Card payment section (card number, expiration, CVC, country)
-//  • Alternative payment options: Afterpay, Klarna (radio tiles)
-//  • "Pay Now" sticky button
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Vendor — Checkout
 class VendorCheckoutScreen extends StatefulWidget {
   const VendorCheckoutScreen({super.key});
 
@@ -297,9 +288,7 @@ class _VendorCheckoutScreenState extends State<VendorCheckoutScreen> {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Small sub-widgets
-// ─────────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────── Small sub-widgets
 
 class _RadioDot extends StatelessWidget {
   final bool selected;

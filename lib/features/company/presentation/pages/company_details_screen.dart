@@ -84,7 +84,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
             // Form Content
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.fromLTRB(19, 23, 14, 25),
                 child: Column(
                   children: [
                     AppTextField(
@@ -92,43 +92,33 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
                       hint: 'Solar Trade',
                       controller: companyNameController,
                     ),
-                    const SizedBox(height: 24),
-
                     AppTextField(
                       label: 'Email Address',
                       hint: 'Solar@gmail.com',
                       controller: emailController,
                       keyboardType: TextInputType.emailAddress,
                     ),
-                    const SizedBox(height: 24),
-
                     AppTextField(
                       label: 'Address',
                       hint: '12-223 Salest, New Delhi',
                       controller: addressController,
                     ),
-                    const SizedBox(height: 24),
-
                     AppTextField(
                       label: 'Dispatch Location',
                       hint: '12-223 Salest, New Delhi',
                       controller: dispatchLocationController,
                     ),
-                    const SizedBox(height: 24),
-
                     AppTextField(
                       label: 'Gst Number',
                       hint: '08TGC45879',
                       controller: gstNumberController,
                     ),
-                    const SizedBox(height: 24),
-
                     AppTextField(
                       label: 'Pan Number',
                       hint: '123456789',
                       controller: panNumberController,
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 18),
 
                     // Continue Button
                     AppContinueButton(
