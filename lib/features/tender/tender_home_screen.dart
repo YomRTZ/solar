@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
@@ -14,8 +15,7 @@ import '../../models/catalog_product.dart';
 // Mirrors the layout of home_screen.dart:
 //  • Dark-gradient header (logo + bell)
 //  • Search bar
-//  • Quick-access category row
-//  • Second category row (same items, demonstrating scroll)
+//  • Four-column, two-row category grid
 //  • Promo banner
 //  • "All Products" section heading + 2-col product grid
 // ─────────────────────────────────────────────────────────────────────────────
@@ -87,14 +87,10 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
                   children: [
                     // ── Search bar ────────────────────────────
                     _buildSearchBar(),
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 16),
 
-                    // ── Category row 1 ────────────────────────
-                    _buildCategoryRow(),
-                    const SizedBox(height: 12),
-
-                    // ── Category row 2 (same items, shows scroll UX) ──
-                    _buildCategoryRow(),
+                    // ── 4-column, 2-row category grid ────────
+                    _buildCategoryGrid(),
                     const SizedBox(height: 18),
 
                     // ── Promo banner ──────────────────────────
@@ -107,11 +103,13 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
                       children: [
                         Text(
                           'All Products',
-                          style: GoogleFonts.inter(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFF202020),
-                            letterSpacing: -0.3,
+                          style: GoogleFonts.roboto(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FontStyle.normal,
+                            color: const Color(0xFF23201C),
+                            height: 1,
+                            letterSpacing: 0,
                           ),
                         ),
                         GestureDetector(
@@ -128,8 +126,7 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
-
+                    const SizedBox(height: 5),
                     // ── 2-col product grid ────────────────────
                     _buildProductGrid(),
                   ],
@@ -217,39 +214,50 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
   // ── Search bar ────────────────────────────────────────────
   Widget _buildSearchBar() {
     return Container(
-      height: 44,
+      height: 46,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE0E0E0)),
-        boxShadow: [
+        border: Border.all(color: const Color(0xFFEDF1F3), width: 1),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+            color: Color(0x3DE4E5E7),
+            blurRadius: 2,
+            offset: Offset(0, 1),
+            spreadRadius: 0,
           ),
         ],
       ),
       child: Row(
         children: [
-          const SizedBox(width: 12),
-          const Icon(Icons.search, color: Color(0xFF9E9E9E), size: 20),
+          SvgPicture.asset('assets/icons/search.svg', width: 24, height: 24),
           const SizedBox(width: 10),
           Expanded(
             child: TextField(
               controller: _searchController,
               onChanged: (v) => setState(() => _searchQuery = v),
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.inter(
                 fontSize: 14,
-                color: const Color(0xFF202020),
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF1A1C1E),
+                height: 1.4,
+                letterSpacing: -0.14,
               ),
               decoration: InputDecoration(
                 hintText: 'Search Product...',
-                hintStyle: GoogleFonts.roboto(
+                hintStyle: GoogleFonts.inter(
                   fontSize: 14,
-                  color: const Color(0xFF9E9E9E),
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF1A1C1E),
+                  height: 1.4,
+                  letterSpacing: -0.14,
                 ),
+                filled: true,
+                fillColor: Colors.transparent,
                 border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
               ),
@@ -261,9 +269,10 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
                 _searchController.clear();
                 _searchQuery = '';
               }),
-              child: const Padding(
-                padding: EdgeInsets.only(right: 12),
-                child: Icon(Icons.clear, color: Color(0xFF9E9E9E), size: 18),
+              child: const Icon(
+                Icons.clear,
+                color: Color(0xFF6C7278),
+                size: 18,
               ),
             ),
         ],
@@ -271,33 +280,38 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
     );
   }
 
-  // ── Horizontally scrollable category row ─────────────────
-  Widget _buildCategoryRow() {
-    return SizedBox(
-      height: 90,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: TenderData.homeCategories.length,
-        separatorBuilder: (context, i) => const SizedBox(width: 10),
-        itemBuilder: (context, i) {
-          final cat = TenderData.homeCategories[i];
-          return SizedBox(
-            width: 68,
-            child: TenderCategoryCard(
-              iconPath: cat.iconPath,
-              label: cat.name,
-              iconContainerSize: 42,
-              onTap: () {
-                if (cat.id == 'cat_more') {
-                  context.push(AppRoutes.tenderCategories);
-                } else {
-                  context.push(AppRoutes.tenderAllProducts);
-                }
-              },
-            ),
-          );
-        },
+  // ── 4-column, 2-row category grid ────────────────────────
+  Widget _buildCategoryGrid() {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        crossAxisSpacing: 3,
+        mainAxisSpacing: 12,
+        mainAxisExtent: 71,
       ),
+      itemCount: TenderData.homeCategories.length,
+      itemBuilder: (context, i) {
+        final cat = TenderData.homeCategories[i];
+        return Center(
+          child: TenderCategoryCard(
+            iconPath: cat.iconPath,
+            label: cat.name,
+            width: 74,
+            height: 71,
+            iconContainerSize: 28,
+            compact: true,
+            onTap: () {
+              if (cat.id == 'cat_more') {
+                context.push(AppRoutes.tenderCategories);
+              } else {
+                context.push(AppRoutes.tenderAllProducts);
+              }
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -314,7 +328,7 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
               width: double.infinity,
               height: 120,
               child: Image.asset(
-                TenderData.bannerImage,
+                'assets/solarimages/40e6eb83a0b81c11a222c2e30e9a248524bdf315.jpg',
                 fit: BoxFit.cover,
                 errorBuilder: (ctx, err, st) =>
                     Container(height: 120, color: const Color(0xFF003A8A)),
@@ -347,28 +361,37 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
                 children: [
                   Text(
                     'Premium!',
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      letterSpacing: -0.2,
+                    style: GoogleFonts.roboto(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      fontStyle: FontStyle.normal,
+                      color: const Color(0xFFFFFFFF),
+                      height: 1,
+                      letterSpacing: 0,
                     ),
                   ),
+                  const SizedBox(height: 24),
                   Text(
                     'Solar Panels',
-                    style: GoogleFonts.inter(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white,
-                      letterSpacing: -0.4,
+                    style: GoogleFonts.roboto(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      fontStyle: FontStyle.normal,
+                      color: const Color(0xFFFFFFFF),
+                      height: 1,
+                      letterSpacing: 0,
                     ),
                   ),
+                  const SizedBox(height: 24),
                   Text(
                     'For a cleaner tomorrow',
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white.withValues(alpha: 0.85),
+                    style: GoogleFonts.roboto(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      fontStyle: FontStyle.normal,
+                      color: const Color(0xFFFFFFFF),
+                      height: 1,
+                      letterSpacing: 0,
                     ),
                   ),
                 ],
@@ -403,9 +426,9 @@ class _TenderHomeScreenState extends State<TenderHomeScreen> {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: 12,
+        crossAxisSpacing: 16,
         mainAxisSpacing: 12,
-        childAspectRatio: 156 / 220,
+        childAspectRatio: 156 / 217,
       ),
       itemCount: products.length,
       itemBuilder: (context, i) {

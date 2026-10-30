@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../app/routing/app_routes.dart';
 import '../../core/widgets/advtender_rfq_cart_card.dart';
 import '../../core/widgets/app_continue_button.dart';
+import '../../core/widgets/second_app_header.dart';
 import '../../data/advtender_data.dart';
 import '../../models/catalog_product.dart';
 
@@ -84,7 +85,7 @@ class _AdvTenderRfqCartScreenState extends State<AdvTenderRfqCartScreen> {
         backgroundColor: const Color(0xFFF2F4F7),
         body: Column(
           children: [
-            _buildHeader(context),
+            const SecondAppHeader(title: 'My RFQ Cart'),
 
             // ── Cart list ──────────────────────────────────
             Expanded(
@@ -113,47 +114,6 @@ class _AdvTenderRfqCartScreenState extends State<AdvTenderRfqCartScreen> {
 
             // ── Send RFQ button ────────────────────────────
             _buildSendButton(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ── Header ─────────────────────────────────────────────────
-  Widget _buildHeader(BuildContext context) {
-    final top = MediaQuery.of(context).padding.top;
-    return Container(
-      width: double.infinity,
-      height: top + 64,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16, top + 16, 16, 0),
-        child: Row(
-          children: [
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-                size: 22,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              'My RFQ Cart',
-              style: GoogleFonts.inter(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-                letterSpacing: -0.3,
-              ),
-            ),
           ],
         ),
       ),

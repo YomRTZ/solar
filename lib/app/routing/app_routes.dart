@@ -26,6 +26,7 @@ abstract final class AppRoutes {
   static const trackStatus = '/orders/track-status';
   static const profile = '/profile';
   static const updateProfile = '/profile/update';
+  static const accountDetails = '/profile/account-details';
   static const tenderProfile = '/tender/profile';
   static const wallet = '/wallet';
   static const tenderHome = '/tender/home';

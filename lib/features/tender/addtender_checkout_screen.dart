@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/routing/app_routes.dart';
 import '../../core/widgets/app_continue_button.dart';
+import '../../core/widgets/second_app_header.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AddTender — Checkout Screen
@@ -61,7 +62,10 @@ class _AddTenderCheckoutScreenState extends State<AddTenderCheckoutScreen> {
         backgroundColor: Colors.white,
         body: Column(
           children: [
-            _buildHeader(context),
+            const SecondAppHeader(
+              title: 'Checkout',
+              subtitle: '(Ui will be Different)',
+            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
@@ -85,60 +89,6 @@ class _AddTenderCheckoutScreenState extends State<AddTenderCheckoutScreen> {
 
             // ── Pay Now button ──────────────────────────────
             _buildPayButton(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ── Header ──────────────────────────────────────────────────
-  Widget _buildHeader(BuildContext context) {
-    final top = MediaQuery.of(context).padding.top;
-    return Container(
-      width: double.infinity,
-      height: top + 72,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16, top + 14, 16, 0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: const Padding(
-                padding: EdgeInsets.only(top: 2),
-                child: Icon(Icons.arrow_back, color: Colors.white, size: 22),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Checkout',
-                  style: GoogleFonts.inter(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    letterSpacing: -0.3,
-                  ),
-                ),
-                Text(
-                  '(Ui will be Different)',
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white.withValues(alpha: 0.7),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),

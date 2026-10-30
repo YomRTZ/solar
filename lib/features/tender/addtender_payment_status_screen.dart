@@ -10,11 +10,8 @@ import '../../core/widgets/app_header.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 // AddTender — Payment Status Screen
 //
-// Layout:
-//  • Dark-gradient top banner with "Payment Status" title
-//  • White body with triple-ring green checkmark illustration
-//  • "Payment Successful!" / "Payment Failed" headline + subtitle
-//  • "Go to dashboard" AppContinueButton
+// The status body follows the account-approved layout while retaining
+// payment-specific messages and actions.
 // ─────────────────────────────────────────────────────────────────────────────
 class AddTenderPaymentStatusScreen extends StatelessWidget {
   /// Pass false to show the failure state.
@@ -47,18 +44,20 @@ class AddTenderPaymentStatusScreen extends StatelessWidget {
 
   // ── Body ─────────────────────────────────────────────────────
   Widget _buildBody(BuildContext context) {
-    final bottom = MediaQuery.of(context).padding.bottom;
-
     return Padding(
-      padding: EdgeInsets.fromLTRB(24, 0, 24, bottom + 24),
+      padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Spacer(flex: 2),
-
-          // ── Ripple illustration ───────────────────────
-          _PaymentIllustration(isSuccess: isSuccess),
-
-          const SizedBox(height: 32),
+          Image.asset(
+            isSuccess
+                ? 'assets/icons/image_1.png'
+                : 'assets/icons/image_1_2.png',
+            width: isSuccess ? 327 : 110,
+            height: 111,
+            fit: BoxFit.contain,
+          ),
+          SizedBox(height: isSuccess ? 16 : 32),
 
           // ── Headline ──────────────────────────────────
           Text(
@@ -66,15 +65,16 @@ class AddTenderPaymentStatusScreen extends StatelessWidget {
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
               fontSize: 20,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               color: isSuccess
-                  ? const Color(0xFF27AE60)
-                  : const Color(0xFFE74C3C),
-              letterSpacing: -0.4,
+                  ? const Color(0xFF008000)
+                  : const Color(0xFFB31515),
+              height: 1.3,
+              letterSpacing: 20 * -0.02,
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
 
           // ── Subtitle ──────────────────────────────────
           Text(
@@ -83,13 +83,15 @@ class AddTenderPaymentStatusScreen extends StatelessWidget {
                 : 'Something went wrong. Please try again.',
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
-              fontSize: 13,
-              fontWeight: FontWeight.w400,
-              color: const Color(0xFF6C7278),
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF808080),
+              height: 1.3,
+              letterSpacing: 14 * -0.02,
             ),
           ),
 
-          const Spacer(flex: 3),
+          const SizedBox(height: 40),
 
           // ── Go to dashboard ────────────────────────────
           AppContinueButton(
@@ -98,67 +100,6 @@ class AddTenderPaymentStatusScreen extends StatelessWidget {
             onPressed: () => context.go(AppRoutes.tenderMain),
           ),
         ],
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Triple-ring illustration (reused from advtender status screen, self-contained)
-// ─────────────────────────────────────────────────────────────────────────────
-class _PaymentIllustration extends StatelessWidget {
-  final bool isSuccess;
-  const _PaymentIllustration({required this.isSuccess});
-
-  @override
-  Widget build(BuildContext context) {
-    final outerColor = isSuccess
-        ? const Color(0xFFD1FAE5)
-        : const Color(0xFFFFE4E6);
-    final midColor = isSuccess
-        ? const Color(0xFF6EE7B7)
-        : const Color(0xFFFCA5A5);
-    final innerColor = isSuccess
-        ? const Color(0xFF34D399)
-        : const Color(0xFFF87171);
-    final iconColor = isSuccess
-        ? const Color(0xFF065F46)
-        : const Color(0xFF9F1239);
-
-    return Center(
-      child: Container(
-        width: 160,
-        height: 160,
-        decoration: BoxDecoration(color: outerColor, shape: BoxShape.circle),
-        child: Center(
-          child: Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(color: midColor, shape: BoxShape.circle),
-            child: Center(
-              child: Container(
-                width: 88,
-                height: 88,
-                decoration: BoxDecoration(
-                  color: innerColor,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: innerColor.withValues(alpha: 0.45),
-                      blurRadius: 18,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  isSuccess ? Icons.check_rounded : Icons.close_rounded,
-                  color: iconColor,
-                  size: 50,
-                ),
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }

@@ -60,7 +60,9 @@ extension _FilterExt on _Filter {
 // ORDERS SCREEN
 // ─────────────────────────────────────────────────────────────────────────────
 class OrdersScreen extends StatefulWidget {
-  const OrdersScreen({super.key});
+  final bool showBackButton;
+
+  const OrdersScreen({super.key, this.showBackButton = true});
 
   @override
   State<OrdersScreen> createState() => _OrdersScreenState();
@@ -99,7 +101,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // ── Header ──────────────────────────────────────
-            const SecondAppHeader(title: 'My Orders'),
+            SecondAppHeader(
+              title: 'My Orders',
+              showBackButton: widget.showBackButton,
+            ),
 
             // ── Filter tabs ───────────────────────────────────
             _buildFilterTabs(),

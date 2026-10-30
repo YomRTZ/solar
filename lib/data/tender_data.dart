@@ -8,57 +8,72 @@ class TenderData {
     TenderCategory(
       id: 'cat_solar',
       name: 'Solar Panels',
-      iconPath: 'assets/icons/image_1380.png',
+      iconPath: 'assets/icons/solarpanel.png',
     ),
     TenderCategory(
       id: 'cat_battery',
       name: 'Battery',
-      iconPath: 'assets/icons/image_1.png',
+      iconPath: 'assets/icons/battery.png',
     ),
     TenderCategory(
       id: 'cat_inverters',
       name: 'Inverters',
-      iconPath: 'assets/icons/image_1_1.png',
+      iconPath: 'assets/icons/inverters.png',
     ),
     TenderCategory(
       id: 'cat_cables',
       name: 'Cables',
-      iconPath: 'assets/icons/image_1_2.png',
+      iconPath: 'assets/icons/cable.png',
     ),
   ];
 
-  // ── Quick-access categories shown in the home row ──────────
+  // ── Eight category tiles shown in the Tender home grid ─────
   static const List<TenderCategory> homeCategories = [
     TenderCategory(
       id: 'cat_solar',
-      name: 'Solar Panel',
-      iconPath: 'assets/icons/image_1380.png',
+      name: 'Solar Panels',
+      iconPath: 'assets/icons/solarpanel.png',
     ),
     TenderCategory(
       id: 'cat_battery',
       name: 'Battery',
-      iconPath: 'assets/icons/image_1.png',
+      iconPath: 'assets/icons/battery.png',
     ),
     TenderCategory(
       id: 'cat_inverters',
       name: 'Inverters',
-      iconPath: 'assets/icons/image_1_1.png',
+      iconPath: 'assets/icons/inverters.png',
     ),
     TenderCategory(
       id: 'cat_cables',
       name: 'Cables',
-      iconPath: 'assets/icons/image_1_2.png',
+      iconPath: 'assets/icons/cable.png',
+    ),
+    TenderCategory(
+      id: 'cat_solar',
+      name: 'Solar Panels',
+      iconPath: 'assets/icons/solarpanel.png',
+    ),
+    TenderCategory(
+      id: 'cat_battery',
+      name: 'Battery',
+      iconPath: 'assets/icons/battery.png',
+    ),
+    TenderCategory(
+      id: 'cat_inverters',
+      name: 'Inverters',
+      iconPath: 'assets/icons/inverters.png',
     ),
     TenderCategory(
       id: 'cat_more',
       name: 'View More',
-      iconPath: 'assets/icons/5ceff9d5d9cae078a369c65ead35be73405d7dcd.png',
+      iconPath: 'assets/icons/seemore.png',
     ),
   ];
 
   // ── Banner promo image ─────────────────────────────────────
   static const String bannerImage =
-      'assets/solarimages/8c95b22c561eba1d7752be96d662579cfd873d93.jpg';
+      'assets/images/photo_2026-10-29_15-51-15.jpg';
 
   // ── Products (shared with catalog, extended with category) ─
   static const String _img =
@@ -69,42 +84,42 @@ class TenderData {
       id: 'tp_1',
       name: '100 X 100 Solar Panel Matched Premium',
       subtitle: '90mm x 6m Pvc Stormwater Pipe',
-      price: 'Rs.10000',
+      price: 'Rs.10000/-',
       imagePath: _img,
     ),
     CatalogProduct(
       id: 'tp_2',
       name: '100 X 100 Solar Panel Matched Premium',
       subtitle: '90mm x 6m Pvc Stormwater Pipe',
-      price: 'Rs.10000',
+      price: 'Rs.10000/-',
       imagePath: _img,
     ),
     CatalogProduct(
       id: 'tp_3',
       name: '100 X 100 Solar Panel Matched Premium',
       subtitle: '90mm x 6m Pvc Stormwater Pipe',
-      price: 'Rs.10000',
+      price: 'Rs.10000/-',
       imagePath: _img,
     ),
     CatalogProduct(
       id: 'tp_4',
       name: '100 X 100 Solar Panel Matched Premium',
       subtitle: '90mm x 6m Pvc Stormwater Pipe',
-      price: 'Rs.10000',
+      price: 'Rs.10000/-',
       imagePath: _img,
     ),
     CatalogProduct(
       id: 'tp_5',
       name: '100 X 100 Solar Panel Matched Premium',
       subtitle: '90mm x 6m Pvc Stormwater Pipe',
-      price: 'Rs.10000',
+      price: 'Rs.10000/-',
       imagePath: _img,
     ),
     CatalogProduct(
       id: 'tp_6',
       name: '100 X 100 Solar Panel Matched Premium',
       subtitle: '90mm x 6m Pvc Stormwater Pipe',
-      price: 'Rs.10000',
+      price: 'Rs.10000/-',
       imagePath: _img,
     ),
   ];

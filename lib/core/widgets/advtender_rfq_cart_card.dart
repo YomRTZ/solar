@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'tender_price_badge.dart';
+
 /// Reusable horizontal RFQ cart item card used in the advtender cart screen.
 ///
 /// Shows: thumbnail | name + subtitle + price badge | qty stepper [🗑 count +]
@@ -100,11 +102,13 @@ class AdvTenderRfqCartCard extends StatelessWidget {
                     name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFF1A1A1A),
-                      letterSpacing: -0.2,
+                    style: GoogleFonts.roboto(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w600,
+                      fontStyle: FontStyle.normal,
+                      color: const Color(0xFF23201C),
+                      letterSpacing: 0,
+                      height: 1,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -120,22 +124,7 @@ class AdvTenderRfqCartCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   // Price badge
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF003A8A).withValues(alpha: 0.09),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Text(
-                      price,
-                      style: GoogleFonts.roboto(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF003A8A),
-                      ),
-                    ),
-                  ),
+                  TenderPriceBadge(price: price),
                 ],
               ),
             ),
@@ -155,12 +144,8 @@ class AdvTenderRfqCartCard extends StatelessWidget {
   }
 
   Widget _placeholder() => const Center(
-        child: Icon(
-          Icons.image_outlined,
-          color: Color(0xFF90B4D4),
-          size: 28,
-        ),
-      );
+    child: Icon(Icons.image_outlined, color: Color(0xFF90B4D4), size: 28),
+  );
 }
 
 // ── Quantity stepper [🗑 count +] ──────────────────────────────
@@ -207,11 +192,7 @@ class _QtyStepper extends StatelessWidget {
           const SizedBox(width: 10),
           GestureDetector(
             onTap: onIncrement,
-            child: const Icon(
-              Icons.add_rounded,
-              color: Colors.white,
-              size: 16,
-            ),
+            child: const Icon(Icons.add_rounded, color: Colors.white, size: 16),
           ),
         ],
       ),

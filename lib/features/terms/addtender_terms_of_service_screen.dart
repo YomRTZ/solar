@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../core/widgets/app_header.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AddTender — Terms of Service Screen
@@ -15,14 +16,13 @@ class AddTenderTermsOfServiceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final top = MediaQuery.of(context).padding.top;
     final bottom = MediaQuery.of(context).padding.bottom;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
         systemNavigationBarColor: Colors.white,
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
@@ -31,39 +31,10 @@ class AddTenderTermsOfServiceScreen extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: top + 8),
-
-            // ── Back arrow ─────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: GestureDetector(
-                onTap: () => Navigator.maybePop(context),
-                child: const Icon(
-                  Icons.arrow_back,
-                  color: Color(0xFF1A1A1A),
-                  size: 22,
-                ),
-              ),
+            AppHeader(
+              title: 'Terms of Service',
+              onBackPressed: () => Navigator.maybePop(context),
             ),
-
-            const SizedBox(height: 16),
-
-            // ── Title ──────────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                'Terms of Service',
-                style: GoogleFonts.inter(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  color: const Color(0xFF0A1F44),
-                  letterSpacing: -0.6,
-                  height: 1.15,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
 
             // ── Scrollable content ─────────────────────────
             Expanded(

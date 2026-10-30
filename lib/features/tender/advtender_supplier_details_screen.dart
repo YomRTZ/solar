@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/routing/app_routes.dart';
 import '../../app/routing/route_data.dart';
+import '../../core/widgets/second_app_header.dart';
 import '../../core/widgets/tender_product_card.dart';
 import '../../data/advtender_data.dart';
 import '../../models/advtender_supplier.dart';
@@ -89,7 +90,10 @@ class _AdvTenderSupplierDetailsScreenState
         backgroundColor: const Color(0xFFF2F4F7),
         body: Column(
           children: [
-            _buildHeader(context),
+            SecondAppHeader(
+              title: 'Supplier Details',
+              trailing: _buildCartAction(),
+            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
@@ -132,9 +136,9 @@ class _AdvTenderSupplierDetailsScreenState
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
-                            crossAxisSpacing: 12,
+                            crossAxisSpacing: 16,
                             mainAxisSpacing: 12,
-                            childAspectRatio: 156 / 220,
+                            childAspectRatio: 156 / 217,
                           ),
                       itemCount: _supplier.mainProducts.length,
                       itemBuilder: (context, i) {
@@ -161,91 +165,49 @@ class _AdvTenderSupplierDetailsScreenState
     );
   }
 
-  // ── Header ─────────────────────────────────────────────────
-  Widget _buildHeader(BuildContext context) {
-    final top = MediaQuery.of(context).padding.top;
-    return Container(
-      width: double.infinity,
-      height: top + 64,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16, top + 16, 16, 0),
-        child: Row(
-          children: [
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-                size: 22,
-              ),
+  Widget _buildCartAction() {
+    return GestureDetector(
+      onTap: _cartCount > 0 ? _goToCart : null,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(8),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                'Supplier Details',
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                  letterSpacing: -0.3,
+            child: const Icon(
+              Icons.shopping_cart_outlined,
+              color: Colors.white,
+              size: 22,
+            ),
+          ),
+          if (_cartCount > 0)
+            Positioned(
+              top: -6,
+              right: -6,
+              child: Container(
+                width: 18,
+                height: 18,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFFF3B30),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    _cartCount > 99 ? '99+' : '$_cartCount',
+                    style: const TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ),
-
-            // Cart icon with badge
-            GestureDetector(
-              onTap: _cartCount > 0 ? _goToCart : null,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.shopping_cart_outlined,
-                      color: Colors.white,
-                      size: 22,
-                    ),
-                  ),
-                  if (_cartCount > 0)
-                    Positioned(
-                      top: -6,
-                      right: -6,
-                      child: Container(
-                        width: 18,
-                        height: 18,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFFFF3B30),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Text(
-                            _cartCount > 99 ? '99+' : '$_cartCount',
-                            style: const TextStyle(
-                              fontSize: 9,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/widgets/app_bottom_sheet.dart';
+import '../../core/widgets/tender_add_to_rfq_button.dart';
+import '../../core/widgets/tender_price_badge.dart';
 import '../../models/catalog_product.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -97,10 +99,7 @@ class TenderCompareSheet extends StatelessWidget {
           const SizedBox(height: 16),
 
           // ── Product image slots ─────────────────────────
-          _ImageSlotRow(
-            products: products,
-            maxSlots: maxSlots,
-          ),
+          _ImageSlotRow(products: products, maxSlots: maxSlots),
 
           const SizedBox(height: 16),
 
@@ -189,10 +188,7 @@ class _AddProductSlot extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFF7F8FA),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: const Color(0xFFE5E7EB),
-          width: 1.5,
-        ),
+        border: Border.all(color: const Color(0xFFE5E7EB), width: 1.5),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -238,7 +234,10 @@ class _CompareTable extends StatelessWidget {
   Widget build(BuildContext context) {
     // Spec rows: label + extractor function
     final specs = <(String, String Function(CatalogProduct))>[
-      ('Name', (p) => p.name.length > 20 ? '${p.name.substring(0, 18)}…' : p.name),
+      (
+        'Name',
+        (p) => p.name.length > 20 ? '${p.name.substring(0, 18)}…' : p.name,
+      ),
       ('Price', (p) => p.price),
       ('Power', (p) => p.power),
       ('Warranty', (p) => p.warranty),
@@ -262,8 +261,7 @@ class _CompareTable extends StatelessWidget {
             decoration: BoxDecoration(
               border: isLast
                   ? null
-                  : const Border(
-                      bottom: BorderSide(color: Color(0xFFE5E7EB))),
+                  : const Border(bottom: BorderSide(color: Color(0xFFE5E7EB))),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -285,24 +283,33 @@ class _CompareTable extends StatelessWidget {
                 // Value columns — one per slot
                 ...List.generate(maxSlots, (i) {
                   final hasProduct = i < products.length;
-                  final value =
-                      hasProduct ? extractor(products[i]) : '—';
+                  final value = hasProduct ? extractor(products[i]) : '—';
                   final isInStock =
                       hasProduct && isStock && products[i].inStock;
 
                   return Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(
-                          left: i == 0 ? 0 : 8),
+                      padding: EdgeInsets.only(left: i == 0 ? 0 : 8),
                       child: isStock && hasProduct
                           ? _StockChip(inStock: isInStock)
+                          : label == 'Price' && hasProduct
+                          ? TenderPriceBadge(price: value)
                           : Text(
                               value,
-                              style: GoogleFonts.inter(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w500,
-                                color: const Color(0xFF4B5563),
-                              ),
+                              style: label == 'Name'
+                                  ? GoogleFonts.roboto(
+                                      fontSize: 12.5,
+                                      fontWeight: FontWeight.w600,
+                                      fontStyle: FontStyle.normal,
+                                      color: const Color(0xFF23201C),
+                                      height: 1,
+                                      letterSpacing: 0,
+                                    )
+                                  : GoogleFonts.inter(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                      color: const Color(0xFF4B5563),
+                                    ),
                             ),
                     ),
                   );
@@ -325,9 +332,7 @@ class _StockChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: inStock
-            ? const Color(0xFFD1FAE5)
-            : const Color(0xFFFFE4E6),
+        color: inStock ? const Color(0xFFD1FAE5) : const Color(0xFFFFE4E6),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
@@ -335,9 +340,7 @@ class _StockChip extends StatelessWidget {
         style: GoogleFonts.inter(
           fontSize: 10,
           fontWeight: FontWeight.w600,
-          color: inStock
-              ? const Color(0xFF065F46)
-              : const Color(0xFF9F1239),
+          color: inStock ? const Color(0xFF065F46) : const Color(0xFF9F1239),
         ),
       ),
     );
@@ -370,46 +373,16 @@ class _AddToRFQRow extends StatelessWidget {
           final hasProduct = i < products.length;
           return Expanded(
             child: Padding(
-              padding:
-                  EdgeInsets.only(right: i < maxSlots - 1 ? 12 : 0),
+              padding: EdgeInsets.only(right: i < maxSlots - 1 ? 12 : 0),
               child: hasProduct
-                  ? _RFQButton(
-                      onTap: () => onAddToRFQ(products[i]),
+                  ? TenderAddToRfqButton(
+                      onPressed: () => onAddToRFQ(products[i]),
                     )
                   : const SizedBox.shrink(),
             ),
           );
         }),
       ],
-    );
-  }
-}
-
-class _RFQButton extends StatelessWidget {
-  final VoidCallback onTap;
-  const _RFQButton({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 40,
-        decoration: BoxDecoration(
-          color: const Color(0xFF003A8A),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Text(
-            'Add to RFQ',
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

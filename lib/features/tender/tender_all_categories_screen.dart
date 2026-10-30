@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routing/app_routes.dart';
+import '../../core/widgets/second_app_header.dart';
 import '../../core/widgets/tender_category_card.dart';
 import '../../data/tender_data.dart';
 
@@ -11,11 +12,13 @@ import '../../data/tender_data.dart';
 // Tender All Categories Screen
 // Shows:
 //  • Dark-gradient header with back arrow + "All Categories" title
-//  • Promo banner (same as home)
-//  • 2-column grid of TenderCategoryCard widgets
+//  • Promo banner (matching Tender home)
+//  • 2-column grid of 152 × 141 TenderCategoryCard widgets
 // ─────────────────────────────────────────────────────────────────────────────
 class TenderAllCategoriesScreen extends StatelessWidget {
-  const TenderAllCategoriesScreen({super.key});
+  final VoidCallback? onBackPressed;
+
+  const TenderAllCategoriesScreen({super.key, this.onBackPressed});
 
   // All categories repeated twice to fill the grid (mimics the screenshot
   // which shows the same four categories listed multiple times).
@@ -38,10 +41,13 @@ class TenderAllCategoriesScreen extends StatelessWidget {
         backgroundColor: const Color(0xFFF2F4F7),
         body: Column(
           children: [
-            _buildHeader(context),
+            SecondAppHeader(
+              title: 'All Categories',
+              onBackPressed: onBackPressed ?? () => Navigator.maybePop(context),
+            ),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -49,16 +55,16 @@ class TenderAllCategoriesScreen extends StatelessWidget {
                     _buildBanner(context),
                     const SizedBox(height: 20),
 
-                    // ── 2-column category grid ────────────────
+                    // ── 2-column category grid ───────────────
                     GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
-                            crossAxisSpacing: 12,
+                            crossAxisSpacing: 14,
                             mainAxisSpacing: 12,
-                            childAspectRatio: 1.1,
+                            childAspectRatio: 152 / 141,
                           ),
                       itemCount: _allEntries.length,
                       itemBuilder: (context, i) {
@@ -66,7 +72,8 @@ class TenderAllCategoriesScreen extends StatelessWidget {
                         return TenderCategoryCard(
                           iconPath: entry.category.iconPath,
                           label: entry.category.name,
-                          iconContainerSize: 64,
+                          iconContainerSize: 68,
+                          horizontalBordersOnly: true,
                           onTap: () =>
                               context.push(AppRoutes.tenderAllProducts),
                         );
@@ -74,47 +81,6 @@ class TenderAllCategoriesScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ── Header ────────────────────────────────────────────────
-  Widget _buildHeader(BuildContext context) {
-    final top = MediaQuery.of(context).padding.top;
-    return Container(
-      width: double.infinity,
-      height: top + 64,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16, top + 16, 16, 0),
-        child: Row(
-          children: [
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-                size: 22,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              'All Categories',
-              style: GoogleFonts.inter(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-                letterSpacing: -0.3,
               ),
             ),
           ],
@@ -135,7 +101,7 @@ class TenderAllCategoriesScreen extends StatelessWidget {
               width: double.infinity,
               height: 120,
               child: Image.asset(
-                TenderData.bannerImage,
+                'assets/solarimages/40e6eb83a0b81c11a222c2e30e9a248524bdf315.jpg',
                 fit: BoxFit.cover,
                 errorBuilder: (ctx, err, st) =>
                     Container(height: 120, color: const Color(0xFF003A8A)),
@@ -164,26 +130,37 @@ class TenderAllCategoriesScreen extends StatelessWidget {
                 children: [
                   Text(
                     'Premium!',
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                    style: GoogleFonts.roboto(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      fontStyle: FontStyle.normal,
+                      color: const Color(0xFFFFFFFF),
+                      height: 1,
+                      letterSpacing: 0,
                     ),
                   ),
+                  const SizedBox(height: 24),
                   Text(
                     'Solar Panels',
-                    style: GoogleFonts.inter(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white,
-                      letterSpacing: -0.4,
+                    style: GoogleFonts.roboto(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      fontStyle: FontStyle.normal,
+                      color: const Color(0xFFFFFFFF),
+                      height: 1,
+                      letterSpacing: 0,
                     ),
                   ),
+                  const SizedBox(height: 24),
                   Text(
                     'For a cleaner tomorrow',
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      color: Colors.white.withValues(alpha: 0.85),
+                    style: GoogleFonts.roboto(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      fontStyle: FontStyle.normal,
+                      color: const Color(0xFFFFFFFF),
+                      height: 1,
+                      letterSpacing: 0,
                     ),
                   ),
                 ],

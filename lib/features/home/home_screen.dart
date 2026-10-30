@@ -11,7 +11,7 @@ import '../../data/dashboard_data.dart';
 import '../../models/rfq.dart';
 import '../orders/orders_screen.dart';
 import '../products/my_products_screen.dart';
-import '../profile/profile_screen.dart';
+import '../profile/supplier_profile_screen.dart';
 import '../rfq/rfq_requests_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 3:
         return const OrdersScreen();
       case 4:
-        return const ProfileScreen();
+        return const SupplierProfileScreen();
       default:
         return const SizedBox.shrink();
     }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'tender_home_screen.dart';
 import 'tender_all_categories_screen.dart';
 import 'addtender_rfq_requests_screen.dart';
-import '../wallet/my_wallet_screen.dart';
+import '../orders/orders_screen.dart';
 import '../profile/tender_profile_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -15,7 +16,7 @@ import '../profile/tender_profile_screen.dart';
 //   0  Home          → TenderHomeScreen
 //   1  Categories    → TenderAllCategoriesScreen
 //   2  My RFQs       → AddTenderRfqRequestsScreen
-//   3  Wallet        → MyWalletScreen
+//   3  Orders        → OrdersScreen
 //   4  Profile       → TenderProfileScreen
 // ─────────────────────────────────────────────────────────────────────────────
 class TenderMainScreen extends StatefulWidget {
@@ -31,19 +32,23 @@ class TenderMainScreen extends StatefulWidget {
 class _TenderMainScreenState extends State<TenderMainScreen> {
   late int _currentIndex;
 
-  // Keep each tab alive when switching — use IndexedStack
-  static const List<Widget> _pages = [
-    TenderHomeScreen(),
-    TenderAllCategoriesScreen(),
-    AddTenderRfqRequestsScreen(),
-    MyWalletScreen(),
-    TenderProfileScreen(),
-  ];
-
   @override
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
+  }
+
+  // Keep each tab alive when switching — use IndexedStack.
+  List<Widget> get _pages => [
+    const TenderHomeScreen(),
+    TenderAllCategoriesScreen(onBackPressed: _showHomeTab),
+    AddTenderRfqRequestsScreen(onBackPressed: _showHomeTab),
+    const OrdersScreen(showBackButton: false),
+    const TenderProfileScreen(),
+  ];
+
+  void _showHomeTab() {
+    setState(() => _currentIndex = 0);
   }
 
   @override
@@ -79,11 +84,17 @@ class _TenderNavBar extends StatelessWidget {
   const _TenderNavBar({required this.currentIndex, required this.onTap});
 
   static const List<_NavItem> _items = [
-    _NavItem(pngPath: 'assets/icons/image_1374.png', label: 'Home'),
-    _NavItem(pngPath: 'assets/icons/image_1380.png', label: 'Categories'),
-    _NavItem(pngPath: 'assets/icons/image_1379.png', label: 'My RFQs'),
-    _NavItem(pngPath: 'assets/icons/image_1376.png', label: 'Wallet'),
-    _NavItem(pngPath: 'assets/icons/image_1382.png', label: 'Profile'),
+    _NavItem(assetPath: 'assets/icons/Vector.svg', label: 'Home', isSvg: true),
+    _NavItem(
+      assetPath: 'assets/icons/category_nav_icon.png',
+      label: 'Categories',
+    ),
+    _NavItem(assetPath: 'assets/icons/cart_nav_icon.png', label: 'My RFQs'),
+    _NavItem(assetPath: 'assets/icons/orders_nav_icon.png', label: 'Orders'),
+    _NavItem(
+      assetPath: 'assets/icons/supplier_account_details_icon.png',
+      label: 'Profile',
+    ),
   ];
 
   @override
@@ -121,11 +132,28 @@ class _TenderNavBar extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Icon — all PNG, tinted with ColorFiltered
-                        ColorFiltered(
-                          colorFilter: ColorFilter.mode(color, BlendMode.srcATop),
-                          child: Image.asset(item.pngPath, width: 24, height: 24),
-                        ),
+                        if (item.isSvg)
+                          SvgPicture.asset(
+                            item.assetPath,
+                            width: 24,
+                            height: 24,
+                            colorFilter: ColorFilter.mode(
+                              color,
+                              BlendMode.srcIn,
+                            ),
+                          )
+                        else
+                          ColorFiltered(
+                            colorFilter: ColorFilter.mode(
+                              color,
+                              BlendMode.srcIn,
+                            ),
+                            child: Image.asset(
+                              item.assetPath,
+                              width: 24,
+                              height: 24,
+                            ),
+                          ),
 
                         const SizedBox(height: 4),
 
@@ -159,7 +187,13 @@ class _TenderNavBar extends StatelessWidget {
 }
 
 class _NavItem {
-  final String pngPath;
+  final String assetPath;
   final String label;
-  const _NavItem({required this.pngPath, required this.label});
+  final bool isSvg;
+
+  const _NavItem({
+    required this.assetPath,
+    required this.label,
+    this.isSvg = false,
+  });
 }

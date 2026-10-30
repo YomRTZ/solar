@@ -37,11 +37,17 @@ class SecondAppHeader extends StatelessWidget {
   /// Title shown inline with the back arrow.
   final String title;
 
+  /// Optional secondary line shown beneath the title.
+  final String? subtitle;
+
   /// Whether to show the back arrow (default: true).
   final bool showBackButton;
 
   /// Override the back-button behaviour. Defaults to [Navigator.pop].
   final VoidCallback? onBackPressed;
+
+  /// Optional action displayed after the title.
+  final Widget? trailing;
 
   /// Whether to vertically center the arrow and title in the header.
   /// Set to false to keep the content aligned near the bottom.
@@ -50,8 +56,10 @@ class SecondAppHeader extends StatelessWidget {
   const SecondAppHeader({
     super.key,
     required this.title,
+    this.subtitle,
     this.showBackButton = true,
     this.onBackPressed,
+    this.trailing,
     this.centerContentVertically = true,
   });
 
@@ -106,19 +114,37 @@ class SecondAppHeader extends StatelessWidget {
                   const SizedBox(width: 12),
                 ],
                 Expanded(
-                  child: Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.inter(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFFEEEEEE),
-                      letterSpacing: -0.4,
-                      height: 1.3,
-                    ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.inter(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFFEEEEEE),
+                          letterSpacing: -0.4,
+                          height: 1.3,
+                        ),
+                      ),
+                      if (subtitle != null)
+                        Text(
+                          subtitle!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w400,
+                            color: const Color(0xB3FFFFFF),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
+                if (trailing != null) ...[const SizedBox(width: 8), trailing!],
               ],
             ),
           ],

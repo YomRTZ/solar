@@ -5,22 +5,25 @@ import '../../models/addtender_rfq_request.dart';
 
 /// Reusable RFQ request list card used in [AddTenderRfqRequestsScreen].
 ///
-/// Shows: supplier avatar icon | name + date + amount | status badge + chevron
+/// Shows: supplied image | supplier, amount, date, and request status.
 ///
 /// Usage:
 /// ```dart
 /// AddTenderRfqRequestCard(
 ///   request: rfqRequest,
+///   imagePath: 'assets/solarimages/request.png',
 ///   onTap: () { ... },
 /// );
 /// ```
 class AddTenderRfqRequestCard extends StatelessWidget {
   final AddTenderRfqRequest request;
+  final String imagePath;
   final VoidCallback? onTap;
 
   const AddTenderRfqRequestCard({
     super.key,
     required this.request,
+    required this.imagePath,
     this.onTap,
   });
 
@@ -29,66 +32,73 @@ class AddTenderRfqRequestCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        decoration: BoxDecoration(
+        height: 103,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+        decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          border: Border(bottom: BorderSide(color: Color(0xFFE0E0E0))),
         ),
         child: Row(
           children: [
-            // ── Supplier avatar ───────────────────────────
             Container(
-              width: 44,
-              height: 44,
+              width: 80,
+              height: 81,
               decoration: BoxDecoration(
-                color: const Color(0xFFE8F0FE),
-                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(
-                Icons.storefront_rounded,
-                color: Color(0xFF003A8A),
-                size: 22,
+              clipBehavior: Clip.antiAlias,
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => const Center(
+                  child: Icon(
+                    Icons.image_not_supported_outlined,
+                    color: Colors.grey,
+                    size: 32,
+                  ),
+                ),
               ),
             ),
 
-            const SizedBox(width: 12),
+            const SizedBox(width: 15),
 
-            // ── Name + date + amount ──────────────────────
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     request.supplierName,
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFF1A1A1A),
-                      letterSpacing: -0.2,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.roboto(
+                      fontSize: 14,
+                      height: 22 / 14,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: -0.18,
+                      color: const Color(0xFF202020),
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 3),
                   Text(
                     request.amount,
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF003A8A),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.roboto(
+                      fontSize: 10,
+                      height: 16 / 10,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 1),
                   Text(
                     request.dateLabel,
-                    style: GoogleFonts.inter(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w400,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.roboto(
+                      fontSize: 9,
                       color: const Color(0xFF6C7278),
                     ),
                   ),
@@ -97,29 +107,36 @@ class AddTenderRfqRequestCard extends StatelessWidget {
             ),
 
             const SizedBox(width: 8),
-
-            // ── Status badge + chevron ─────────────────────
             Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const Icon(
-                  Icons.chevron_right_rounded,
-                  color: Color(0xFF6C7278),
-                  size: 20,
-                ),
-                const SizedBox(height: 6),
+                if (request.status != AddTenderRfqStatus.pending) ...[
+                  const Icon(
+                    Icons.keyboard_arrow_down,
+                    color: Color(0xFF202020),
+                    size: 24,
+                  ),
+                  const SizedBox(height: 4),
+                ],
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 3),
+                  width: request.status == AddTenderRfqStatus.received
+                      ? 66
+                      : 58,
+                  height: 22,
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
                   decoration: BoxDecoration(
                     color: request.status.bgColor,
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(4),
                   ),
+                  alignment: Alignment.center,
                   child: Text(
                     request.status.label,
-                    style: GoogleFonts.inter(
-                      fontSize: 10,
+                    style: GoogleFonts.roboto(
+                      fontSize: 12,
+                      height: 18 / 12,
                       fontWeight: FontWeight.w600,
+                      letterSpacing: -0.14,
                       color: request.status.textColor,
                     ),
                   ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/widgets/app_bottom_sheet.dart';
+import '../../core/widgets/tender_add_to_rfq_button.dart';
+import '../../core/widgets/tender_price_badge.dart';
 import '../../models/catalog_product.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -120,12 +122,7 @@ class TenderProductDetailSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              Expanded(
-                child: _FilledBtn(
-                  label: 'Add to RFQ',
-                  onTap: onAddToRFQ,
-                ),
-              ),
+              Expanded(child: TenderAddToRfqButton(onPressed: onAddToRFQ)),
             ],
           ),
         ],
@@ -253,34 +250,20 @@ class _ProductHero extends StatelessWidget {
                 product.name,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.inter(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF1A1A1A),
-                  letterSpacing: -0.2,
-                  height: 1.3,
+                style: GoogleFonts.roboto(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w600,
+                  fontStyle: FontStyle.normal,
+                  color: const Color(0xFF23201C),
+                  letterSpacing: 0,
+                  height: 1,
                 ),
               ),
 
               const SizedBox(height: 8),
 
               // Price badge
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF003A8A).withValues(alpha: 0.09),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Text(
-                  product.price,
-                  style: GoogleFonts.roboto(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF003A8A),
-                  ),
-                ),
-              ),
+              TenderPriceBadge(price: product.price),
 
               const SizedBox(height: 6),
 
@@ -412,14 +395,13 @@ class _SpecTable extends StatelessWidget {
           final value = entry.value.$2;
 
           return Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
             decoration: BoxDecoration(
               border: isLast
                   ? null
                   : const Border(
-                      bottom:
-                          BorderSide(color: Color(0xFFE5E7EB), width: 1)),
+                      bottom: BorderSide(color: Color(0xFFE5E7EB), width: 1),
+                    ),
             ),
             child: Row(
               children: [
@@ -476,36 +458,6 @@ class _OutlineBtn extends StatelessWidget {
               fontSize: 13,
               fontWeight: FontWeight.w600,
               color: const Color(0xFF003A8A),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _FilledBtn extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-  const _FilledBtn({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 44,
-        decoration: BoxDecoration(
-          color: const Color(0xFF003A8A),
-          borderRadius: BorderRadius.circular(22),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
             ),
           ),
         ),

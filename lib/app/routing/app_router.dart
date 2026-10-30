@@ -18,7 +18,8 @@ import '../../features/plan/choose_plan_screen.dart';
 import '../../features/products/add_product_screen.dart';
 import '../../features/products/edit_product_screen.dart';
 import '../../features/products/my_products_screen.dart';
-import '../../features/profile/profile_screen.dart';
+import '../../features/profile/account_details_screen.dart';
+import '../../features/profile/supplier_profile_screen.dart';
 import '../../features/profile/tender_profile_screen.dart';
 import '../../features/profile/update_profile_screen.dart';
 import '../../features/rfq/rfq_detail_screen.dart';
@@ -111,8 +112,9 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
         AppRoutes.trackStatus,
         (state) => TrackStatusScreen(order: _requiredExtra<Order>(state)),
       ),
-      _route(AppRoutes.profile, (_) => const ProfileScreen()),
+      _route(AppRoutes.profile, (_) => const SupplierProfileScreen()),
       _route(AppRoutes.updateProfile, (_) => const UpdateProfileScreen()),
+      _route(AppRoutes.accountDetails, (_) => const AccountDetailsScreen()),
       _route(AppRoutes.tenderProfile, (_) => const TenderProfileScreen()),
       _route(AppRoutes.wallet, (_) => const MyWalletScreen()),
       _route(AppRoutes.tenderHome, (_) => const TenderHomeScreen()),

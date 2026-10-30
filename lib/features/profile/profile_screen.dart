@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../app/routing/app_routes.dart';
 import '../../core/widgets/second_app_header.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  final bool showSupplierActions;
+
+  const ProfileScreen({super.key, this.showSupplierActions = false});
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +41,10 @@ class ProfileScreen extends StatelessWidget {
 
                     // ── Business Information card ─────────────
                     _buildBusinessCard(context),
-                    const SizedBox(height: 32),
-
-                    // ── Logout row ───────────────────────────
-                    _buildLogoutRow(context),
+                    if (!showSupplierActions) ...[
+                      const SizedBox(height: 32),
+                      _buildLogoutRow(context),
+                    ],
                   ],
                 ),
               ),
@@ -102,15 +105,19 @@ class ProfileScreen extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEDF1F3), width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        borderRadius: showSupplierActions ? null : BorderRadius.circular(12),
+        border: showSupplierActions
+            ? null
+            : Border.all(color: const Color(0xFFEDF1F3), width: 1),
+        boxShadow: showSupplierActions
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -166,8 +173,98 @@ class ProfileScreen extends StatelessWidget {
           _buildInfoRow('Address', '13-223 Saket,\nNew Delhi'),
           _buildInfoRow('Gst Number', '9876546879'),
           _buildInfoRow('Pan Number', '12345678', isLast: true),
+          if (showSupplierActions) ...[
+            _buildActionRow(
+              title: 'Account Details',
+              icon: Image.asset(
+                'assets/icons/account_details_icon.png',
+                width: 15,
+                height: 15,
+                fit: BoxFit.contain,
+              ),
+              onTap: () => context.push(AppRoutes.accountDetails),
+            ),
+            _buildActionRow(
+              title: 'Documents',
+              icon: Image.asset(
+                'assets/icons/documents_icon.png',
+                width: 15,
+                height: 15,
+                fit: BoxFit.contain,
+              ),
+              onTap: () => context.push(AppRoutes.uploadDocuments),
+            ),
+            _buildActionRow(
+              title: 'Logout',
+              icon: const Icon(
+                Icons.logout_rounded,
+                color: Color(0xFF003A8A),
+                size: 18,
+              ),
+              onTap: () => context.go(AppRoutes.login),
+              isLast: true,
+            ),
+          ],
         ],
       ),
+    );
+  }
+
+  Widget _buildActionRow({
+    required String title,
+    required Widget icon,
+    required VoidCallback onTap,
+    bool isLast = false,
+  }) {
+    return Column(
+      children: [
+        const Divider(height: 1, color: Color(0xFFEDF1F3)),
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: const BorderRadius.vertical(
+              bottom: Radius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  Container(
+                    width: 32,
+                    height: 32,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFC6DCFF),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: icon,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: GoogleFonts.nunito(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF003A8A),
+                        height: 1.5,
+                        letterSpacing: 0,
+                      ),
+                    ),
+                  ),
+                  SvgPicture.asset(
+                    'assets/icons/Icon Arrow.svg',
+                    width: 6,
+                    height: 11,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        if (isLast) const Divider(height: 1, color: Color(0xFFEDF1F3)),
+      ],
     );
   }
 
@@ -218,15 +315,19 @@ class ProfileScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFEDF1F3), width: 1),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          borderRadius: showSupplierActions ? null : BorderRadius.circular(12),
+          border: showSupplierActions
+              ? null
+              : Border.all(color: const Color(0xFFEDF1F3), width: 1),
+          boxShadow: showSupplierActions
+              ? null
+              : [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
         ),
         child: Row(
           children: [

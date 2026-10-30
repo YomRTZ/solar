@@ -13,13 +13,7 @@ import '../../models/order.dart';
 // DATA MODEL
 // ─────────────────────────────────────────────────────────────────────────────
 
-enum TrackStep {
-  orderConfirmed,
-  dispatched,
-  inTransit,
-  outForDelivery,
-  delivered,
-}
+enum TrackStep { orderConfirmed, dispatched, inTransit, delivered }
 
 extension TrackStepExt on TrackStep {
   String get title {
@@ -30,8 +24,6 @@ extension TrackStepExt on TrackStep {
         return 'Dispatched';
       case TrackStep.inTransit:
         return 'In Transit';
-      case TrackStep.outForDelivery:
-        return 'Out for delivery';
       case TrackStep.delivered:
         return 'Delivered';
     }
@@ -45,8 +37,6 @@ extension TrackStepExt on TrackStep {
         return Icons.local_shipping_outlined;
       case TrackStep.inTransit:
         return Icons.settings_outlined;
-      case TrackStep.outForDelivery:
-        return Icons.check_circle_outline_rounded;
       case TrackStep.delivered:
         return Icons.shield_outlined;
     }
@@ -68,7 +58,8 @@ class TrackEvent {
     this.subText,
   });
 
-  bool get isActive => dateTime != null || subText != null;
+  bool get isActive =>
+      step == TrackStep.delivered || dateTime != null || subText != null;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -91,14 +82,8 @@ class TrackStatusScreen extends StatelessWidget {
         'assets/solarimages/03f133a91b6e5ade2638722f368e27d2f92f051b.png',
       ],
     ),
-    const TrackEvent(
-      step: TrackStep.inTransit,
-      dateTime: '18 Oct 2026 | 09:10 AM',
-    ),
-    const TrackEvent(
-      step: TrackStep.outForDelivery,
-      subText: 'Share OTP - 3212 on delivery',
-    ),
+    TrackEvent(step: TrackStep.inTransit),
+    TrackEvent(step: TrackStep.delivered),
   ];
 
   const TrackStatusScreen({super.key, required this.order});
@@ -171,14 +156,7 @@ class TrackStatusScreen extends StatelessWidget {
     for (int i = 0; i < events.length; i++) {
       final event = events[i];
       final isLast = i == events.length - 1;
-      widgets.add(
-        _TimelineRow(
-          event: event,
-          showConnector: !isLast,
-          // next event's active state determines if connector is active
-          connectorActive: !isLast && events[i + 1].isActive,
-        ),
-      );
+      widgets.add(_TimelineRow(event: event, showConnector: !isLast));
     }
     return widgets;
   }
@@ -191,29 +169,26 @@ class TrackStatusScreen extends StatelessWidget {
 class _TimelineRow extends StatelessWidget {
   final TrackEvent event;
   final bool showConnector;
-  final bool connectorActive;
 
-  const _TimelineRow({
-    required this.event,
-    required this.showConnector,
-    required this.connectorActive,
-  });
+  const _TimelineRow({required this.event, required this.showConnector});
 
   static const _activeBlue = Color(0xFF003A8A);
-  static const _inactiveGrey = Color(0xFFBDBDBD);
+  static const _inactiveGrey = Color(0xFF808080);
 
   @override
   Widget build(BuildContext context) {
     final isActive = event.isActive;
-    final iconColor = isActive ? _activeBlue : _inactiveGrey;
-    final titleColor =
-        event.step == TrackStep.inTransit || event.step == TrackStep.delivered
+    final titleColor = event.step == TrackStep.inTransit
         ? const Color(0xFF808080)
         : isActive
         ? _activeBlue
         : _inactiveGrey;
     final subTextColor = isActive ? _activeBlue : _inactiveGrey;
-    final connectorColor = connectorActive ? _activeBlue : _inactiveGrey;
+    final timelineColor =
+        event.step == TrackStep.orderConfirmed ||
+            event.step == TrackStep.dispatched
+        ? _activeBlue
+        : _inactiveGrey;
 
     return IntrinsicHeight(
       child: Row(
@@ -234,6 +209,10 @@ class _TimelineRow extends StatelessWidget {
                         'assets/icons/Ellipse 65.svg',
                         width: 32,
                         height: 32,
+                        colorFilter: ColorFilter.mode(
+                          timelineColor,
+                          BlendMode.srcIn,
+                        ),
                       ),
                       switch (event.step) {
                         TrackStep.orderConfirmed => SvgPicture.asset(
@@ -256,7 +235,6 @@ class _TimelineRow extends StatelessWidget {
                           width: 16.56,
                           height: 19.1427,
                         ),
-                        _ => Icon(event.step.icon, color: iconColor, size: 18),
                       },
                     ],
                   ),
@@ -266,7 +244,7 @@ class _TimelineRow extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: _DashedLine(color: connectorColor),
+                      child: _DashedLine(color: timelineColor),
                     ),
                   ),
               ],
@@ -369,7 +347,7 @@ class _DashedLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _DashedLinePainter(color: color),
-      child: const SizedBox(width: 2),
+      child: const SizedBox(width: 3),
     );
   }
 }
@@ -382,7 +360,7 @@ class _DashedLinePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = color
-      ..strokeWidth = 1.5
+      ..strokeWidth = 3
       ..style = PaintingStyle.stroke;
 
     const dashHeight = 5.0;

@@ -15,6 +15,8 @@ export 'app_catalog_card.dart';
 export 'app_button.dart';
 export 'app_bottom_sheet.dart';
 export 'tender_category_card.dart';
+export 'tender_add_to_rfq_button.dart';
+export 'tender_price_badge.dart';
 export 'tender_product_card.dart';
 export 'advtender_rfq_cart_card.dart';
 export 'addtender_rfq_request_card.dart';
