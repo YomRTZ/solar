@@ -57,11 +57,11 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
             ClipRect(
               child: Transform.scale(
                 scale: 1.15,
-                alignment: Alignment.bottomCenter,
+                alignment: Alignment.topCenter,
                 child: Image.asset(
                   'assets/images/photo_5979016740496674897_y.jpg',
                   fit: BoxFit.cover,
-                  alignment: Alignment.bottomCenter,
+                  alignment: Alignment.topCenter,
                 ),
               ),
             ),
