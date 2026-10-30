@@ -1,4 +1,4 @@
-import '../../models/catalog_product.dart';
+import 'package:flutter_app/features/catalog/domain/entities/catalog_product.dart';
 
 class OtpRouteData {
   const OtpRouteData({required this.mobileNumber, required this.role});
@@ -7,8 +7,8 @@ class OtpRouteData {
   final String role;
 }
 
-class AdvTenderCartRouteData {
-  const AdvTenderCartRouteData({
+class VendorCartRouteData {
+  const VendorCartRouteData({
     required this.cartItems,
     required this.initialQuantities,
   });

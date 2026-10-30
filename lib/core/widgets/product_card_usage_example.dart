@@ -5,8 +5,8 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'app_product_card.dart';
-import 'app_header.dart';
+import 'package:flutter_app/core/widgets/app_product_card.dart';
+import 'package:flutter_app/core/widgets/app_header.dart';
 
 /// Example 1: Single Product Card with "New" status
 class SingleProductCardExample extends StatelessWidget {

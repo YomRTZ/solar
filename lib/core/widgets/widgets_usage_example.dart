@@ -5,9 +5,9 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'app_header.dart';
-import 'app_continue_button.dart';
-import 'app_text_field.dart';
+import 'package:flutter_app/core/widgets/app_header.dart';
+import 'package:flutter_app/core/widgets/app_continue_button.dart';
+import 'package:flutter_app/core/widgets/app_text_field.dart';
 
 /// Example 1: Using AppHeader with different titles
 class ExampleScreen1 extends StatelessWidget {

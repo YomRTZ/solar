@@ -7,9 +7,9 @@ library;
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
-import 'app_file_upload_field.dart';
-import 'app_header.dart';
-import 'app_continue_button.dart';
+import 'package:flutter_app/core/widgets/app_file_upload_field.dart';
+import 'package:flutter_app/core/widgets/app_header.dart';
+import 'package:flutter_app/core/widgets/app_continue_button.dart';
 
 /// Example 1: Basic File Upload (PDF, Images, etc.)
 class BasicFileUploadExample extends StatefulWidget {

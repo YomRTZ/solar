@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../constants/app_colors.dart';
+import 'package:flutter_app/core/constants/app_colors.dart';
 
 /// Reusable dropdown field widget with the same styling as AppTextField
 /// but with dropdown functionality and arrow icon

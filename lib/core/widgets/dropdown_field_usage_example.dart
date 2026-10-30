@@ -5,10 +5,10 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'app_dropdown_field.dart';
-import 'app_text_field.dart';
-import 'app_header.dart';
-import 'app_continue_button.dart';
+import 'package:flutter_app/core/widgets/app_dropdown_field.dart';
+import 'package:flutter_app/core/widgets/app_text_field.dart';
+import 'package:flutter_app/core/widgets/app_header.dart';
+import 'package:flutter_app/core/widgets/app_continue_button.dart';
 
 /// Example 1: Simple String Dropdown
 class SimpleDropdownExample extends StatefulWidget {

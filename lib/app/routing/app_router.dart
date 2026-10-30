@@ -1,49 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/account/create_account_screen.dart';
-import '../../features/auth/login_screen.dart';
-import '../../features/auth/otp_verification_screen.dart';
-import '../../features/bank/bank_details_screen.dart';
-import '../../features/catalog/all_products_screen.dart';
-import '../../features/company/company_bank_demo_screen.dart';
-import '../../features/company/company_details_screen.dart';
-import '../../features/documents/upload_documents_screen.dart';
-import '../../features/home/home_screen.dart';
-import '../../features/orders/order_details_screen.dart';
-import '../../features/orders/order_status_update_screen.dart';
-import '../../features/orders/orders_screen.dart';
-import '../../features/orders/track_status_screen.dart';
-import '../../features/plan/choose_plan_screen.dart';
-import '../../features/products/add_product_screen.dart';
-import '../../features/products/edit_product_screen.dart';
-import '../../features/products/my_products_screen.dart';
-import '../../features/profile/account_details_screen.dart';
-import '../../features/profile/supplier_profile_screen.dart';
-import '../../features/profile/tender_profile_screen.dart';
-import '../../features/profile/update_profile_screen.dart';
-import '../../features/rfq/rfq_detail_screen.dart';
-import '../../features/rfq/rfq_requests_screen.dart';
-import '../../features/splash/splash_screen.dart';
-import '../../features/tender/addtender_checkout_screen.dart';
-import '../../features/tender/addtender_payment_status_screen.dart';
-import '../../features/tender/addtender_rfq_requests_screen.dart';
-import '../../features/tender/advtender_rfq_cart_screen.dart';
-import '../../features/tender/advtender_rfq_status_screen.dart';
-import '../../features/tender/advtender_supplier_details_screen.dart';
-import '../../features/tender/tender_all_categories_screen.dart';
-import '../../features/tender/tender_all_products_screen.dart';
-import '../../features/tender/tender_home_screen.dart';
-import '../../features/tender/tender_main_screen.dart';
-import '../../features/terms/addtender_terms_of_service_screen.dart';
-import '../../features/terms/terms_of_service_screen.dart';
-import '../../features/verification/verification_status_screen.dart';
-import '../../features/wallet/my_wallet_screen.dart';
-import '../../models/order.dart';
-import '../../models/product.dart';
-import '../../models/rfq.dart';
-import 'app_routes.dart';
-import 'route_data.dart';
+import 'package:flutter_app/features/account/presentation/pages/create_account_screen.dart';
+import 'package:flutter_app/features/auth/presentation/pages/login_screen.dart';
+import 'package:flutter_app/features/auth/presentation/pages/otp_verification_screen.dart';
+import 'package:flutter_app/features/bank/presentation/pages/bank_details_screen.dart';
+import 'package:flutter_app/features/catalog/presentation/pages/all_products_screen.dart';
+import 'package:flutter_app/features/company/presentation/pages/company_bank_demo_screen.dart';
+import 'package:flutter_app/features/company/presentation/pages/company_details_screen.dart';
+import 'package:flutter_app/features/documents/presentation/pages/upload_documents_screen.dart';
+import 'package:flutter_app/features/home/presentation/pages/home_screen.dart';
+import 'package:flutter_app/features/orders/presentation/pages/order_details_screen.dart';
+import 'package:flutter_app/features/orders/presentation/pages/order_status_update_screen.dart';
+import 'package:flutter_app/features/orders/presentation/pages/orders_screen.dart';
+import 'package:flutter_app/features/orders/presentation/pages/track_status_screen.dart';
+import 'package:flutter_app/features/plan/presentation/pages/choose_plan_screen.dart';
+import 'package:flutter_app/features/products/presentation/pages/add_product_screen.dart';
+import 'package:flutter_app/features/products/presentation/pages/edit_product_screen.dart';
+import 'package:flutter_app/features/products/presentation/pages/my_products_screen.dart';
+import 'package:flutter_app/features/profile/presentation/pages/account_details_screen.dart';
+import 'package:flutter_app/features/profile/presentation/pages/supplier_profile_screen.dart';
+import 'package:flutter_app/features/profile/presentation/pages/vendor_profile_screen.dart';
+import 'package:flutter_app/features/profile/presentation/pages/update_profile_screen.dart';
+import 'package:flutter_app/features/rfq/presentation/pages/rfq_detail_screen.dart';
+import 'package:flutter_app/features/rfq/presentation/pages/rfq_requests_screen.dart';
+import 'package:flutter_app/features/splash/presentation/pages/splash_screen.dart';
+import 'package:flutter_app/features/vendor/presentation/pages/vendor_checkout_screen.dart';
+import 'package:flutter_app/features/vendor/presentation/pages/vendor_payment_status_screen.dart';
+import 'package:flutter_app/features/vendor/presentation/pages/vendor_rfq_requests_screen.dart';
+import 'package:flutter_app/features/vendor/presentation/pages/vendor_rfq_cart_screen.dart';
+import 'package:flutter_app/features/vendor/presentation/pages/vendor_rfq_status_screen.dart';
+import 'package:flutter_app/features/supplier/presentation/pages/supplier_details_screen.dart';
+import 'package:flutter_app/features/vendor/presentation/pages/vendor_all_categories_screen.dart';
+import 'package:flutter_app/features/vendor/presentation/pages/vendor_all_products_screen.dart';
+import 'package:flutter_app/features/vendor/presentation/pages/vendor_home_screen.dart';
+import 'package:flutter_app/features/vendor/presentation/pages/vendor_main_screen.dart';
+import 'package:flutter_app/features/terms/presentation/pages/vendor_terms_of_service_screen.dart';
+import 'package:flutter_app/features/terms/presentation/pages/terms_of_service_screen.dart';
+import 'package:flutter_app/features/verification/presentation/pages/verification_status_screen.dart';
+import 'package:flutter_app/features/wallet/presentation/pages/my_wallet_screen.dart';
+import 'package:flutter_app/features/orders/domain/entities/order.dart';
+import 'package:flutter_app/features/products/domain/entities/product.dart';
+import 'package:flutter_app/features/rfq/domain/entities/rfq.dart';
+import 'package:flutter_app/app/routing/app_routes.dart';
+import 'package:flutter_app/app/routing/route_data.dart';
 
 final GoRouter appRouter = createAppRouter();
 
@@ -86,7 +86,7 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
       ),
       _route(AppRoutes.choosePlan, (_) => const ChoosePlanScreen()),
       _route(AppRoutes.home, (_) => const HomeScreen()),
-      _route(AppRoutes.tenderMain, (_) => const TenderMainScreen()),
+      _route(AppRoutes.vendorMain, (_) => const VendorMainScreen()),
       _route(AppRoutes.addProduct, (_) => const AddProductScreen()),
       _route(
         AppRoutes.editProduct,
@@ -115,50 +115,37 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
       _route(AppRoutes.profile, (_) => const SupplierProfileScreen()),
       _route(AppRoutes.updateProfile, (_) => const UpdateProfileScreen()),
       _route(AppRoutes.accountDetails, (_) => const AccountDetailsScreen()),
-      _route(AppRoutes.tenderProfile, (_) => const TenderProfileScreen()),
+      _route(AppRoutes.vendorProfile, (_) => const VendorProfileScreen()),
       _route(AppRoutes.wallet, (_) => const MyWalletScreen()),
-      _route(AppRoutes.tenderHome, (_) => const TenderHomeScreen()),
+      _route(AppRoutes.vendorHome, (_) => const VendorHomeScreen()),
       _route(
-        AppRoutes.tenderCategories,
-        (_) => const TenderAllCategoriesScreen(),
+        AppRoutes.vendorCategories,
+        (_) => const VendorAllCategoriesScreen(),
       ),
       _route(
-        AppRoutes.addTenderRfqRequests,
-        (_) => const AddTenderRfqRequestsScreen(),
+        AppRoutes.vendorRfqRequests,
+        (_) => const VendorRfqRequestsScreen(),
       ),
       _route(
-        AppRoutes.tenderAllProducts,
-        (_) => const TenderAllProductsScreen(),
+        AppRoutes.vendorAllProducts,
+        (_) => const VendorAllProductsScreen(),
       ),
+      _route(AppRoutes.supplierDetails, (_) => const SupplierDetailsScreen()),
+      _route(AppRoutes.vendorCheckout, (_) => const VendorCheckoutScreen()),
       _route(
-        AppRoutes.tenderSupplierDetails,
-        (_) => const AdvTenderSupplierDetailsScreen(),
+        AppRoutes.vendorPaymentStatus,
+        (state) =>
+            VendorPaymentStatusScreen(isSuccess: _requiredExtra<bool>(state)),
       ),
-      _route(
-        AppRoutes.addTenderCheckout,
-        (_) => const AddTenderCheckoutScreen(),
-      ),
-      _route(
-        AppRoutes.addTenderPaymentStatus,
-        (state) => AddTenderPaymentStatusScreen(
-          isSuccess: _requiredExtra<bool>(state),
-        ),
-      ),
-      _route(AppRoutes.advTenderCart, (state) {
-        final data = _requiredExtra<AdvTenderCartRouteData>(state);
-        return AdvTenderRfqCartScreen(
+      _route(AppRoutes.vendorCart, (state) {
+        final data = _requiredExtra<VendorCartRouteData>(state);
+        return VendorRfqCartScreen(
           cartItems: data.cartItems,
           initialQuantities: data.initialQuantities,
         );
       }),
-      _route(
-        AppRoutes.advTenderRfqStatus,
-        (_) => const AdvTenderRfqStatusScreen(),
-      ),
-      _route(
-        AppRoutes.addTenderTerms,
-        (_) => const AddTenderTermsOfServiceScreen(),
-      ),
+      _route(AppRoutes.vendorRfqStatus, (_) => const VendorRfqStatusScreen()),
+      _route(AppRoutes.vendorTerms, (_) => const VendorTermsOfServiceScreen()),
     ],
   );
   return router;

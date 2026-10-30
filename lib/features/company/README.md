@@ -55,7 +55,7 @@ lib/
 
 ```bash
 # From project root
-flutter run lib/features/company/company_bank_demo.dart
+flutter run lib/features/company/presentation/pages/company_bank_demo.dart
 ```
 
 This opens a menu to test either screen individually or follow the flow.
@@ -63,7 +63,7 @@ This opens a menu to test either screen individually or follow the flow.
 ### Method 2: Navigate in Code
 
 ```dart
-import 'package:flutter_app/features/company/company_details_screen.dart';
+import 'package:flutter_app/features/company/presentation/pages/company_details_screen.dart';
 
 // Navigate to Company Details
 Navigator.push(

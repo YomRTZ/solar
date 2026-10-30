@@ -13,7 +13,7 @@ abstract final class AppRoutes {
   static const verificationRejected = '/verification/rejected';
   static const choosePlan = '/plan';
   static const home = '/home';
-  static const tenderMain = '/tender';
+  static const vendorMain = '/vendor';
   static const addProduct = '/products/add';
   static const editProduct = '/products/edit';
   static const myProducts = '/products';
@@ -27,16 +27,16 @@ abstract final class AppRoutes {
   static const profile = '/profile';
   static const updateProfile = '/profile/update';
   static const accountDetails = '/profile/account-details';
-  static const tenderProfile = '/tender/profile';
+  static const vendorProfile = '/vendor/profile';
   static const wallet = '/wallet';
-  static const tenderHome = '/tender/home';
-  static const tenderCategories = '/tender/categories';
-  static const addTenderRfqRequests = '/tender/rfqs';
-  static const tenderAllProducts = '/tender/products';
-  static const tenderSupplierDetails = '/tender/supplier';
-  static const addTenderCheckout = '/tender/checkout';
-  static const addTenderPaymentStatus = '/tender/payment-status';
-  static const advTenderCart = '/tender/rfq-cart';
-  static const advTenderRfqStatus = '/tender/rfq-status';
-  static const addTenderTerms = '/tender/terms';
+  static const vendorHome = '/vendor/home';
+  static const vendorCategories = '/vendor/categories';
+  static const vendorRfqRequests = '/vendor/rfqs';
+  static const vendorAllProducts = '/vendor/products';
+  static const supplierDetails = '/supplier/details';
+  static const vendorCheckout = '/vendor/checkout';
+  static const vendorPaymentStatus = '/vendor/payment-status';
+  static const vendorCart = '/vendor/rfq-cart';
+  static const vendorRfqStatus = '/vendor/rfq-status';
+  static const vendorTerms = '/vendor/terms';
 }

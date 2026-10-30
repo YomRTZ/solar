@@ -1,0 +1,131 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:flutter_app/app/routing/app_routes.dart';
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 8), () {
+      if (mounted) {
+        context.go(AppRoutes.login);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          // ── Full-screen background ────────────────────────
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/photo_5979016740496674867_y.jpg',
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          // ── Dark transparent overlay ──────────────────────
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withValues(alpha: 0.45),
+                    Colors.black.withValues(alpha: 0.10),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          Positioned(
+            left: 75,
+            right: 65,
+            top: 59,
+            bottom: 497,
+            child: Image.asset(
+              'assets/images/a_clean_high_resolution_vector_like_logo_image_on.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+
+          // Keep the text below the logo's bottom margin.
+          Positioned(
+            top: screenHeight - 497 + screenHeight * 0.03,
+            left: 0,
+            right: 0,
+            child: SizedBox(
+              width: screenWidth,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                // "Connecting"
+                Text(
+                  'Connecting',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.roboto(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 24,
+                    height: 1.0,
+                    letterSpacing: 0,
+                    color: const Color(0xFFFFFFFF),
+                  ),
+                ),
+
+                const SizedBox(height: 6),
+
+                // "Solar Supplier & Vendor"
+                Text(
+                  'Solar Supplier & Vendor',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.roboto(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 24,
+                    height: 1.0,
+                    letterSpacing: 0,
+                    color: const Color(0xFFFFFFFF),
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                // "A Trusted B2B Marketplace…"
+                SizedBox(
+                  width: screenWidth * 0.88,
+                  child: Text(
+                    'A Trusted B2B Marketplace For\nTransforming Trade Through Technology',
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    style: GoogleFonts.roboto(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                      height: 1.2,
+                      letterSpacing: 0,
+                      color: const Color(0xFFFFFFFF),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

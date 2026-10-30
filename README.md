@@ -8,10 +8,16 @@ Flutter application for the SolarTradeXHub marketplace.
   applies the shared fade-and-slide transition to app routes.
 - `lib/app/routing/app_routes.dart` contains route paths.
 - `lib/app/routing/route_data.dart` defines typed data passed between routes.
-- `lib/features/` organizes screens by product feature. Shared UI components and
-  theme values live under `lib/core/`; reusable app data and models live under
-  `lib/data/` and `lib/models/`.
-- Home and Tender keep their bottom-navigation tabs as local stateful shells so
+- `lib/features/` follows a feature-first structure. Each feature keeps its
+  `data/`, `domain/`, and `presentation/` code together; presentation pages and
+  feature-specific widgets live under `presentation/`.
+- `lib/core/` contains reusable app-wide widgets, theme values, and constants.
+  App setup and navigation live under `lib/app/`.
+- Feature code uses package imports (for example,
+  `package:flutter_app/features/vendor/presentation/pages/vendor_home_screen.dart`).
+  Feature-specific widgets are kept with their feature; only app-wide widgets
+  are exported from `core/widgets/widgets.dart`.
+- Home and Vendor keep their bottom-navigation tabs as local stateful shells so
   their existing tab state and behavior are preserved.
 
 Navigate between app screens with GoRouter, for example:

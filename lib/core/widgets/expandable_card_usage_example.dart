@@ -5,8 +5,8 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'app_expandable_card.dart';
-import 'app_header.dart';
+import 'package:flutter_app/core/widgets/app_expandable_card.dart';
+import 'package:flutter_app/core/widgets/app_header.dart';
 
 /// Example 1: Single Card with "In Stock" status
 class SingleExpandableCardExample extends StatelessWidget {

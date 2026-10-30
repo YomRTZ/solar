@@ -6,15 +6,21 @@ A complete product listing screen with search, filtering, and reusable card widg
 
 ```
 lib/
-├── models/
-│   └── product.dart              # Product model & enums
-├── data/
-│   └── products_data.dart        # Sample products data
 └── features/
     └── products/
-        ├── my_products_screen.dart   # Main products screen
-        ├── products_demo.dart        # Demo/test app
-        └── README.md                 # This file
+        ├── data/
+        │   └── datasources/
+        │       └── products_data.dart
+        ├── domain/
+        │   └── entities/
+        │       └── product.dart
+        ├── presentation/
+        │   └── pages/
+        │       ├── my_products_screen.dart
+        │       ├── products_demo.dart
+        │       ├── add_product_screen.dart
+        │       └── edit_product_screen.dart
+        └── README.md
 ```
 
 ## 🎯 Features
@@ -44,7 +50,7 @@ lib/
 ### 1. Import the screen
 
 ```dart
-import 'package:flutter_app/features/products/my_products_screen.dart';
+import 'package:flutter_app/features/products/presentation/pages/my_products_screen.dart';
 
 // Navigate to products screen
 Navigator.push(
@@ -59,7 +65,7 @@ Navigator.push(
 
 ```bash
 # From project root
-flutter run lib/features/products/products_demo.dart
+flutter run lib/features/products/presentation/pages/products_demo.dart
 ```
 
 ## 📊 Product Model
@@ -133,7 +139,7 @@ The app comes with 9 sample products:
 
 ### Add More Products
 
-Edit `lib/data/products_data.dart`:
+Edit `lib/features/products/data/datasources/products_data.dart`:
 
 ```dart
 Product(
@@ -149,7 +155,7 @@ Product(
 
 ### Add New Categories
 
-1. Edit `lib/models/product.dart`:
+1. Edit `lib/features/products/domain/entities/product.dart`:
 ```dart
 enum ProductCategory {
   all,
@@ -251,8 +257,8 @@ This screen uses these reusable widgets:
 ## 🆘 Need Help?
 
 - Check the demo app: `products_demo.dart`
-- See sample data: `lib/data/products_data.dart`
-- View model: `lib/models/product.dart`
+- See sample data: `lib/features/products/data/datasources/products_data.dart`
+- View entity: `lib/features/products/domain/entities/product.dart`
 - Widget docs: `lib/core/widgets/README.md`
 
 Happy coding! 🚀
