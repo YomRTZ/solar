@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/core/widgets/app_catalog_card.dart';
 import 'package:flutter_app/features/catalog/data/datasources/catalog_data.dart';
 import 'package:flutter_app/features/catalog/domain/entities/catalog_product.dart';
+import 'package:flutter_app/features/catalog/presentation/cubit/catalog_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AllProductsScreen extends StatefulWidget {
   const AllProductsScreen({super.key});
@@ -16,17 +18,13 @@ class AllProductsScreen extends StatefulWidget {
 class _AllProductsScreenState extends State<AllProductsScreen> {
   // Search
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
+  final CatalogCubit _catalogCubit = CatalogCubit();
 
-  // RFQ cart: productId → quantity
-  final Map<String, int> _rfqCart = {};
-
-  // Total items in cart
-  int get _cartCount => _rfqCart.values.fold(0, (sum, qty) => sum + qty);
+  int get _cartCount => _catalogCubit.state.cartCount;
 
   List<CatalogProduct> get _filtered {
-    if (_searchQuery.isEmpty) return CatalogData.products;
-    final q = _searchQuery.toLowerCase();
+    if (_catalogCubit.state.query.isEmpty) return CatalogData.products;
+    final q = _catalogCubit.state.query.toLowerCase();
     return CatalogData.products
         .where(
           (p) =>
@@ -39,46 +37,38 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
   @override
   void dispose() {
     _searchController.dispose();
+    _catalogCubit.close();
     super.dispose();
   }
 
-  void _addToRFQ(String id) =>
-      setState(() => _rfqCart[id] = (_rfqCart[id] ?? 0) + 1);
+  void _addToRFQ(String id) => _catalogCubit.increment(id);
 
-  void _increment(String id) =>
-      setState(() => _rfqCart[id] = (_rfqCart[id] ?? 0) + 1);
+  void _increment(String id) => _catalogCubit.increment(id);
 
-  void _decrement(String id) {
-    setState(() {
-      final current = _rfqCart[id] ?? 0;
-      if (current <= 1) {
-        _rfqCart.remove(id);
-      } else {
-        _rfqCart[id] = current - 1;
-      }
-    });
-  }
+  void _decrement(String id) => _catalogCubit.decrement(id);
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        extendBodyBehindAppBar: true,
-        body: Column(
-          children: [
-            _buildHeader(context),
-            _buildSearchBar(),
-            const SizedBox(height: 12),
-            Expanded(child: _buildGrid()),
-          ],
+    return BlocBuilder<CatalogCubit, CatalogState>(
+      bloc: _catalogCubit,
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          extendBodyBehindAppBar: true,
+          body: Column(
+            children: [
+              _buildHeader(context),
+              _buildSearchBar(),
+              Expanded(child: _buildGrid()),
+            ],
+          ),
         ),
       ),
     );
@@ -180,8 +170,9 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
   // ── Search bar ─────────────────────────────────────────────
   Widget _buildSearchBar() {
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+      margin: const EdgeInsets.fromLTRB(16, 21, 17, 14),
       height: 44,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -196,13 +187,12 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
       ),
       child: Row(
         children: [
-          const SizedBox(width: 12),
-          const Icon(Icons.search, color: Color(0xFF6C7278), size: 20),
-          const SizedBox(width: 10),
+          const Icon(Icons.search, color: Color(0xFF6C7278), size: 22),
+          const SizedBox(width: 11),
           Expanded(
             child: TextField(
               controller: _searchController,
-              onChanged: (v) => setState(() => _searchQuery = v),
+              onChanged: _catalogCubit.updateQuery,
               style: GoogleFonts.roboto(
                 fontSize: 14,
                 color: const Color(0xFF202020),
@@ -219,12 +209,12 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
               ),
             ),
           ),
-          if (_searchQuery.isNotEmpty)
+          if (_catalogCubit.state.query.isNotEmpty)
             GestureDetector(
-              onTap: () => setState(() {
+              onTap: () {
                 _searchController.clear();
-                _searchQuery = '';
-              }),
+                _catalogCubit.updateQuery('');
+              },
               child: const Padding(
                 padding: EdgeInsets.only(right: 12),
                 child: Icon(Icons.clear, color: Color(0xFF6C7278), size: 18),
@@ -271,7 +261,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
       itemCount: products.length,
       itemBuilder: (context, index) {
         final product = products[index];
-        final qty = _rfqCart[product.id] ?? 0;
+        final qty = _catalogCubit.state.rfqQuantities[product.id] ?? 0;
 
         // Reusable AppCatalogCard
         return AppCatalogCard(
@@ -297,7 +287,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
       ),
       builder: (_) {
         final addedProducts = CatalogData.products
-            .where((p) => (_rfqCart[p.id] ?? 0) > 0)
+            .where((p) => (_catalogCubit.state.rfqQuantities[p.id] ?? 0) > 0)
             .toList();
 
         return Padding(
@@ -344,7 +334,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'x${_rfqCart[p.id]}',
+                        'x${_catalogCubit.state.rfqQuantities[p.id]}',
                         style: GoogleFonts.roboto(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,

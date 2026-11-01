@@ -7,9 +7,10 @@ import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_rfq_request_card.dart';
 import 'package:flutter_app/core/widgets/app_bottom_sheet.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
-import 'package:flutter_app/features/vendor/presentation/widgets/vendor_price_badge.dart';
 import 'package:flutter_app/features/vendor/data/datasources/vendor_rfq_data.dart';
 import 'package:flutter_app/features/vendor/domain/entities/vendor_rfq_request.dart';
+import 'package:flutter_app/features/vendor/presentation/cubit/vendor_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // ───────────────────────────────────────────────────────────────────────────── Vendor — RFQ
 class VendorRfqRequestsScreen extends StatefulWidget {
@@ -22,24 +23,16 @@ class VendorRfqRequestsScreen extends StatefulWidget {
       _VendorRfqRequestsScreenState();
 }
 
-enum _Tab { all, received, pending }
-
 class _VendorRfqRequestsScreenState extends State<VendorRfqRequestsScreen> {
-  _Tab _activeTab = _Tab.all;
+  final VendorRequestListCubit _requestListCubit = VendorRequestListCubit();
 
-  List<VendorRfqRequest> get _filtered {
-    switch (_activeTab) {
-      case _Tab.all:
-        return VendorRfqData.requests;
-      case _Tab.received:
-        return VendorRfqData.requests
-            .where((r) => r.status == VendorRfqStatus.received)
-            .toList();
-      case _Tab.pending:
-        return VendorRfqData.requests
-            .where((r) => r.status == VendorRfqStatus.pending)
-            .toList();
-    }
+  List<VendorRfqRequest> get _filtered =>
+      _requestListCubit.filterRequests(VendorRfqData.requests);
+
+  @override
+  void dispose() {
+    _requestListCubit.close();
+    super.dispose();
   }
 
   void _openDetailSheet(VendorRfqRequest request) {
@@ -51,7 +44,7 @@ class _VendorRfqRequestsScreenState extends State<VendorRfqRequestsScreen> {
         request: request,
         onProceedToCheckout: () {
           Navigator.pop(context); // close sheet
-          context.push(AppRoutes.vendorCheckout);
+          context.push(AppRoutes.vendorCheckout, extra: request);
         },
       ),
     );
@@ -59,56 +52,68 @@ class _VendorRfqRequestsScreenState extends State<VendorRfqRequestsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SecondAppHeader(
-              title: 'RFQ Requests',
-              onBackPressed:
-                  widget.onBackPressed ?? () => Navigator.maybePop(context),
-            ),
-            _buildTabBar(),
-            const SizedBox(height: 12),
-            Expanded(child: _buildList()),
-          ],
+    return BlocBuilder<VendorRequestListCubit, VendorRequestFilter>(
+      bloc: _requestListCubit,
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SecondAppHeader(
+                title: 'RFQ Requests',
+                onBackPressed:
+                    widget.onBackPressed ?? () => Navigator.maybePop(context),
+              ),
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.only(left: 18, right: 15),
+                  child: Column(
+                    children: [
+                      _buildTabBar(state),
+                      Expanded(child: _buildList()),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   // ── Filter tab bar ──────────────────────────────────────────
-  Widget _buildTabBar() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+  Widget _buildTabBar(VendorRequestFilter state) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(0, 28, 0, 11),
+      alignment: Alignment.centerLeft,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           _TabChip(
             label: 'All',
-            isActive: _activeTab == _Tab.all,
-            onTap: () => setState(() => _activeTab = _Tab.all),
+            isActive: state == VendorRequestFilter.all,
+            onTap: () => _requestListCubit.select(VendorRequestFilter.all),
           ),
           const SizedBox(width: 12.85),
           _TabChip(
             label: 'Received',
-            isActive: _activeTab == _Tab.received,
-            onTap: () => setState(() => _activeTab = _Tab.received),
+            isActive: state == VendorRequestFilter.received,
+            onTap: () => _requestListCubit.select(VendorRequestFilter.received),
           ),
-          const SizedBox(width: 12.86),
+          const SizedBox(width: 12.85),
           _TabChip(
             label: 'Pending',
-            isActive: _activeTab == _Tab.pending,
-            onTap: () => setState(() => _activeTab = _Tab.pending),
+            isActive: state == VendorRequestFilter.pending,
+            onTap: () => _requestListCubit.select(VendorRequestFilter.pending),
           ),
         ],
       ),
@@ -127,7 +132,7 @@ class _VendorRfqRequestsScreenState extends State<VendorRfqRequestsScreen> {
       );
     }
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+      padding: const EdgeInsets.fromLTRB(0, 4, 0, 24),
       itemCount: items.length,
       itemBuilder: (context, i) => VendorRfqRequestCard(
         request: items[i],
@@ -263,7 +268,9 @@ class _RfqDetailSheet extends StatelessWidget {
           SizedBox(
             height: 50,
             child: ElevatedButton(
-              onPressed: onProceedToCheckout,
+              onPressed: request.status == VendorRfqStatus.received
+                  ? onProceedToCheckout
+                  : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF003A8A),
                 foregroundColor: Colors.white,
@@ -388,33 +395,25 @@ class _RequestItemsTable extends StatelessWidget {
                   ? null
                   : const Border(bottom: BorderSide(color: Color(0xFFE5E7EB))),
             ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Text(
-                    item.productName,
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xFF1A1A1A),
-                    ),
+                Text(
+                  item.productName,
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF1A1A1A),
                   ),
                 ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      '${item.qty}×',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF1A1A1A),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    VendorPriceBadge(price: item.price),
-                  ],
+                const SizedBox(height: 5),
+                Text(
+                  '${_formatQuantity(item.qty)} ${item.price}',
+                  style: GoogleFonts.roboto(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF1A1A1A),
+                  ),
                 ),
               ],
             ),
@@ -424,3 +423,8 @@ class _RequestItemsTable extends StatelessWidget {
     );
   }
 }
+
+String _formatQuantity(String quantity) => quantity
+    .trim()
+    .replaceAll(RegExp(r'\s*x\s*'), 'x ')
+    .replaceAll(RegExp(r'\s*=\s*'), ' =');

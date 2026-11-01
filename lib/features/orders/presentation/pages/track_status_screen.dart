@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/orders/data/datasources/order_dispatch_updates.dart';
+import 'package:flutter_app/features/orders/data/datasources/orders_data.dart';
 import 'package:flutter_app/features/orders/domain/entities/order.dart';
 
 // ───────────────────────────────────────────────────────────────────────────── DATA MODEL
@@ -23,7 +24,7 @@ extension TrackStepExt on TrackStep {
       case TrackStep.inTransit:
         return 'In Transit';
       case TrackStep.delivered:
-        return 'Delivered';
+        return 'Out for delivery';
     }
   }
 
@@ -56,31 +57,13 @@ class TrackEvent {
     this.subText,
   });
 
-  bool get isActive =>
-      step == TrackStep.delivered || dateTime != null || subText != null;
+  bool get isActive => dateTime != null || subText != null;
 }
 
 // ───────────────────────────────────────────────────────────────────────────── SCREEN
 
 class TrackStatusScreen extends StatelessWidget {
   final Order order;
-
-  // Demo events — in production this would come from the Order / API
-  static final List<TrackEvent> _events = [
-    const TrackEvent(
-      step: TrackStep.orderConfirmed,
-      dateTime: '18 Oct 2026 | 09:10 AM',
-    ),
-    TrackEvent(
-      step: TrackStep.dispatched,
-      dateTime: '20 Oct 2026 | 09:10 AM',
-      imagePaths: [
-        'assets/solarimages/03f133a91b6e5ade2638722f368e27d2f92f051b.png',
-      ],
-    ),
-    TrackEvent(step: TrackStep.inTransit),
-    TrackEvent(step: TrackStep.delivered),
-  ];
 
   const TrackStatusScreen({super.key, required this.order});
 
@@ -101,10 +84,7 @@ class TrackStatusScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // ── Header ──────────────────────────────────────
-            const SecondAppHeader(
-              title: 'Track Status',
-              centerContentVertically: false,
-            ),
+            const SecondAppHeader(title: 'Track Status'),
 
             // ── Timeline ─────────────────────────────────────
             Expanded(
@@ -130,23 +110,52 @@ class TrackStatusScreen extends StatelessWidget {
   }
 
   List<Widget> _buildTimeline() {
-    final dispatchUpdate = OrderDispatchUpdates.forOrder(order.id);
-    final events = _events.map((event) {
-      if (event.step != TrackStep.dispatched || dispatchUpdate == null) {
-        return event;
-      }
-
-      return TrackEvent(
-        step: TrackStep.dispatched,
-        dateTime: dispatchUpdate.dispatchDate,
-        imagePaths: dispatchUpdate.proofImageAssetPath == null
-            ? const []
-            : [dispatchUpdate.proofImageAssetPath!],
-        imageBytes: dispatchUpdate.proofImageBytes,
-        subText:
-            'Transporter: ${dispatchUpdate.transporter} · Tracking Number: ${dispatchUpdate.trackingNumber}',
-      );
-    }).toList();
+    final currentOrder = OrdersData.getById(order.id) ?? order;
+    final dispatchUpdate = OrderDispatchUpdates.forOrder(currentOrder.id);
+    final hasProgress =
+        currentOrder.status == OrderStatus.dispatched ||
+        currentOrder.status == OrderStatus.delivered;
+    final events = currentOrder.status == OrderStatus.delivered
+        ? const [
+            TrackEvent(
+              step: TrackStep.orderConfirmed,
+              dateTime: '18 Oct 2026 | 09:10 AM',
+            ),
+            TrackEvent(
+              step: TrackStep.dispatched,
+              dateTime: '20 Oct 2026 | 09:10 AM',
+            ),
+            TrackEvent(
+              step: TrackStep.inTransit,
+              dateTime: '18 Oct 2026 | 09:10 AM',
+            ),
+            TrackEvent(
+              step: TrackStep.delivered,
+              subText: 'Share OTP - 3212 on delivery',
+            ),
+          ]
+        : [
+            TrackEvent(
+              step: TrackStep.orderConfirmed,
+              dateTime: currentOrder.orderDate,
+            ),
+            TrackEvent(
+              step: TrackStep.dispatched,
+              dateTime: dispatchUpdate?.dispatchDate,
+              imagePaths: dispatchUpdate?.proofImageAssetPath == null
+                  ? const []
+                  : [dispatchUpdate!.proofImageAssetPath!],
+              imageBytes: dispatchUpdate?.proofImageBytes,
+              subText: dispatchUpdate == null
+                  ? null
+                  : 'Transporter: ${dispatchUpdate.transporter} · Tracking Number: ${dispatchUpdate.trackingNumber}',
+            ),
+            TrackEvent(
+              step: TrackStep.inTransit,
+              dateTime: hasProgress ? dispatchUpdate?.dispatchDate : null,
+            ),
+            const TrackEvent(step: TrackStep.delivered),
+          ];
 
     final widgets = <Widget>[];
     for (int i = 0; i < events.length; i++) {
@@ -172,17 +181,11 @@ class _TimelineRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isActive = event.isActive;
-    final titleColor = event.step == TrackStep.inTransit
-        ? const Color(0xFF808080)
-        : isActive
-        ? _activeBlue
-        : _inactiveGrey;
+    // All active steps use #003A8A; inactive steps use grey
+    final titleColor = isActive ? _activeBlue : _inactiveGrey;
     final subTextColor = isActive ? _activeBlue : _inactiveGrey;
-    final timelineColor =
-        event.step == TrackStep.orderConfirmed ||
-            event.step == TrackStep.dispatched
-        ? _activeBlue
-        : _inactiveGrey;
+    final dateColor = isActive ? _activeBlue : _inactiveGrey;
+    final timelineColor = isActive ? _activeBlue : _inactiveGrey;
 
     return IntrinsicHeight(
       child: Row(
@@ -213,21 +216,35 @@ class _TimelineRow extends StatelessWidget {
                           'assets/icons/location-tick1.svg',
                           width: 32,
                           height: 32,
+                          colorFilter: ColorFilter.mode(
+                            timelineColor,
+                            BlendMode.srcIn,
+                          ),
                         ),
                         TrackStep.dispatched => Image.asset(
                           'assets/icons/shop.png',
                           width: 18,
                           height: 18,
+                          color: timelineColor,
+                          colorBlendMode: BlendMode.srcIn,
                         ),
                         TrackStep.inTransit => SvgPicture.asset(
                           'assets/icons/truck-fast.svg',
                           width: 18,
                           height: 18,
+                          colorFilter: ColorFilter.mode(
+                            timelineColor,
+                            BlendMode.srcIn,
+                          ),
                         ),
                         TrackStep.delivered => SvgPicture.asset(
                           'assets/icons/Vector1.svg',
                           width: 16.56,
                           height: 19.1427,
+                          colorFilter: ColorFilter.mode(
+                            timelineColor,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       },
                     ],
@@ -277,7 +294,7 @@ class _TimelineRow extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         height: 1.9,
                         letterSpacing: 0,
-                        color: const Color(0xFF7A7A7A),
+                        color: dateColor,
                       ),
                     ),
                   ],

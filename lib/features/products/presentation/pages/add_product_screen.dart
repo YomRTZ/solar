@@ -1,10 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter_app/app/routing/app_routes.dart';
+import 'package:flutter_app/core/widgets/app_form_section.dart';
 import 'package:flutter_app/core/widgets/app_text_field.dart';
 import 'package:flutter_app/core/widgets/app_dropdown_field.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
+import 'package:flutter_app/features/products/presentation/cubit/product_editor_cubit.dart';
+import 'package:flutter_app/features/products/data/datasources/products_data.dart';
+import 'package:flutter_app/features/products/domain/entities/product.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
@@ -14,6 +24,7 @@ class AddProductScreen extends StatefulWidget {
 }
 
 class _AddProductScreenState extends State<AddProductScreen> {
+  final _formKey = GlobalKey<FormState>();
   // Controllers
   final TextEditingController _productNameController = TextEditingController();
   final TextEditingController _modelNumberController = TextEditingController();
@@ -23,17 +34,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController _warrantyController = TextEditingController();
   final TextEditingController _dispatchDistController = TextEditingController();
 
-  // Dropdown values
-  String? _selectedCategory;
-  String? _selectedBrand;
-  String? _selectedStock;
-
-  // Image paths (simulated picks)
-  final List<String> _selectedImages = [
-    'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
-  ];
-
-  bool _isLoading = false;
+  final ProductEditorCubit _editorCubit = ProductEditorCubit(
+    initialState: const ProductEditorState(
+      category: 'Panel',
+      brand: 'Long',
+      stock: 'In Stock',
+    ),
+  );
 
   // Dropdown options
   static const List<String> _categories = [
@@ -64,177 +71,228 @@ class _AddProductScreenState extends State<AddProductScreen> {
     _minOrderQtyController.dispose();
     _warrantyController.dispose();
     _dispatchDistController.dispose();
+    _editorCubit.close();
     super.dispose();
   }
 
-  bool get _isFormValid =>
-      _productNameController.text.isNotEmpty &&
-      _selectedCategory != null &&
-      _modelNumberController.text.isNotEmpty &&
-      _selectedBrand != null &&
-      _priceController.text.isNotEmpty &&
-      _taxAmountController.text.isNotEmpty &&
-      _minOrderQtyController.text.isNotEmpty &&
-      _selectedStock != null &&
-      _warrantyController.text.isNotEmpty &&
-      _dispatchDistController.text.isNotEmpty;
-
   void _handleContinue() async {
-    if (!_isFormValid) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill in all fields'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-    setState(() => _isLoading = true);
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+    _editorCubit.setLoading(true);
     await Future.delayed(const Duration(seconds: 1));
     if (!mounted) return;
-    setState(() => _isLoading = false);
-    // TODO: save product and navigate
-    Navigator.pop(context);
+    _editorCubit.setLoading(false);
+    final state = _editorCubit.state;
+    final modelNumber = state.modelNumber.trim().replaceFirst(
+      RegExp(r'^#'),
+      '',
+    );
+    ProductsData.addProduct(
+      Product(
+        id: DateTime.now().microsecondsSinceEpoch.toString(),
+        title: state.productName.trim(),
+        idNumber: '#$modelNumber',
+        price: state.price.trim(),
+        imagePath: state.imagePaths.isEmpty
+            ? ProductsData.defaultImagePath
+            : state.imagePaths.first,
+        status: _statusFromValue(state.stock),
+        category: _categoryFromValue(state.category),
+        brand: state.brand ?? '',
+        taxAmount: state.taxAmount.trim(),
+        minimumOrderQuantity: state.minimumOrderQuantity.trim(),
+        warranty: state.warranty.trim(),
+        dispatchDistrict: state.dispatchDistrict.trim(),
+      ),
+    );
+    context.go(AppRoutes.myProducts);
   }
 
-  // Simulate adding an image
-  void _addImage() {
-    setState(() {
-      _selectedImages.add(
-        'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+  ProductCategory _categoryFromValue(String? value) {
+    switch (value) {
+      case 'Battery':
+        return ProductCategory.battery;
+      case 'Inverter':
+        return ProductCategory.inverter;
+      case 'Controller':
+        return ProductCategory.controller;
+      default:
+        return ProductCategory.panel;
+    }
+  }
+
+  ProductStatus _statusFromValue(String? value) {
+    switch (value) {
+      case 'Low Stock':
+        return ProductStatus.lowStock;
+      case 'Out of Stock':
+        return ProductStatus.outOfStock;
+      default:
+        return ProductStatus.inStock;
+    }
+  }
+
+  // Pick an image from the gallery using image_picker
+  Future<void> _addImage() async {
+    try {
+      final picker = ImagePicker();
+      final xFile = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 80,
       );
-    });
+      if (xFile == null) return; // user cancelled
+      _editorCubit.addImage(xFile.path);
+    } on PlatformException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not open image picker: $e')),
+        );
+      }
+    }
   }
 
   void _removeImage(int index) {
-    setState(() => _selectedImages.removeAt(index));
+    _editorCubit.removeImage(index);
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        extendBodyBehindAppBar: true,
-        body: Column(
-          children: [
-            const SecondAppHeader(title: 'Add Product'),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // ── Add Images ──────────────────────────────────────────
-                    _buildAddImages(),
-                    const SizedBox(height: 20),
+    return BlocBuilder<ProductEditorCubit, ProductEditorState>(
+      bloc: _editorCubit,
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          extendBodyBehindAppBar: true,
+          body: Column(
+            children: [
+              const SecondAppHeader(title: 'Add Product'),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 32),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // ── Add Images ──────────────────────────────────────────
+                      _buildAddImages(),
 
-                    // ── Product Name ─────────────────────────────────────────
-                    AppTextField(
-                      label: 'Product Name',
-                      hint: 'Solar Trade',
-                      controller: _productNameController,
-                    ),
-                    const SizedBox(height: 20),
+                      Form(
+                        key: _formKey,
+                        child: AppFormSection(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // ── Product Name ─────────────────────────────────────────
+                              AppTextField(
+                                label: 'Product Name',
+                                hint: 'Solar Trade',
+                                controller: _productNameController,
+                                onChanged: _editorCubit.updateProductName,
+                              ),
 
-                    // ── Select Category ──────────────────────────────────────
-                    AppDropdownFieldString(
-                      label: 'Select Category',
-                      hint: 'Panel',
-                      items: _categories,
-                      value: _selectedCategory,
-                      onChanged: (v) => setState(() => _selectedCategory = v),
-                    ),
-                    const SizedBox(height: 20),
+                              // ── Select Category ──────────────────────────────────────
+                              AppDropdownFieldString(
+                                label: 'Select Category',
+                                hint: 'Panel',
+                                items: _categories,
+                                value: state.category,
+                                onChanged: _editorCubit.selectCategory,
+                              ),
 
-                    // ── Model Number ─────────────────────────────────────────
-                    AppTextField(
-                      label: 'Model Number',
-                      hint: 'MB12345',
-                      controller: _modelNumberController,
-                    ),
-                    const SizedBox(height: 20),
+                              // ── Model Number ─────────────────────────────────────────
+                              AppTextField(
+                                label: 'Model Number',
+                                hint: 'MB12345',
+                                controller: _modelNumberController,
+                                onChanged: _editorCubit.updateModelNumber,
+                              ),
 
-                    // ── Select Brand ─────────────────────────────────────────
-                    AppDropdownFieldString(
-                      label: 'Select Brand',
-                      hint: 'Long',
-                      items: _brands,
-                      value: _selectedBrand,
-                      onChanged: (v) => setState(() => _selectedBrand = v),
-                    ),
-                    const SizedBox(height: 20),
+                              // ── Select Brand ─────────────────────────────────────────
+                              AppDropdownFieldString(
+                                label: 'Select Brand',
+                                hint: 'Long',
+                                items: _brands,
+                                value: state.brand,
+                                onChanged: _editorCubit.selectBrand,
+                              ),
 
-                    // ── Price (Excluding Tax) ────────────────────────────────
-                    AppTextField(
-                      label: 'Price (Excluding Tax)',
-                      hint: '1234',
-                      controller: _priceController,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
+                              // ── Price (Excluding Tax) ────────────────────────────────
+                              AppTextField(
+                                label: 'Price (Excluding Tax)',
+                                hint: '1234',
+                                controller: _priceController,
+                                keyboardType: TextInputType.number,
+                                onChanged: _editorCubit.updatePrice,
+                              ),
 
-                    // ── Tax Amount ───────────────────────────────────────────
-                    AppTextField(
-                      label: 'Tax Amount',
-                      hint: '12',
-                      controller: _taxAmountController,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
+                              // ── Tax Amount ───────────────────────────────────────────
+                              AppTextField(
+                                label: 'Tax Amount',
+                                hint: '12',
+                                controller: _taxAmountController,
+                                keyboardType: TextInputType.number,
+                                onChanged: _editorCubit.updateTaxAmount,
+                              ),
 
-                    // ── Min Order Qty ────────────────────────────────────────
-                    AppTextField(
-                      label: 'Min Order Qty',
-                      hint: '12',
-                      controller: _minOrderQtyController,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
+                              // ── Min Order Qty ────────────────────────────────────────
+                              AppTextField(
+                                label: 'Min Order Qty',
+                                hint: '12',
+                                controller: _minOrderQtyController,
+                                keyboardType: TextInputType.number,
+                                onChanged:
+                                    _editorCubit.updateMinimumOrderQuantity,
+                              ),
 
-                    // ── Stock ────────────────────────────────────────────────
-                    AppDropdownFieldString(
-                      label: 'Stock',
-                      hint: 'In Stock',
-                      items: _stockOptions,
-                      value: _selectedStock,
-                      onChanged: (v) => setState(() => _selectedStock = v),
-                    ),
-                    const SizedBox(height: 20),
+                              // ── Stock ────────────────────────────────────────────────
+                              AppDropdownFieldString(
+                                label: 'Stock',
+                                hint: 'In Stock',
+                                items: _stockOptions,
+                                value: state.stock,
+                                onChanged: _editorCubit.selectStock,
+                              ),
 
-                    // ── Warranty ─────────────────────────────────────────────
-                    AppTextField(
-                      label: 'Warranty',
-                      hint: '09/2026',
-                      controller: _warrantyController,
-                    ),
-                    const SizedBox(height: 20),
+                              // ── Warranty ─────────────────────────────────────────────
+                              AppTextField(
+                                label: 'Warranty',
+                                hint: '09/2026',
+                                controller: _warrantyController,
+                                onChanged: _editorCubit.updateWarranty,
+                              ),
 
-                    // ── Dispatch Dist. ───────────────────────────────────────
-                    AppTextField(
-                      label: 'Dispatch Dist.',
-                      hint: 'New Delhi',
-                      controller: _dispatchDistController,
-                    ),
-                    const SizedBox(height: 28),
+                              // ── Dispatch Dist. ───────────────────────────────────────
+                              AppTextField(
+                                label: 'Dispatch Dist.',
+                                hint: 'New Delhi',
+                                controller: _dispatchDistController,
+                                onChanged: _editorCubit.updateDispatchDistrict,
+                                bottomSpacing: 0,
+                              ),
 
-                    // ── Continue Button ──────────────────────────────────────
-                    AppContinueButton(
-                      text: 'Continue',
-                      isLoading: _isLoading,
-                      showArrow: false,
-                      onPressed: _handleContinue,
-                    ),
-                  ],
+                              // ── Continue Button ──────────────────────────────────────
+                              Padding(
+                                padding: const EdgeInsets.only(top: 18),
+                                child: AppContinueButton(
+                                  text: 'Continue',
+                                  isLoading: state.isLoading,
+                                  showArrow: false,
+                                  onPressed: _handleContinue,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -242,9 +300,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   // ──────────────────────────────────────────────────────────── Add Images Row
   Widget _buildAddImages() {
-    return SizedBox(
+    return Container(
       width: double.infinity,
       height: 64,
+      margin: const EdgeInsets.fromLTRB(18, 33, 15, 16),
+      decoration: const BoxDecoration(color: Colors.white),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -264,7 +324,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                ..._selectedImages.asMap().entries.map((entry) {
+                ..._editorCubit.state.imagePaths.asMap().entries.map((entry) {
                   return Padding(
                     padding: const EdgeInsets.only(right: 6),
                     child: _buildImageThumb(entry.value, entry.key),
@@ -294,6 +354,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Widget _buildImageThumb(String imagePath, int index) {
+    final isAsset = imagePath.startsWith('assets/');
     return Stack(
       children: [
         Container(
@@ -305,14 +366,23 @@ class _AddProductScreenState extends State<AddProductScreen> {
             border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
           ),
           clipBehavior: Clip.antiAlias,
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Container(
-              color: const Color(0xFFF5F5F5),
-              child: const Icon(Icons.image, color: Colors.grey),
-            ),
-          ),
+          child: isAsset
+              ? Image.asset(
+                  imagePath,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: const Color(0xFFF5F5F5),
+                    child: const Icon(Icons.image, color: Colors.grey),
+                  ),
+                )
+              : Image.file(
+                  File(imagePath),
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: const Color(0xFFF5F5F5),
+                    child: const Icon(Icons.image, color: Colors.grey),
+                  ),
+                ),
         ),
         // Remove button
         Positioned(

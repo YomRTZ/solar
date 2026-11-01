@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // Status of an RFQ request
-enum VendorRfqStatus { received, pending }
+enum VendorRfqStatus { received, pending, ordered, rejected }
 
 extension VendorRfqStatusX on VendorRfqStatus {
   String get label {
@@ -10,6 +10,10 @@ extension VendorRfqStatusX on VendorRfqStatus {
         return 'Received';
       case VendorRfqStatus.pending:
         return 'Pending';
+      case VendorRfqStatus.ordered:
+        return 'Ordered';
+      case VendorRfqStatus.rejected:
+        return 'Rejected';
     }
   }
 
@@ -19,6 +23,10 @@ extension VendorRfqStatusX on VendorRfqStatus {
         return const Color(0xFFD1FAE5);
       case VendorRfqStatus.pending:
         return const Color(0xFFFFF3E0);
+      case VendorRfqStatus.ordered:
+        return const Color(0xFFDCEBFF);
+      case VendorRfqStatus.rejected:
+        return const Color(0xFFFEE2E2);
     }
   }
 
@@ -28,6 +36,10 @@ extension VendorRfqStatusX on VendorRfqStatus {
         return const Color(0xFF065F46);
       case VendorRfqStatus.pending:
         return const Color(0xFFE65100);
+      case VendorRfqStatus.ordered:
+        return const Color(0xFF003A8A);
+      case VendorRfqStatus.rejected:
+        return const Color(0xFFB31515);
     }
   }
 }
@@ -57,6 +69,27 @@ class VendorRfqRequest {
     required this.gst,
     required this.total,
   });
+
+  VendorRfqRequest copyWith({
+    VendorRfqStatus? status,
+    String? supplierName,
+    String? amount,
+    String? dateLabel,
+    List<VendorOrderItem>? items,
+    String? subTotal,
+    String? gst,
+    String? total,
+  }) => VendorRfqRequest(
+    id: id,
+    supplierName: supplierName ?? this.supplierName,
+    amount: amount ?? this.amount,
+    dateLabel: dateLabel ?? this.dateLabel,
+    status: status ?? this.status,
+    items: items ?? this.items,
+    subTotal: subTotal ?? this.subTotal,
+    gst: gst ?? this.gst,
+    total: total ?? this.total,
+  );
 }
 
 // A single line item in the order breakdown

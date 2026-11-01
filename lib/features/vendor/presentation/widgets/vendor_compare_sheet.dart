@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter_app/core/widgets/app_bottom_sheet.dart';
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_add_to_rfq_button.dart';
-import 'package:flutter_app/features/vendor/presentation/widgets/vendor_price_badge.dart';
 import 'package:flutter_app/features/catalog/domain/entities/catalog_product.dart';
 
 // ───────────────────────────────────────────────────────────────────────────── Vendor Compare
@@ -70,10 +69,11 @@ class VendorCompareSheet extends StatelessWidget {
               Text(
                 'Compare Products',
                 style: GoogleFonts.inter(
-                  fontSize: 17,
+                  fontSize: 18,
                   fontWeight: FontWeight.w700,
-                  color: const Color(0xFF1A1A1A),
-                  letterSpacing: -0.3,
+                  height: 1.3,
+                  color: const Color(0xFF003A8A),
+                  letterSpacing: -0.36,
                 ),
               ),
               const Spacer(),
@@ -114,25 +114,26 @@ class _ImageSlotRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        // Empty first column (aligns with the label column in the table)
-        const SizedBox(width: 80),
-        const SizedBox(width: 12),
-
-        // One slot per position
-        ...List.generate(maxSlots, (i) {
-          final hasProduct = i < products.length;
-          return Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: i < maxSlots - 1 ? 12 : 0),
-              child: hasProduct
-                  ? _ProductImageTile(product: products[i])
-                  : _AddProductSlot(),
-            ),
-          );
-        }),
-      ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          const SizedBox(width: 120),
+          const SizedBox(width: 8),
+          ...List.generate(maxSlots, (i) {
+            final hasProduct = i < products.length;
+            return Padding(
+              padding: EdgeInsets.only(right: i < maxSlots - 1 ? 8 : 0),
+              child: SizedBox(
+                width: 120,
+                child: hasProduct
+                    ? _ProductImageTile(product: products[i])
+                    : _AddProductSlot(),
+              ),
+            );
+          }),
+        ],
+      ),
     );
   }
 }
@@ -183,10 +184,11 @@ class _AddProductSlot extends StatelessWidget {
               color: const Color(0xFFE8F0FE),
               borderRadius: BorderRadius.circular(6),
             ),
-            child: const Icon(
-              Icons.add_rounded,
-              color: Color(0xFF003A8A),
-              size: 18,
+            child: Image.asset(
+              'assets/icons/5ceff9d5d9cae078a369c65ead35be73405d7dcd.png',
+              width: 18,
+              height: 18,
+              fit: BoxFit.contain,
             ),
           ),
           const SizedBox(height: 4),
@@ -219,86 +221,99 @@ class _CompareTable extends StatelessWidget {
         'Name',
         (p) => p.name.length > 20 ? '${p.name.substring(0, 18)}…' : p.name,
       ),
-      ('Price', (p) => p.price),
-      ('Power', (p) => p.power),
-      ('Warranty', (p) => p.warranty),
+      ('Price', (_) => '15,800'),
+      ('Power', (_) => '12W'),
+      ('Warranty', (_) => '12-08-32'),
       ('Stock', (p) => p.inStock ? 'In Stock' : 'Out of Stock'),
     ];
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
-      ),
-      child: Column(
-        children: specs.asMap().entries.map((entry) {
-          final isLast = entry.key == specs.length - 1;
-          final label = entry.value.$1;
-          final extractor = entry.value.$2;
-          final isStock = label == 'Stock';
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: const Color(0xFFE5E7EB)),
+        ),
+        child: Column(
+          children: specs.asMap().entries.map((entry) {
+            final label = entry.value.$1;
+            final extractor = entry.value.$2;
+            final isStock = label == 'Stock';
 
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            decoration: BoxDecoration(
-              border: isLast
-                  ? null
-                  : const Border(bottom: BorderSide(color: Color(0xFFE5E7EB))),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Label column
-                SizedBox(
-                  width: 68,
-                  child: Text(
-                    label,
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF1A1A1A),
+            return SizedBox(
+              height: 33.2,
+              child: Row(
+                children: [
+                  Container(
+                    width: 120,
+                    height: 33.2,
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFF7F7F8),
+                      border: Border(
+                        bottom: BorderSide(color: Color(0xFFE5E7EB), width: 1),
+                      ),
+                    ),
+                    child: Text(
+                      label,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        height: 1.6,
+                        letterSpacing: -0.24,
+                        color: const Color(0xFF1D2939),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
+                  const SizedBox(width: 8),
+                  ...List.generate(maxSlots, (i) {
+                    final hasProduct = i < products.length;
+                    final value = hasProduct ? extractor(products[i]) : '—';
+                    final isInStock =
+                        hasProduct && isStock && products[i].inStock;
 
-                // Value columns — one per slot
-                ...List.generate(maxSlots, (i) {
-                  final hasProduct = i < products.length;
-                  final value = hasProduct ? extractor(products[i]) : '—';
-                  final isInStock =
-                      hasProduct && isStock && products[i].inStock;
-
-                  return Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: i == 0 ? 0 : 8),
-                      child: isStock && hasProduct
-                          ? _StockChip(inStock: isInStock)
-                          : label == 'Price' && hasProduct
-                          ? VendorPriceBadge(price: value)
-                          : Text(
-                              value,
-                              style: label == 'Name'
-                                  ? GoogleFonts.roboto(
-                                      fontSize: 12.5,
-                                      fontWeight: FontWeight.w600,
-                                      fontStyle: FontStyle.normal,
-                                      color: const Color(0xFF23201C),
-                                      height: 1,
-                                      letterSpacing: 0,
-                                    )
-                                  : GoogleFonts.inter(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500,
-                                      color: const Color(0xFF4B5563),
-                                    ),
+                    return Padding(
+                      padding: EdgeInsets.only(right: i < maxSlots - 1 ? 8 : 0),
+                      child: Container(
+                        width: 120,
+                        height: 33.2,
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Color(0xFFE5E7EB),
+                              width: 1,
                             ),
-                    ),
-                  );
-                }),
-              ],
-            ),
-          );
-        }).toList(),
+                          ),
+                        ),
+                        child: isStock && hasProduct
+                            ? _StockChip(inStock: isInStock)
+                            : Text(
+                                value,
+                                textAlign: TextAlign.center,
+                                style: label == 'Name'
+                                    ? GoogleFonts.plusJakartaSans(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        height: 1.6,
+                                        letterSpacing: -0.2,
+                                        color: const Color(0xFF1D2939),
+                                      )
+                                    : GoogleFonts.inter(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                        color: const Color(0xFF4B5563),
+                                      ),
+                              ),
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
@@ -310,19 +325,12 @@ class _StockChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: inStock ? const Color(0xFFD1FAE5) : const Color(0xFFFFE4E6),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        inStock ? 'In Stock' : 'Out of Stock',
-        style: GoogleFonts.inter(
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-          color: inStock ? const Color(0xFF065F46) : const Color(0xFF9F1239),
-        ),
+    return Text(
+      inStock ? 'In Stock' : 'Out of Stock',
+      style: GoogleFonts.inter(
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
+        color: inStock ? const Color(0xFF008000) : const Color(0xFF9F1239),
       ),
     );
   }
@@ -342,26 +350,28 @@ class _AddToRFQRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        // Spacer matching the label column width in the table
-        const SizedBox(width: 80),
-        const SizedBox(width: 12),
-
-        ...List.generate(maxSlots, (i) {
-          final hasProduct = i < products.length;
-          return Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: i < maxSlots - 1 ? 12 : 0),
-              child: hasProduct
-                  ? VendorAddToRfqButton(
-                      onPressed: () => onAddToRFQ(products[i]),
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          );
-        }),
-      ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          const SizedBox(width: 120),
+          const SizedBox(width: 8),
+          ...List.generate(maxSlots, (i) {
+            final hasProduct = i < products.length;
+            return Padding(
+              padding: EdgeInsets.only(right: i < maxSlots - 1 ? 8 : 0),
+              child: SizedBox(
+                width: 120,
+                child: hasProduct
+                    ? VendorAddToRfqButton(
+                        onPressed: () => onAddToRFQ(products[i]),
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            );
+          }),
+        ],
+      ),
     );
   }
 }

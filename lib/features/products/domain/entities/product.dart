@@ -7,6 +7,11 @@ class Product {
   final String imagePath;
   final ProductStatus status;
   final ProductCategory category;
+  final String brand;
+  final String taxAmount;
+  final String minimumOrderQuantity;
+  final String warranty;
+  final String dispatchDistrict;
 
   Product({
     required this.id,
@@ -16,6 +21,11 @@ class Product {
     required this.imagePath,
     required this.status,
     required this.category,
+    this.brand = '',
+    this.taxAmount = '',
+    this.minimumOrderQuantity = '',
+    this.warranty = '',
+    this.dispatchDistrict = '',
   });
 
   // Check if product is in stock
@@ -32,7 +42,7 @@ class Product {
 enum ProductStatus { inStock, lowStock, outOfStock }
 
 // Product category enum
-enum ProductCategory { all, panel, battery, inverter }
+enum ProductCategory { all, panel, battery, inverter, controller }
 
 // Extension to get display name for category
 extension ProductCategoryExtension on ProductCategory {
@@ -46,6 +56,8 @@ extension ProductCategoryExtension on ProductCategory {
         return 'Battery';
       case ProductCategory.inverter:
         return 'Inverter';
+      case ProductCategory.controller:
+        return 'Controller';
     }
   }
 }

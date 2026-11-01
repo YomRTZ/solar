@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/wallet/presentation/widgets/withdraw_balance_sheet.dart';
@@ -57,34 +58,41 @@ class MyWalletScreen extends StatelessWidget {
               onBackPressed: () => Navigator.maybePop(context),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-              child: _BalanceCard(
-                onWithdrawTap: () => _showWithdrawSheet(context),
+              padding: const EdgeInsets.fromLTRB(12, 26, 18, 30),
+              child: SizedBox(
+                width: 330,
+                height: 160,
+                child: _BalanceCard(
+                  onWithdrawTap: () => _showWithdrawSheet(context),
+                ),
               ),
             ),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Today',
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF202020),
-                        letterSpacing: -0.3,
+                padding: const EdgeInsets.only(bottom: 24),
+                child: Container(
+                  margin: const EdgeInsets.fromLTRB(16, 30, 7, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Today',
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF202020),
+                          letterSpacing: -0.3,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    ..._transactions.map(
-                      (tx) => Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: _TransactionCard(transaction: tx),
+                      const SizedBox(height: 12),
+                      ..._transactions.map(
+                        (tx) => Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: _TransactionCard(transaction: tx),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -103,10 +111,6 @@ class MyWalletScreen extends StatelessWidget {
           name: 'Personal Account',
           maskedNumber: '•••• •••• 1234',
         ),
-        BankAccountModel(
-          name: 'Business Account',
-          maskedNumber: '•••• •••• 5678',
-        ),
       ],
       onWithdraw: (amount, account) {
         Navigator.pop(context);
@@ -124,57 +128,50 @@ class _BalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 22),
+      width: 330,
+      height: 160,
+      padding: const EdgeInsets.fromLTRB(12, 12, 13, 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF0A2A5E),
+        gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
+        ),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Wallet icon
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.account_balance_wallet_rounded,
-              color: Colors.white,
-              size: 22,
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          // Label
+          SvgPicture.asset('assets/icons/Big box.svg', width: 34, height: 52),
+          const SizedBox(height: 4),
           Text(
             'Wallet Balance',
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-              color: Colors.white.withValues(alpha: 0.7),
-              letterSpacing: 0.2,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.nunito(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+              letterSpacing: 0,
+              height: 1.5,
             ),
           ),
-
-          const SizedBox(height: 6),
+          const SizedBox(height: 2),
 
           // Amount
           Text(
             'Rs. 4,87,911',
-            style: GoogleFonts.inter(
-              fontSize: 28,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.nunito(
+              fontSize: 29,
               fontWeight: FontWeight.w700,
               color: Colors.white,
-              letterSpacing: -0.5,
+              letterSpacing: 0,
+              height: 1.2,
             ),
           ),
-
-          const SizedBox(height: 14),
+          const SizedBox(height: 5),
 
           // Withdraw button
           GestureDetector(
@@ -182,19 +179,21 @@ class _BalanceCard extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
-                  Icons.download_rounded,
-                  color: Colors.white,
-                  size: 16,
+                SvgPicture.asset(
+                  'assets/icons/feather_upload-cloud.svg',
+                  width: 20,
+                  height: 18,
                 ),
                 const SizedBox(width: 6),
                 Text(
                   'Withdraw Balance',
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.nunito(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
                     color: Colors.white,
-                    letterSpacing: -0.2,
+                    letterSpacing: 0,
+                    height: 1.5,
                   ),
                 ),
               ],
@@ -235,16 +234,14 @@ class _TransactionCard extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: const Color(0xFFF0F4FF),
+              color: isCredit
+                  ? const Color(0xFFC6DCFF)
+                  : const Color(0xFFC6DCFF),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(
-              isCredit
-                  ? Icons.shopping_bag_outlined
-                  : Icons.account_balance_outlined,
-              color: const Color(0xFF003A8A),
-              size: 20,
-            ),
+            child: isCredit
+                ? SvgPicture.asset('assets/icons/import.svg')
+                : SvgPicture.asset('assets/icons/export.svg'),
           ),
 
           const SizedBox(width: 12),
@@ -269,7 +266,7 @@ class _TransactionCard extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 11,
                     fontWeight: FontWeight.w400,
-                    color: const Color(0xFF6C7278),
+                    color: const Color(0xFF003A8A),
                   ),
                 ),
               ],

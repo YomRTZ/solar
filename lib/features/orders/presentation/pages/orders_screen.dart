@@ -6,39 +6,10 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/widgets/app_expandable_card.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
+import 'package:flutter_app/features/orders/data/datasources/orders_data.dart';
 import 'package:flutter_app/features/orders/domain/entities/order.dart';
-
-// ── Mock data ─────────────────────────────────────────────────────────────────
-const List<Order> _kOrders = [
-  Order(
-    id: '#ORD123456',
-    productName: '10 KW Solar Panel',
-    productImagePath:
-        'assets/solarimages/8c95b22c561eba1d7752be96d662579cfd873d93.jpg',
-    price: '45000',
-    deliveryLocation: 'Pune, Maharashtra',
-    buyer: 'Green Energy Installers',
-    orderDate: '10 Sept 2026',
-    status: OrderStatus.pending,
-    quantity: 2,
-    subtotal: 90000,
-    gstPercent: 18,
-  ),
-  Order(
-    id: '#ORD1234564',
-    productName: '10 KW Solar Panel',
-    productImagePath:
-        'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
-    price: '45000',
-    deliveryLocation: 'Mumbai, Maharashtra',
-    buyer: 'SunRise Solar Co.',
-    orderDate: '05 Sept 2026',
-    status: OrderStatus.delivered,
-    quantity: 2,
-    subtotal: 90000,
-    gstPercent: 18,
-  ),
-];
+import 'package:flutter_app/features/orders/presentation/cubit/orders_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // ── Filter enum ────────────────────────────────────────────────────────────────
 enum _Filter { all, pending, delivered }
@@ -59,67 +30,77 @@ extension _FilterExt on _Filter {
 // ───────────────────────────────────────────────────────────────────────────── ORDERS SCREEN
 class OrdersScreen extends StatefulWidget {
   final bool showBackButton;
+  final VoidCallback? onBackPressed;
 
-  const OrdersScreen({super.key, this.showBackButton = true});
+  const OrdersScreen({
+    super.key,
+    this.showBackButton = true,
+    this.onBackPressed,
+  });
 
   @override
   State<OrdersScreen> createState() => _OrdersScreenState();
 }
 
 class _OrdersScreenState extends State<OrdersScreen> {
-  _Filter _selectedFilter = _Filter.all;
+  final OrdersCubit _ordersCubit = OrdersCubit();
 
-  List<Order> get _filteredOrders {
-    switch (_selectedFilter) {
-      case _Filter.all:
-        return _kOrders;
-      case _Filter.pending:
-        return _kOrders.where((o) => o.status == OrderStatus.pending).toList();
-      case _Filter.delivered:
-        return _kOrders
-            .where((o) => o.status == OrderStatus.delivered)
-            .toList();
-    }
+  List<Order> get _filteredOrders =>
+      _ordersCubit.filterOrders(OrdersData.orders);
+
+  @override
+  void dispose() {
+    _ordersCubit.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        extendBodyBehindAppBar: true,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // ── Header ──────────────────────────────────────
-            SecondAppHeader(
-              title: 'My Orders',
-              showBackButton: widget.showBackButton,
-            ),
+    return BlocBuilder<OrdersCubit, OrdersState>(
+      bloc: _ordersCubit,
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          extendBodyBehindAppBar: true,
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // ── Header ──────────────────────────────────────
+              SecondAppHeader(
+                title: 'My Orders',
+                showBackButton: widget.showBackButton,
+                onBackPressed: widget.onBackPressed,
+              ),
 
-            // ── Filter tabs ───────────────────────────────────
-            _buildFilterTabs(),
-            const SizedBox(height: 12),
-
-            // ── Order list ────────────────────────────────────
-            Expanded(
-              child: _filteredOrders.isEmpty
-                  ? _buildEmptyState()
-                  : ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-                      itemCount: _filteredOrders.length,
-                      itemBuilder: (context, index) =>
-                          _buildOrderCard(_filteredOrders[index]),
-                    ),
-            ),
-          ],
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.only(left: 18, right: 15),
+                  child: Column(
+                    children: [
+                      _buildFilterTabs(),
+                      Expanded(
+                        child: _filteredOrders.isEmpty
+                            ? _buildEmptyState()
+                            : ListView.builder(
+                                padding: const EdgeInsets.fromLTRB(0, 4, 0, 24),
+                                itemCount: _filteredOrders.length,
+                                itemBuilder: (context, index) =>
+                                    _buildOrderCard(_filteredOrders[index]),
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -127,15 +108,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   // ── Filter tabs: All / Pending / Delivered ───────────────────
   Widget _buildFilterTabs() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+    return Container(
+      margin: const EdgeInsets.fromLTRB(0, 28, 0, 11),
+      alignment: Alignment.centerLeft,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           _filterTab(_Filter.all),
           const SizedBox(width: 12.85),
           _filterTab(_Filter.pending),
-          const SizedBox(width: 12.86),
+          const SizedBox(width: 12.85),
           _filterTab(_Filter.delivered),
         ],
       ),
@@ -143,9 +125,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   Widget _filterTab(_Filter filter) {
-    final isSelected = filter == _selectedFilter;
+    final isSelected = filter.index == _ordersCubit.state.filter.index;
     return GestureDetector(
-      onTap: () => setState(() => _selectedFilter = filter),
+      onTap: () => _ordersCubit.selectFilter(OrdersFilter.values[filter.index]),
       child: Container(
         width: 72.43,
         height: 27,

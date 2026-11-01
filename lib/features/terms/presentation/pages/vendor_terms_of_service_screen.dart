@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:flutter_app/core/widgets/app_header.dart';
 
-// ───────────────────────────────────────────────────────────────────────────── Vendor — Terms of
+// ───────────────────────────────────────────────────────────────────────────
 class VendorTermsOfServiceScreen extends StatelessWidget {
   const VendorTermsOfServiceScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final bottom = MediaQuery.of(context).padding.bottom;
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -24,16 +23,17 @@ class VendorTermsOfServiceScreen extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // ── Header ──────────────────────────────────────
             AppHeader(
               title: 'Terms of Service',
               onBackPressed: () => Navigator.maybePop(context),
             ),
 
-            // ── Scrollable content ─────────────────────────
-            Expanded(
+            // ── Scrollable T&C content ───────────────────────
+            const Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, bottom + 24),
-                child: const _TermsContent(),
+                padding: EdgeInsets.fromLTRB(20, 21, 20, 24),
+                child: _TermsContent(),
               ),
             ),
           ],
@@ -43,7 +43,7 @@ class VendorTermsOfServiceScreen extends StatelessWidget {
   }
 }
 
-// ───────────────────────────────────────────────────────────────────────────── Terms content
+// ── Terms content ─────────────────────────────────────────────────────────
 class _TermsContent extends StatelessWidget {
   const _TermsContent();
 
@@ -70,61 +70,47 @@ class _TermsContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Section 1 ───────────────────────────────────
         const _SectionHeading(number: '1.', title: 'Terms'),
         const SizedBox(height: 8),
-        _BodyText(_loremLong),
-
+        const _BodyText(_loremLong),
         const SizedBox(height: 22),
 
-        // ── Section 2 ───────────────────────────────────
         const _SectionHeading(number: '2.', title: 'Use License'),
         const SizedBox(height: 8),
-        _BodyText(_loremMid),
-
+        const _BodyText(_loremMid),
         const SizedBox(height: 12),
-
-        // Bullet list
         ..._bullets.map(
           (b) => Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: _BulletItem(text: b),
           ),
         ),
-
         const SizedBox(height: 22),
 
-        // ── Section 3 ───────────────────────────────────
         const _SectionHeading(number: '3.', title: 'Disclaimer'),
         const SizedBox(height: 8),
-        _BodyText(_loremLong),
-
+        const _BodyText(_loremLong),
         const SizedBox(height: 22),
 
-        // ── Section 4 ───────────────────────────────────
         const _SectionHeading(number: '4.', title: 'Limitations'),
         const SizedBox(height: 8),
-        _BodyText(_loremMid),
-
+        const _BodyText(_loremMid),
         const SizedBox(height: 22),
 
-        // ── Section 5 ───────────────────────────────────
         const _SectionHeading(number: '5.', title: 'Privacy Policy'),
         const SizedBox(height: 8),
-        _BodyText(_loremLong),
-
+        const _BodyText(_loremLong),
         const SizedBox(height: 22),
 
-        // ── Section 6 ───────────────────────────────────
         const _SectionHeading(number: '6.', title: 'Governing Law'),
         const SizedBox(height: 8),
-        _BodyText(_loremMid),
+        const _BodyText(_loremMid),
       ],
     );
   }
 }
 
-// ───────────────────────────────────────────────────────────────────────────── Small building
+// ── Small building blocks ─────────────────────────────────────────────────
 
 class _SectionHeading extends StatelessWidget {
   final String number;

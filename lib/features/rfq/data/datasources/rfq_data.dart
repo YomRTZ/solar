@@ -4,7 +4,7 @@ class RFQData {
   static const String _solarImage =
       'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png';
 
-  static final List<RFQ> rfqList = [
+  static final List<RFQ> _rfqList = [
     RFQ(
       id: '1',
       rfqNumber: '#RFQ123456',
@@ -127,6 +127,32 @@ class RFQData {
       status: RFQStatus.open,
     ),
   ];
+
+  static List<RFQ> get rfqList => List.unmodifiable(_rfqList);
+
+  static RFQ? getById(String id) {
+    for (final rfq in _rfqList) {
+      if (rfq.id == id) return rfq;
+    }
+    return null;
+  }
+
+  static void add(RFQ rfq) {
+    _rfqList.insert(0, rfq);
+  }
+
+  static bool update(RFQ updatedRfq) {
+    final index = _rfqList.indexWhere((rfq) => rfq.id == updatedRfq.id);
+    if (index == -1) return false;
+    _rfqList[index] = updatedRfq;
+    return true;
+  }
+
+  static bool updateStatus(String id, RFQStatus status) {
+    final rfq = getById(id);
+    if (rfq == null) return false;
+    return update(rfq.copyWith(status: status));
+  }
 
   static List<RFQ> getByStatus(RFQStatus? status) {
     if (status == null) return rfqList;

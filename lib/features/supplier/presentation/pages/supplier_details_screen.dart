@@ -9,6 +9,8 @@ import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_product_card.dart';
 import 'package:flutter_app/features/supplier/data/datasources/supplier_data.dart';
 import 'package:flutter_app/features/supplier/domain/entities/supplier.dart';
+import 'package:flutter_app/features/supplier/presentation/cubit/supplier_cart_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // ───────────────────────────────────────────────────────────────────────────── Vendor — Supplier
 class SupplierDetailsScreen extends StatefulWidget {
@@ -21,10 +23,7 @@ class SupplierDetailsScreen extends StatefulWidget {
 }
 
 class _SupplierDetailsScreenState extends State<SupplierDetailsScreen> {
-  // RFQ cart: productId → quantity
-  final Map<String, int> _rfqCart = {};
-
-  int get _cartCount => _rfqCart.values.fold(0, (sum, qty) => sum + qty);
+  final SupplierCartCubit _cartCubit = SupplierCartCubit();
 
   late final Supplier _supplier;
 
@@ -34,121 +33,129 @@ class _SupplierDetailsScreenState extends State<SupplierDetailsScreen> {
     _supplier = widget.supplier ?? SupplierData.demoSupplier;
   }
 
-  void _add(String id) =>
-      setState(() => _rfqCart[id] = (_rfqCart[id] ?? 0) + 1);
-
-  void _increment(String id) =>
-      setState(() => _rfqCart[id] = (_rfqCart[id] ?? 0) + 1);
-
-  void _decrement(String id) {
-    setState(() {
-      final current = _rfqCart[id] ?? 0;
-      if (current <= 1) {
-        _rfqCart.remove(id);
-      } else {
-        _rfqCart[id] = current - 1;
-      }
-    });
+  @override
+  void dispose() {
+    _cartCubit.close();
+    super.dispose();
   }
+
+  void _add(String id) => _cartCubit.increment(id);
+
+  void _increment(String id) => _cartCubit.increment(id);
+
+  void _decrement(String id) => _cartCubit.decrement(id);
 
   void _goToCart() {
     final cartItems = _supplier.mainProducts
-        .where((p) => (_rfqCart[p.id] ?? 0) > 0)
+        .where((p) => (_cartCubit.state.quantities[p.id] ?? 0) > 0)
         .toList();
 
     context.push(
       AppRoutes.vendorCart,
       extra: VendorCartRouteData(
         cartItems: cartItems,
-        initialQuantities: Map.from(_rfqCart),
+        initialQuantities: Map.from(_cartCubit.state.quantities),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF2F4F7),
-        body: Column(
-          children: [
-            SecondAppHeader(
-              title: 'Supplier Details',
-              trailing: _buildCartAction(),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // ── Supplier info card ────────────────────
-                    _SupplierInfoCard(supplier: _supplier),
-                    const SizedBox(height: 16),
+    return BlocBuilder<SupplierCartCubit, SupplierCartState>(
+      bloc: _cartCubit,
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: Column(
+            children: [
+              SecondAppHeader(
+                title: 'Supplier Details',
+                trailing: _buildCartAction(),
+                trailingRightInset: 16,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 17, 32),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // ── Supplier info card ────────────────────
+                      _SupplierInfoCard(supplier: _supplier),
+                      const SizedBox(height: 16),
 
-                    // ── Stats row ─────────────────────────────
-                    _StatsRow(
-                      rating: _supplier.rating,
-                      totalOrders: _supplier.totalOrders,
-                    ),
-                    const SizedBox(height: 16),
-
-                    // ── About ─────────────────────────────────
-                    _SectionTitle(title: 'About Supplier'),
-                    const SizedBox(height: 8),
-                    Text(
-                      _supplier.aboutText,
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xFF6C7278),
-                        height: 1.6,
+                      // ── Stats row ─────────────────────────────
+                      _StatsRow(
+                        rating: _supplier.rating,
+                        totalOrders: _supplier.totalOrders,
                       ),
-                    ),
-                    const SizedBox(height: 20),
 
-                    // ── Main Products heading ─────────────────
-                    _SectionTitle(title: 'Main Products'),
-                    const SizedBox(height: 12),
+                      // ── About ─────────────────────────────────
+                      _SectionTitle(
+                        title: 'About Supplier',
+                        style: GoogleFonts.roboto(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          height: 1,
+                          letterSpacing: -0.18,
+                          color: const Color(0xFF202020),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _supplier.aboutText,
+                        style: GoogleFonts.roboto(
+                          fontSize: 7,
+                          fontWeight: FontWeight.w500,
+                          color: const Color(0xFF535353),
+                          height: 12 / 7,
+                          letterSpacing: -0.14,
+                        ),
+                      ),
+                      const SizedBox(height: 22),
 
-                    // ── 2-col product grid ────────────────────
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 156 / 217,
-                          ),
-                      itemCount: _supplier.mainProducts.length,
-                      itemBuilder: (context, i) {
-                        final product = _supplier.mainProducts[i];
-                        final qty = _rfqCart[product.id] ?? 0;
-                        return VendorProductCard(
-                          imagePath: product.imagePath,
-                          name: product.name,
-                          price: product.price,
-                          quantity: qty,
-                          onAdd: () => _add(product.id),
-                          onIncrement: () => _increment(product.id),
-                          onDecrement: () => _decrement(product.id),
-                        );
-                      },
-                    ),
-                  ],
+                      // ── Main Products heading ─────────────────
+                      _SectionTitle(title: 'Main Products'),
+                      const SizedBox(height: 13),
+
+                      // ── 2-col product grid ────────────────────
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 19,
+                              mainAxisSpacing: 13,
+                              childAspectRatio: 156 / 232,
+                            ),
+                        itemCount: _supplier.mainProducts.length,
+                        itemBuilder: (context, i) {
+                          final product = _supplier.mainProducts[i];
+                          final qty = state.quantities[product.id] ?? 0;
+                          return VendorProductCard(
+                            imagePath: product.imagePath,
+                            name: product.name,
+                            price: product.price,
+                            quantity: qty,
+                            onAdd: () => _add(product.id),
+                            onIncrement: () => _increment(product.id),
+                            onDecrement: () => _decrement(product.id),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -156,7 +163,7 @@ class _SupplierDetailsScreenState extends State<SupplierDetailsScreen> {
 
   Widget _buildCartAction() {
     return GestureDetector(
-      onTap: _cartCount > 0 ? _goToCart : null,
+      onTap: _cartCubit.state.count > 0 ? _goToCart : null,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -164,16 +171,16 @@ class _SupplierDetailsScreenState extends State<SupplierDetailsScreen> {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(
               Icons.shopping_cart_outlined,
-              color: Colors.white,
+              color: Color(0xFF003A8A),
               size: 22,
             ),
           ),
-          if (_cartCount > 0)
+          if (_cartCubit.state.count > 0)
             Positioned(
               top: -6,
               right: -6,
@@ -186,7 +193,9 @@ class _SupplierDetailsScreenState extends State<SupplierDetailsScreen> {
                 ),
                 child: Center(
                   child: Text(
-                    _cartCount > 99 ? '99+' : '$_cartCount',
+                    _cartCubit.state.count > 99
+                        ? '99+'
+                        : '${_cartCubit.state.count}',
                     style: const TextStyle(
                       fontSize: 9,
                       fontWeight: FontWeight.w700,
@@ -210,7 +219,8 @@ class _SupplierInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      margin: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.fromLTRB(0, 0, 14, 5),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -225,21 +235,22 @@ class _SupplierInfoCard extends StatelessWidget {
       child: Row(
         children: [
           // Avatar
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE8F0FE),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            padding: const EdgeInsets.all(6),
-            child: Image.asset(
-              supplier.iconPath,
-              fit: BoxFit.contain,
-              errorBuilder: (ctx, e, s) => const Icon(
-                Icons.business_rounded,
-                color: Color(0xFF003A8A),
-                size: 28,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 5, 0, 0),
+            child: Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Image.asset(
+                'assets/solarimages/5dc175c533f86ed941b1004c6b373c14c68068d0.png',
+                fit: BoxFit.contain,
+                errorBuilder: (ctx, e, s) => const Icon(
+                  Icons.business_rounded,
+                  color: Color(0xFF003A8A),
+                  size: 28,
+                ),
               ),
             ),
           ),
@@ -296,24 +307,24 @@ class _StatsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _StatCard(
+    return Padding(
+      padding: const EdgeInsets.only(left: 19),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          _StatCard(
             value: rating.toStringAsFixed(1),
             label: 'Rating',
             valueColor: const Color(0xFF003A8A),
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _StatCard(
+          const SizedBox(width: 11),
+          _StatCard(
             value: '$totalOrders+',
             label: 'Orders',
             valueColor: const Color(0xFF003A8A),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -331,19 +342,15 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14),
+      width: 152,
+      height: 52,
+      margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: const Color(0xFFF5F5F5),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             value,
@@ -372,18 +379,22 @@ class _StatCard extends StatelessWidget {
 // ───────────────────────────────────────────────────────────────────────────── Section title
 class _SectionTitle extends StatelessWidget {
   final String title;
-  const _SectionTitle({required this.title});
+  final TextStyle? style;
+
+  const _SectionTitle({required this.title, this.style});
 
   @override
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: GoogleFonts.inter(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: const Color(0xFF1A1A1A),
-        letterSpacing: -0.2,
-      ),
+      style:
+          style ??
+          GoogleFonts.inter(
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+            color: const Color(0xFF1A1A1A),
+            letterSpacing: -0.2,
+          ),
     );
   }
 }

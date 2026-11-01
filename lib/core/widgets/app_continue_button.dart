@@ -45,7 +45,13 @@ class AppContinueButton extends StatelessWidget {
       width: width ?? double.infinity,
       height: height,
       child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
+        onPressed: isLoading
+            ? null
+            : () {
+                final form = Form.maybeOf(context);
+                if (form != null && !form.validate()) return;
+                onPressed?.call();
+              },
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? const Color(0xFF003D82),
           foregroundColor: textColor ?? Colors.white,

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/core/widgets/app_header.dart';
+import 'package:flutter_app/core/widgets/status_result_layout.dart';
 
 // ───────────────────────────────────────────────────────────────────────────── Vendor — RFQ
 class VendorRfqStatusScreen extends StatelessWidget {
@@ -39,54 +40,36 @@ class VendorRfqStatusScreen extends StatelessWidget {
 
   // ── Main body ──────────────────────────────────────────────
   Widget _buildBody(BuildContext context) {
-    final bottom = MediaQuery.of(context).padding.bottom;
-
-    return Padding(
-      padding: EdgeInsets.fromLTRB(32, 0, 32, bottom + 24),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _StatusIllustration(isSuccess: isSuccess),
-
-          SizedBox(height: isSuccess ? 16 : 32),
-
-          Text(
-            isSuccess ? 'RFQ Send Successfully!' : 'Submission Failed',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.inter(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: isSuccess
-                  ? const Color(0xFF008000)
-                  : const Color(0xFFB31515),
-              height: 1.3,
-              letterSpacing: 20 * -0.02,
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          Text(
-            isSuccess
-                ? 'Your RFQ will be checked soon!'
-                : 'Something went wrong. Please try again.',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: const Color(0xFF808080),
-              height: 1.3,
-              letterSpacing: 14 * -0.02,
-            ),
-          ),
-
-          const SizedBox(height: 40),
-          AppContinueButton(
-            text: 'Go to dashboard',
-            showArrow: false,
-            onPressed: () => context.go(AppRoutes.vendorMain),
-          ),
-        ],
+    return StatusResultLayout(
+      icon: _StatusIllustration(isSuccess: isSuccess),
+      title: Text(
+        isSuccess ? 'RFQ Send Successfully!' : 'Submission Failed',
+        textAlign: TextAlign.center,
+        style: GoogleFonts.inter(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: isSuccess ? const Color(0xFF008000) : const Color(0xFFB31515),
+          height: 1.3,
+          letterSpacing: -0.4,
+        ),
+      ),
+      description: Text(
+        isSuccess
+            ? 'Your RFQ will be checked soon!'
+            : 'Something went wrong. Please try again.',
+        textAlign: TextAlign.center,
+        style: GoogleFonts.inter(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: const Color(0xFF808080),
+          height: 1.3,
+          letterSpacing: 14 * -0.02,
+        ),
+      ),
+      button: AppContinueButton(
+        text: 'Go to dashboard',
+        showArrow: false,
+        onPressed: () => context.go(AppRoutes.vendorMain),
       ),
     );
   }
@@ -101,7 +84,7 @@ class _StatusIllustration extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image.asset(
       isSuccess ? 'assets/icons/image_1.png' : 'assets/icons/image_1_2.png',
-      width: isSuccess ? 327 : 110,
+      width: 111,
       height: 111,
       fit: BoxFit.contain,
     );

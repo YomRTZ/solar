@@ -171,130 +171,129 @@ class AppExpandableCard extends StatelessWidget {
             bottom: BorderSide(color: Color(0xFFE0E0E0), width: 1),
           ),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
-        child: Row(
+        child: Stack(
           children: [
-            // Product Image
-            Container(
-              width: 80,
-              height: 81,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.grey[100],
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: isNetworkImage
-                  ? Image.network(
-                      imagePath,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return _buildPlaceholder();
-                      },
-                    )
-                  : Image.asset(
-                      imagePath,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return _buildPlaceholder();
-                      },
-                    ),
-            ),
-            const SizedBox(width: 15),
-
-            // Product Details
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+              child: Row(
                 children: [
-                  // Title
-                  Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.roboto(
-                      fontSize: 14,
-                      height: 22 / 14,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: -0.18,
-                      color: const Color(0xFF202020),
+                  // Product Image
+                  Container(
+                    width: 80,
+                    height: 81,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.grey[100],
                     ),
+                    clipBehavior: Clip.antiAlias,
+                    child: isNetworkImage
+                        ? Image.network(
+                            imagePath,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return _buildPlaceholder();
+                            },
+                          )
+                        : Image.asset(
+                            imagePath,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return _buildPlaceholder();
+                            },
+                          ),
                   ),
-                  const SizedBox(height: 3),
-
-                  // ID Number
-                  Text(
-                    idNumber,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.nunitoSans(
-                      fontSize: 9,
-                      height: 16 / 9,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 0,
-                      color: const Color(0xFF000000),
-                    ),
-                  ),
-                  const SizedBox(height: 1),
-
-                  // Price and Status Row
-                  Row(
-                    children: [
-                      // Price
-                      Text(
-                        'Rs. $price',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.roboto(
-                          fontSize: 10,
-                          height: 16 / 10,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0,
-                          color: const Color(0xFF000000),
-                        ),
-                      ),
-                      const Spacer(),
-
-                      // Status Badge
-                      Container(
-                        width: _statusBadgeWidth,
-                        height: 22,
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
-                        decoration: BoxDecoration(
-                          color: statusBackgroundColor,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Center(
-                          child: Text(
-                            statusText,
-                            style: GoogleFonts.roboto(
-                              fontSize: 12,
-                              height: 18 / 12,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: -0.14,
-                              color: statusTextColor,
-                            ),
+                  const SizedBox(width: 15),
+                  // Product Details
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.roboto(
+                            fontSize: 14,
+                            height: 22 / 14,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.18,
+                            color: const Color(0xFF202020),
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 3),
+                        Text(
+                          idNumber,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.nunitoSans(
+                            fontSize: 9,
+                            height: 16 / 9,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0,
+                            color: const Color(0xFF000000),
+                          ),
+                        ),
+                        const SizedBox(height: 1),
+                        Text(
+                          'Rs. $price',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.roboto(
+                            fontSize: 10,
+                            height: 16 / 10,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0,
+                            color: const Color(0xFF000000),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-
-            // Arrow Icon
-            if (showArrow) ...[
-              const SizedBox(width: 8),
-              Transform.rotate(
-                angle: -1.5708, // -90 degrees in radians (arrow pointing right)
-                child: const Icon(
-                  Icons.keyboard_arrow_down,
-                  color: Color(0xFF202020),
-                  size: 24,
-                ),
+            // ── Arrow above the status badge, pinned bottom-right ──
+            Positioned(
+              right: 12,
+              bottom: 22,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  if (showArrow)
+                    Transform.rotate(
+                      angle: -1.5708,
+                      child: const Icon(
+                        Icons.keyboard_arrow_down,
+                        color: Color(0xFF202020),
+                        size: 24,
+                      ),
+                    ),
+                  if (showArrow) const SizedBox(height: 22),
+                  Container(
+                    width: _statusBadgeWidth,
+                    height: 22,
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    decoration: BoxDecoration(
+                      color: statusBackgroundColor,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      statusText,
+                      style: GoogleFonts.roboto(
+                        fontSize: 12,
+                        height: 18 / 12,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.14,
+                        color: statusTextColor,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ],
         ),
       ),

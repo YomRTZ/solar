@@ -12,6 +12,9 @@ class RFQ {
   final String buyerName;
   final String expectedDelivery;
   final RFQStatus status;
+  final String? quoteUnitPrice;
+  final String? quoteGst;
+  final String? quoteDeliveryDate;
 
   const RFQ({
     required this.id,
@@ -24,7 +27,31 @@ class RFQ {
     required this.buyerName,
     required this.expectedDelivery,
     required this.status,
+    this.quoteUnitPrice,
+    this.quoteGst,
+    this.quoteDeliveryDate,
   });
+
+  RFQ copyWith({
+    RFQStatus? status,
+    String? quoteUnitPrice,
+    String? quoteGst,
+    String? quoteDeliveryDate,
+  }) => RFQ(
+    id: id,
+    rfqNumber: rfqNumber,
+    productTitle: productTitle,
+    imagePath: imagePath,
+    price: price,
+    requiredQty: requiredQty,
+    location: location,
+    buyerName: buyerName,
+    expectedDelivery: expectedDelivery,
+    status: status ?? this.status,
+    quoteUnitPrice: quoteUnitPrice ?? this.quoteUnitPrice,
+    quoteGst: quoteGst ?? this.quoteGst,
+    quoteDeliveryDate: quoteDeliveryDate ?? this.quoteDeliveryDate,
+  );
 }
 
 enum RFQStatus { newRequest, open, approved, rejected, pending }

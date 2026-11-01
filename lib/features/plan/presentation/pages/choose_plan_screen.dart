@@ -7,6 +7,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/widgets/app_header.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
+import 'package:flutter_app/features/plan/presentation/cubit/plan_selection_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // ───────────────────────────────────────────────────────────────────────────── Vendor — Choose a
 class ChoosePlanScreen extends StatefulWidget {
@@ -16,10 +18,14 @@ class ChoosePlanScreen extends StatefulWidget {
   State<ChoosePlanScreen> createState() => _ChoosePlanScreenState();
 }
 
-enum _PlanType { trial, yearly }
-
 class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
-  _PlanType _selected = _PlanType.trial;
+  final PlanSelectionCubit _planSelectionCubit = PlanSelectionCubit();
+
+  @override
+  void dispose() {
+    _planSelectionCubit.close();
+    super.dispose();
+  }
 
   static const List<String> _features = [
     'Access to RFQs',
@@ -31,225 +37,246 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
   Widget build(BuildContext context) {
     final bottom = MediaQuery.of(context).padding.bottom;
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            ClipRect(
-              child: Transform.scale(
-                scaleX: 10 / 9,
-                scaleY: 4 / 3,
-                alignment: Alignment.bottomLeft,
-                child: Image.asset(
-                  'assets/images/photo_5979016740496674897_y.jpg',
-                  fit: BoxFit.cover,
+    return BlocBuilder<PlanSelectionCubit, PlanType>(
+      bloc: _planSelectionCubit,
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Stack(
+            fit: StackFit.expand,
+            children: [
+              ClipRect(
+                child: Transform.scale(
+                  scaleX: 10 / 9,
+                  scaleY: 4 / 3,
                   alignment: Alignment.bottomLeft,
+                  child: Image.asset(
+                    'assets/images/photo_5979016740496674897_y.jpg',
+                    fit: BoxFit.cover,
+                    alignment: Alignment.bottomLeft,
+                  ),
                 ),
               ),
-            ),
-            const DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0x26FFFFFF),
-                    Color(0x00FFFFFF),
-                    Color(0x00FFFFFF),
-                    Color(0x99FFFFFF),
-                    Color(0xFAFFFFFF),
-                    Colors.white,
-                  ],
-                  stops: [0, 0.2, 0.36, 0.62, 0.82, 1],
-                ),
-              ),
-            ),
-            LayoutBuilder(
-              builder: (context, constraints) => SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: IntrinsicHeight(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        AppHeader(
-                          title: 'Choose a Plan',
-                          onBackPressed: () => Navigator.maybePop(context),
-                        ),
-                        Expanded(
-                          child: Transform.translate(
-                            offset: const Offset(0, 20),
-                            child: Center(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      top: 171,
-                                      left: 21,
-                                      right: 46,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        // 'Access to RFQs' — positioned at top:171, left:21, right:46, bottom margin:26
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            bottom: 26,
-                                          ),
-                                          child: _FeatureRow(
-                                            label: _features[0],
-                                          ),
-                                        ),
-                                        // Remaining features with original spacing
-                                        ..._features.skip(1).map(
-                                          (feature) => Padding(
-                                            padding: const EdgeInsets.only(
-                                              bottom: 10,
-                                            ),
-                                            child: _FeatureRow(
-                                              label: feature,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: _PlanCard(
-                                            tag: '3-Day Free Trial',
-                                            price: 'Rs: 1,299/-',
-                                            period: 'Month',
-                                            saveBadge: null,
-                                            isSelected:
-                                                _selected == _PlanType.trial,
-                                            onTap: () => setState(
-                                              () => _selected = _PlanType.trial,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Expanded(
-                                          child: _PlanCard(
-                                            tag: 'Yearly Access',
-                                            price: 'Rs: 12,999/-',
-                                            period: 'Year',
-                                            saveBadge: 'Save Rs: 2589/-',
-                                            isSelected:
-                                                _selected == _PlanType.yearly,
-                                            onTap: () => setState(
-                                              () =>
-                                                  _selected = _PlanType.yearly,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Color(0xFF2456A5),
-                                    Color(0xFF103D83),
-                                  ],
-                                ),
-                                border: Border.all(
-                                  color: const Color(0xFF2D66F5),
-                                  width: 1.5,
-                                ),
-                              ),
-                              child: AppContinueButton(
-                                text: 'Continue',
-                                showArrow: false,
-                                backgroundColor: Colors.transparent,
-                                onPressed: () {
-                                  context.go(AppRoutes.vendorMain);
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Padding(
-                          padding: EdgeInsets.only(bottom: bottom + 16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: () =>
-                                    context.push(AppRoutes.vendorTerms),
-                                child: Text(
-                                  'Terms of use',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: const Color(0xFF003A8A),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
-                                child: Text(
-                                  '|',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 12,
-                                    color: const Color(0xFF9CA3AF),
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Text(
-                                  'Privacy Policy',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: const Color(0xFF003A8A),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: FractionallySizedBox(
+                  heightFactor: 0.8,
+                  widthFactor: 1,
+                  child: DecoratedBox(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0x1AFFFFFF),
+                          Color(0x1AFFFFFF),
+                          Color(0x99FFFFFF),
+                          Color(0xFAFFFFFF),
+                          Color(0xFAFFFFFF),
+                          Colors.white,
+                        ],
+                        stops: [0, 0.35, 0.58, 0.78, 0.9, 1],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+              LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          AppHeader(
+                            title: 'Choose a Plan',
+                            onBackPressed: () => Navigator.maybePop(context),
+                          ),
+                          Expanded(
+                            child: Transform.translate(
+                              offset: const Offset(0, 20),
+                              child: Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 171,
+                                        left: 21,
+                                        right: 46,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          for (
+                                            var index = 0;
+                                            index < _features.length;
+                                            index++
+                                          )
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                bottom:
+                                                    index < _features.length - 1
+                                                    ? 15
+                                                    : 0,
+                                              ),
+                                              child: _FeatureRow(
+                                                label: _features[index],
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 26),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 19,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 160,
+                                            height: 142,
+                                            child: _PlanCard(
+                                              tag: '3-Day Free Trial',
+                                              price: 'Rs: 1,299/-',
+                                              period: 'Month',
+                                              saveBadge: null,
+                                              isTrial: true,
+                                              isSelected:
+                                                  state == PlanType.trial,
+                                              onTap: () => _planSelectionCubit
+                                                  .select(PlanType.trial),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: _PlanCard(
+                                              tag: 'Yearly Access',
+                                              price: 'Rs: 12,999/-',
+                                              period: 'Year',
+                                              saveBadge: 'Save Rs: 2589/-',
+                                              isTrial: false,
+                                              isSelected:
+                                                  state == PlanType.yearly,
+                                              onTap: () => _planSelectionCubit
+                                                  .select(PlanType.yearly),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 32),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Color(0xFF2456A5),
+                                      Color(0xFF103D83),
+                                    ],
+                                  ),
+                                  border: Border.all(
+                                    color: const Color(0xFF2D66F5),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: AppContinueButton(
+                                  text: 'Continue',
+                                  showArrow: false,
+                                  backgroundColor: Colors.transparent,
+                                  onPressed: () {
+                                    context.go(AppRoutes.vendorMain);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 31),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(
+                              100,
+                              0,
+                              100,
+                              bottom + 33,
+                            ),
+                            child: Center(
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () =>
+                                          context.push(AppRoutes.vendorTerms),
+                                      child: Text(
+                                        'Terms of use',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: const Color(0xFF003A8A),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                      ),
+                                      child: Text(
+                                        '|',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 12,
+                                          color: const Color(0xFF9CA3AF),
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {},
+                                      child: Text(
+                                        'Privacy Policy',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: const Color(0xFF003A8A),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -265,21 +292,34 @@ class _FeatureRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
-          width: 20,
-          height: 20,
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.72),
-            borderRadius: BorderRadius.circular(2),
-            border: Border.all(color: const Color(0xFF003A8A), width: 1.5),
-          ),
-          child: const Icon(
-            Icons.check_rounded,
-            color: Color(0xFF003A8A),
-            size: 17,
+        SizedBox(
+          width: 28,
+          height: 28,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/icons/Vectorcheckbox.svg',
+                width: 28,
+                height: 28,
+                colorFilter: const ColorFilter.mode(
+                  Color(0xFF003A8A),
+                  BlendMode.srcIn,
+                ),
+              ),
+              SvgPicture.asset(
+                'assets/icons/Vectorright.svg',
+                width: 15,
+                height: 14.2,
+                colorFilter: const ColorFilter.mode(
+                  Color(0xFF003A8A),
+                  BlendMode.srcIn,
+                ),
+              ),
+            ],
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         Text(
           label,
           style: GoogleFonts.plusJakartaSans(
@@ -288,7 +328,6 @@ class _FeatureRow extends StatelessWidget {
             height: 1,
             letterSpacing: 0,
             color: const Color(0xFF080D18),
-            shadows: const [Shadow(color: Color(0x4D8E8E8E), blurRadius: 20)],
           ),
         ),
       ],
@@ -302,6 +341,7 @@ class _PlanCard extends StatelessWidget {
   final String price;
   final String period;
   final String? saveBadge;
+  final bool isTrial;
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -310,6 +350,7 @@ class _PlanCard extends StatelessWidget {
     required this.price,
     required this.period,
     required this.saveBadge,
+    required this.isTrial,
     required this.isSelected,
     required this.onTap,
   });
@@ -323,7 +364,7 @@ class _PlanCard extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: isSelected ? 0.52 : 0.62),
-          borderRadius: BorderRadius.circular(17),
+          borderRadius: BorderRadius.circular(isTrial ? 20 : 17),
           border: Border.all(
             color: isSelected
                 ? const Color(0xFF172033)
@@ -341,10 +382,12 @@ class _PlanCard extends StatelessWidget {
                 Flexible(
                   child: Text(
                     tag,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 10,
+                    style: GoogleFonts.roboto(
+                      fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: const Color(0xFF080D18),
+                      height: 1,
+                      letterSpacing: 0,
+                      color: const Color(0xFF0F172A),
                     ),
                   ),
                 ),
@@ -395,7 +438,7 @@ class _PlanCard extends StatelessWidget {
                             width: 15,
                             height: 14.2,
                             colorFilter: const ColorFilter.mode(
-                              Colors.white,
+                              Color(0xFF003A8A),
                               BlendMode.srcIn,
                             ),
                           ),
@@ -406,47 +449,55 @@ class _PlanCard extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 8),
+            SizedBox(height: isTrial ? 0 : 12),
 
             // Price
             Text(
               price,
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: const Color(0xFF080D18),
+              style: GoogleFonts.roboto(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                height: 1,
+                letterSpacing: 0,
+                color: const Color(0xFF0F172A),
               ),
             ),
 
             // Save badge (yearly only)
             if (saveBadge != null) ...[
-              const SizedBox(height: 6),
+              SizedBox(height: isTrial ? 15 : 6),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                width: 121,
+                height: 30,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE5E7EB),
-                  borderRadius: BorderRadius.circular(14),
+                  color: const Color(0x14080D18),
+                  borderRadius: BorderRadius.circular(37),
                 ),
                 child: Text(
                   saveBadge!,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF172033),
+                  style: GoogleFonts.roboto(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    height: 1,
+                    letterSpacing: 0,
+                    color: const Color(0xFF0F172A),
                   ),
                 ),
               ),
             ],
 
-            const SizedBox(height: 6),
+            SizedBox(height: isTrial ? 53 : 6),
 
             // Period label
             Text(
               period,
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 12,
+              style: GoogleFonts.roboto(
+                fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: const Color(0xFF080D18),
+                height: 1,
+                letterSpacing: 0,
+                color: const Color(0xFF0F172A),
               ),
             ),
           ],

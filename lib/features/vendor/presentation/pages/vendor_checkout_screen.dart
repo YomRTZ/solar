@@ -1,28 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
+import 'package:flutter_app/core/validation/app_form_validation.dart';
+import 'package:flutter_app/features/vendor/presentation/cubit/vendor_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_app/features/vendor/data/datasources/vendor_rfq_data.dart';
+import 'package:flutter_app/features/vendor/domain/entities/vendor_rfq_request.dart';
+import 'package:flutter_app/features/orders/data/datasources/orders_data.dart';
+import 'package:flutter_app/features/orders/domain/entities/order.dart';
 
 // ───────────────────────────────────────────────────────────────────────────── Vendor — Checkout
 class VendorCheckoutScreen extends StatefulWidget {
-  const VendorCheckoutScreen({super.key});
+  final VendorRfqRequest? request;
+
+  const VendorCheckoutScreen({super.key, this.request});
 
   @override
   State<VendorCheckoutScreen> createState() => _VendorCheckoutScreenState();
 }
 
-enum _PaymentMethod { card, afterpay, klarna }
-
 class _VendorCheckoutScreenState extends State<VendorCheckoutScreen> {
-  _PaymentMethod _selectedMethod = _PaymentMethod.card;
+  final _formKey = GlobalKey<FormState>();
+  final VendorCheckoutCubit _checkoutCubit = VendorCheckoutCubit();
 
-  final _cardNumberController = TextEditingController(
-    text: '1234 1234 1234 1234',
-  );
+  final _cardNumberController = TextEditingController();
   final _expiryController = TextEditingController();
   final _cvcController = TextEditingController();
 
@@ -31,55 +38,111 @@ class _VendorCheckoutScreenState extends State<VendorCheckoutScreen> {
     _cardNumberController.dispose();
     _expiryController.dispose();
     _cvcController.dispose();
+    _checkoutCubit.close();
     super.dispose();
   }
 
   void _payNow() {
-    context.go(AppRoutes.vendorPaymentStatus, extra: true);
+    final isValid = _formKey.currentState?.validate() ?? false;
+    final request = widget.request;
+    if (isValid && request != null) {
+      _createOrder(request);
+      VendorRfqData.updateStatus(request.id, VendorRfqStatus.ordered);
+    }
+    context.go(AppRoutes.vendorPaymentStatus, extra: isValid);
   }
+
+  void _createOrder(VendorRfqRequest request) {
+    final subtotal = _parseAmount(request.subTotal);
+    final quantity = request.items.fold<int>(
+      0,
+      (total, item) =>
+          total +
+          (int.tryParse(RegExp(r'\d+').firstMatch(item.qty)?.group(0) ?? '') ??
+              1),
+    );
+    final orderQuantity = quantity == 0 ? 1 : quantity;
+    final now = DateTime.now();
+    OrdersData.add(
+      Order(
+        id: '#ORD${now.microsecondsSinceEpoch}',
+        productName: request.items.map((item) => item.productName).join(', '),
+        productImagePath:
+            'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+        price: (subtotal / orderQuantity).toStringAsFixed(0),
+        deliveryLocation: 'New Delhi',
+        buyer: 'Vendor',
+        orderDate: '${now.day} ${_monthName(now.month)} ${now.year}',
+        status: OrderStatus.pending,
+        quantity: orderQuantity,
+        subtotal: subtotal,
+        gstPercent: subtotal == 0
+            ? 18
+            : _parseAmount(request.gst) / subtotal * 100,
+      ),
+    );
+  }
+
+  double _parseAmount(String value) =>
+      double.tryParse(value.replaceAll(RegExp(r'[^0-9.]'), '')) ?? 0;
+
+  String _monthName(int month) => const [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ][month - 1];
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Column(
-          children: [
-            const SecondAppHeader(
-              title: 'Checkout',
-              subtitle: '(Ui will be Different)',
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // ── Delivery Address ────────────────────
-                    _buildDeliverySection(),
-                    const SizedBox(height: 24),
-
-                    // ── Card payment ────────────────────────
-                    _buildCardSection(),
-                    const SizedBox(height: 20),
-
-                    // ── Alternative payments ────────────────
-                    _buildAlternativePayments(),
-                  ],
+    return BlocBuilder<VendorCheckoutCubit, VendorCheckoutState>(
+      bloc: _checkoutCubit,
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: Form(
+            key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              children: [
+                const SecondAppHeader(
+                  title: 'Checkout (Ui will be',
+                  subtitle: 'Different)',
                 ),
-              ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(18, 28, 18, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildDeliverySection(),
+                        const SizedBox(height: 16),
+                        _buildCardSection(),
+                        const SizedBox(height: 8),
+                        _buildAlternativePayments(),
+                      ],
+                    ),
+                  ),
+                ),
+                _buildPayButton(),
+              ],
             ),
-
-            // ── Pay Now button ──────────────────────────────
-            _buildPayButton(),
-          ],
+          ),
         ),
       ),
     );
@@ -87,164 +150,183 @@ class _VendorCheckoutScreenState extends State<VendorCheckoutScreen> {
 
   // ── Delivery address section ─────────────────────────────────
   Widget _buildDeliverySection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Delivery Address',
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: const Color(0xFF1A1A1A),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {},
-              child: Text(
-                'Edit',
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: const Color(0xFFE5E7EB)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Delivery Address',
                 style: GoogleFonts.inter(
                   fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF003A8A),
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF1A1A1A),
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Text(
-          '13-333 Dummy Address, New Delhi - 112223',
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            fontWeight: FontWeight.w400,
-            color: const Color(0xFF4B5563),
-            height: 1.5,
+              GestureDetector(
+                onTap: () {},
+                child: Text(
+                  'Edit',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF003A8A),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
-      ],
+          const SizedBox(height: 8),
+          Text(
+            '13-333 Dummy Address, New Delhi - 112223',
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xFF202020),
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   // ── Card payment section ─────────────────────────────────────
   Widget _buildCardSection() {
+    final isCardSelected =
+        _checkoutCubit.state.paymentMethod == VendorPaymentMethod.card;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Card method toggle row
-        GestureDetector(
-          onTap: () => setState(() => _selectedMethod = _PaymentMethod.card),
-          child: Row(
-            children: [
-              _RadioDot(selected: _selectedMethod == _PaymentMethod.card),
-              const SizedBox(width: 10),
-              const Icon(
-                Icons.credit_card_rounded,
-                color: Color(0xFF003A8A),
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'Card',
-                style: GoogleFonts.inter(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF1A1A1A),
+        Container(
+          width: double.infinity,
+          color: const Color(0xFFFAFAFC),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () =>
+                _checkoutCubit.selectPaymentMethod(VendorPaymentMethod.card),
+            child: Row(
+              children: [
+                _RadioDot(
+                  selected: isCardSelected,
+                  selectedColor: const Color(0xFF6558F5),
                 ),
-              ),
-            ],
+                const SizedBox(width: 16),
+                const Icon(
+                  Icons.credit_card_rounded,
+                  color: Color(0xFF6558F5),
+                  size: 18,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  'Card',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF6558F5),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
 
-        if (_selectedMethod == _PaymentMethod.card) ...[
-          const SizedBox(height: 16),
-
-          // Card brand icons row
-          Row(
-            children: [
-              _CardBrandIcon(Icons.credit_card, color: const Color(0xFF1434CB)),
-              const SizedBox(width: 6),
-              _CardBrandIcon(Icons.payment, color: const Color(0xFFEB001B)),
-              const SizedBox(width: 6),
-              _CardBrandIcon(
-                Icons.account_balance_wallet,
-                color: const Color(0xFF003A8A),
-              ),
-              const SizedBox(width: 6),
-              _CardBrandIcon(
-                Icons.monetization_on,
-                color: const Color(0xFFFF6B00),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 14),
-
-          _FieldLabel(label: 'Card number'),
-          const SizedBox(height: 6),
-          _CheckoutTextField(
-            controller: _cardNumberController,
-            hintText: '1234 1234 1234 1234',
-            keyboardType: TextInputType.number,
-          ),
-
-          const SizedBox(height: 14),
-
-          _FieldLabel(label: 'Expiration'),
-          const SizedBox(height: 6),
-          _CheckoutTextField(
-            controller: _expiryController,
-            hintText: 'MM/YY',
-            keyboardType: TextInputType.datetime,
-          ),
-
-          const SizedBox(height: 14),
-
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        if (isCardSelected)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(28, 12, 28, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _FieldLabel(label: 'CVC'),
-                    const SizedBox(height: 6),
-                    _CheckoutTextField(
-                      controller: _cvcController,
-                      hintText: 'CVC',
-                      keyboardType: TextInputType.number,
+                    const _FieldLabel(label: 'Card number'),
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/icons/Credit card1.svg',
+                          width: 24,
+                          height: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        SvgPicture.asset(
+                          'assets/icons/Credit card3.svg',
+                          width: 24,
+                          height: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        SvgPicture.asset(
+                          'assets/icons/Credit card4.svg',
+                          width: 24,
+                          height: 16,
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 12),
-              Padding(
-                padding: const EdgeInsets.only(top: 24),
-                child: Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF2F4F7),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.credit_card_rounded,
-                    color: Color(0xFF6C7278),
-                    size: 18,
-                  ),
+                _CheckoutTextField(
+                  label: 'Card number',
+                  controller: _cardNumberController,
+                  hintText: '1234 1234 1234 1234',
+                  keyboardType: TextInputType.number,
+                  onChanged: _checkoutCubit.updateCardNumber,
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+                const _FieldLabel(label: 'Expiration'),
+                _CheckoutTextField(
+                  label: 'Expiration',
+                  controller: _expiryController,
+                  hintText: 'MM/YY',
+                  keyboardType: TextInputType.datetime,
+                  onChanged: _checkoutCubit.updateExpiry,
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const _FieldLabel(label: 'CVC'),
+                          _CheckoutTextField(
+                            label: 'CVC',
+                            controller: _cvcController,
+                            hintText: 'CVC',
+                            keyboardType: TextInputType.number,
+                            onChanged: _checkoutCubit.updateCvc,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 3),
+                      child: Icon(
+                        Icons.credit_card_rounded,
+                        color: Color(0xFFB8B8B8),
+                        size: 20,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                const _FieldLabel(label: 'Country'),
+                _CountryDropdown(cubit: _checkoutCubit),
+              ],
+            ),
           ),
-
-          const SizedBox(height: 14),
-
-          _FieldLabel(label: 'Country'),
-          const SizedBox(height: 6),
-          _CountryDropdown(),
-        ],
       ],
     );
   }
@@ -255,19 +337,28 @@ class _VendorCheckoutScreenState extends State<VendorCheckoutScreen> {
       children: [
         _PaymentOptionTile(
           label: 'Afterpay',
-          iconData: Icons.shopping_bag_outlined,
-          iconColor: const Color(0xFF003A8A),
-          isSelected: _selectedMethod == _PaymentMethod.afterpay,
+          icon: SvgPicture.asset(
+            'assets/icons/Afterpay.svg',
+            width: 20,
+            height: 20,
+          ),
+          isSelected:
+              _checkoutCubit.state.paymentMethod ==
+              VendorPaymentMethod.afterpay,
           onTap: () =>
-              setState(() => _selectedMethod = _PaymentMethod.afterpay),
+              _checkoutCubit.selectPaymentMethod(VendorPaymentMethod.afterpay),
         ),
-        const SizedBox(height: 10),
         _PaymentOptionTile(
           label: 'Klarna',
-          iconData: Icons.account_balance_outlined,
-          iconColor: const Color(0xFFFF6900),
-          isSelected: _selectedMethod == _PaymentMethod.klarna,
-          onTap: () => setState(() => _selectedMethod = _PaymentMethod.klarna),
+          icon: SvgPicture.asset(
+            'assets/icons/Klarna.svg',
+            width: 20,
+            height: 20,
+          ),
+          isSelected:
+              _checkoutCubit.state.paymentMethod == VendorPaymentMethod.klarna,
+          onTap: () =>
+              _checkoutCubit.selectPaymentMethod(VendorPaymentMethod.klarna),
         ),
       ],
     );
@@ -278,10 +369,12 @@ class _VendorCheckoutScreenState extends State<VendorCheckoutScreen> {
     final bottom = MediaQuery.of(context).padding.bottom;
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.fromLTRB(20, 12, 20, bottom + 16),
+      padding: EdgeInsets.fromLTRB(24, 12, 24, bottom + 16),
       child: AppContinueButton(
         text: 'Pay Now',
+        height: 44,
         showArrow: false,
+        backgroundColor: const Color(0xFF003A8A),
         onPressed: _payNow,
       ),
     );
@@ -292,7 +385,12 @@ class _VendorCheckoutScreenState extends State<VendorCheckoutScreen> {
 
 class _RadioDot extends StatelessWidget {
   final bool selected;
-  const _RadioDot({required this.selected});
+  final Color selectedColor;
+
+  const _RadioDot({
+    required this.selected,
+    this.selectedColor = const Color(0xFF003A8A),
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -302,7 +400,7 @@ class _RadioDot extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: selected ? const Color(0xFF003A8A) : const Color(0xFFD1D5DB),
+          color: selected ? selectedColor : const Color(0xFFD1D5DB),
           width: 2,
         ),
       ),
@@ -311,33 +409,13 @@ class _RadioDot extends StatelessWidget {
               child: Container(
                 width: 8,
                 height: 8,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF003A8A),
+                decoration: BoxDecoration(
+                  color: selectedColor,
                   shape: BoxShape.circle,
                 ),
               ),
             )
           : null,
-    );
-  }
-}
-
-class _CardBrandIcon extends StatelessWidget {
-  final IconData iconData;
-  final Color color;
-  const _CardBrandIcon(this.iconData, {required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 36,
-      height: 24,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
-      ),
-      child: Icon(iconData, color: color, size: 14),
     );
   }
 }
@@ -353,61 +431,77 @@ class _FieldLabel extends StatelessWidget {
       style: GoogleFonts.inter(
         fontSize: 12,
         fontWeight: FontWeight.w600,
-        color: const Color(0xFF374151),
+        color: const Color(0xFF1A1A1A),
       ),
     );
   }
 }
 
 class _CheckoutTextField extends StatelessWidget {
+  final String label;
   final TextEditingController controller;
   final String hintText;
   final TextInputType keyboardType;
+  final ValueChanged<String>? onChanged;
 
   const _CheckoutTextField({
+    required this.label,
     required this.controller,
     required this.hintText,
     this.keyboardType = TextInputType.text,
+    this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 46,
-      decoration: BoxDecoration(
-        color: const Color(0xFFF9FAFB),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboardType,
-        style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF1A1A1A)),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: GoogleFonts.inter(
-            fontSize: 13,
-            color: const Color(0xFF9CA3AF),
+    return FormField<String>(
+      initialValue: controller.text,
+      validator: (value) =>
+          AppFormValidation.requiredText(value, fieldName: label),
+      builder: (field) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 22,
+            child: TextField(
+              controller: controller,
+              keyboardType: keyboardType,
+              textAlignVertical: TextAlignVertical.center,
+              onChanged: (value) {
+                field.didChange(value);
+                onChanged?.call(value);
+              },
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                color: const Color(0xFF1A1A1A),
+              ),
+              decoration: InputDecoration(
+                hintText: hintText,
+                hintStyle: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: const Color(0xFF9CA3AF),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
           ),
-          border: InputBorder.none,
-          isDense: true,
-          contentPadding: EdgeInsets.zero,
-        ),
+          if (field.errorText != null) AppFormErrorText(field.errorText!),
+        ],
       ),
     );
   }
 }
 
-class _CountryDropdown extends StatefulWidget {
-  const _CountryDropdown();
+class _CountryDropdown extends StatelessWidget {
+  final VendorCheckoutCubit cubit;
 
-  @override
-  State<_CountryDropdown> createState() => _CountryDropdownState();
-}
-
-class _CountryDropdownState extends State<_CountryDropdown> {
-  String _selected = 'Hong Kong SAR China';
+  const _CountryDropdown({required this.cubit});
 
   static const List<String> _countries = [
     'Hong Kong SAR China',
@@ -421,32 +515,29 @@ class _CountryDropdownState extends State<_CountryDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 46,
-      decoration: BoxDecoration(
-        color: const Color(0xFFF9FAFB),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 14),
+    return SizedBox(
+      height: 24,
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
-          value: _selected,
+          value: cubit.state.country,
           isExpanded: true,
           icon: const Icon(
             Icons.keyboard_arrow_down_rounded,
-            color: Color(0xFF6C7278),
+            color: Color(0xFF9CA3AF),
             size: 20,
           ),
           style: GoogleFonts.inter(
-            fontSize: 13,
-            color: const Color(0xFF1A1A1A),
+            fontSize: 14,
+            color: const Color(0xFF6C7278),
           ),
           items: _countries
-              .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+              .map(
+                (country) =>
+                    DropdownMenuItem(value: country, child: Text(country)),
+              )
               .toList(),
-          onChanged: (v) {
-            if (v != null) setState(() => _selected = v);
+          onChanged: (value) {
+            if (value != null) cubit.selectCountry(value);
           },
         ),
       ),
@@ -456,15 +547,13 @@ class _CountryDropdownState extends State<_CountryDropdown> {
 
 class _PaymentOptionTile extends StatelessWidget {
   final String label;
-  final IconData iconData;
-  final Color iconColor;
+  final Widget icon;
   final bool isSelected;
   final VoidCallback onTap;
 
   const _PaymentOptionTile({
     required this.label,
-    required this.iconData,
-    required this.iconColor,
+    required this.icon,
     required this.isSelected,
     required this.onTap,
   });
@@ -472,39 +561,25 @@ class _PaymentOptionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF9FAFB),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: isSelected
-                ? const Color(0xFF003A8A)
-                : const Color(0xFFE5E7EB),
-            width: isSelected ? 1.5 : 1,
-          ),
-        ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
         child: Row(
           children: [
-            _RadioDot(selected: isSelected),
-            const SizedBox(width: 12),
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(iconData, color: iconColor, size: 18),
+            _RadioDot(
+              selected: isSelected,
+              selectedColor: const Color(0xFF6254F5),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 22),
+            icon,
+            const SizedBox(width: 8),
             Text(
               label,
               style: GoogleFonts.inter(
                 fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF1A1A1A),
+                fontWeight: FontWeight.w400,
+                color: const Color(0xFF6C7278),
               ),
             ),
           ],

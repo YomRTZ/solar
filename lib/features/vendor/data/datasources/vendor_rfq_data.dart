@@ -2,7 +2,7 @@ import 'package:flutter_app/features/vendor/domain/entities/vendor_rfq_request.d
 
 // Mock data for the vendor RFQ / Payment screens
 class VendorRfqData {
-  static const List<VendorRfqRequest> requests = [
+  static final List<VendorRfqRequest> _requests = [
     VendorRfqRequest(
       id: 'rfq_001',
       supplierName: 'SunTech Sol.',
@@ -43,4 +43,49 @@ class VendorRfqData {
       total: 'Rs. 1,25,000',
     ),
   ];
+
+  static List<VendorRfqRequest> get requests => List.unmodifiable(_requests);
+
+  static VendorRfqRequest? getById(String id) {
+    for (final request in _requests) {
+      if (request.id == id) return request;
+    }
+    return null;
+  }
+
+  static void add(VendorRfqRequest request) {
+    _requests.insert(0, request);
+  }
+
+  static bool updateStatus(String id, VendorRfqStatus status) {
+    final index = _requests.indexWhere((request) => request.id == id);
+    if (index == -1) return false;
+    _requests[index] = _requests[index].copyWith(status: status);
+    return true;
+  }
+
+  static bool receiveQuote(
+    String id, {
+    required String supplierName,
+    required String amount,
+    required String dateLabel,
+    required List<VendorOrderItem> items,
+    required String subTotal,
+    required String gst,
+    required String total,
+  }) {
+    final index = _requests.indexWhere((request) => request.id == id);
+    if (index == -1) return false;
+    _requests[index] = _requests[index].copyWith(
+      status: VendorRfqStatus.received,
+      supplierName: supplierName,
+      amount: amount,
+      dateLabel: dateLabel,
+      items: List.unmodifiable(items),
+      subTotal: subTotal,
+      gst: gst,
+      total: total,
+    );
+    return true;
+  }
 }

@@ -19,8 +19,8 @@ class SecondAppHeader extends StatelessWidget {
   // Optional action displayed after the title.
   final Widget? trailing;
 
-  // Whether to vertically center the arrow and title in the header
-  final bool centerContentVertically;
+  // Right inset used when a trailing action is present.
+  final double trailingRightInset;
 
   const SecondAppHeader({
     super.key,
@@ -29,14 +29,14 @@ class SecondAppHeader extends StatelessWidget {
     this.showBackButton = true,
     this.onBackPressed,
     this.trailing,
-    this.centerContentVertically = true,
+    this.trailingRightInset = 103,
   });
 
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
 
-    // Design spec: 133px visible area + full status bar height
+    // Design spec: 133px visible area + full status bar height.
     const visibleHeight = 133.0;
     final totalHeight = statusBarHeight + visibleHeight;
 
@@ -50,21 +50,13 @@ class SecondAppHeader extends StatelessWidget {
           colors: [Color(0xFF003A8A), Color(0xFF000F24)],
         ),
       ),
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: showBackButton ? 19 : 16,
-          right: 16,
-          top: statusBarHeight + 24, // breathing room below status bar
-          bottom: 16, // breathing room at bottom
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: centerContentVertically
-              ? MainAxisAlignment.center
-              : MainAxisAlignment.end,
-          children: [
-            // ── Back arrow + Title in a Row ─────────────────
-            Row(
+      child: Stack(
+        children: [
+          Positioned(
+            left: 19,
+            right: trailing == null ? 103 : trailingRightInset,
+            top: statusBarHeight + 76,
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 if (showBackButton) ...[
@@ -77,7 +69,7 @@ class SecondAppHeader extends StatelessWidget {
                       fit: BoxFit.contain,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 1),
                 ],
                 Expanded(
                   child: Column(
@@ -113,8 +105,8 @@ class SecondAppHeader extends StatelessWidget {
                 if (trailing != null) ...[const SizedBox(width: 8), trailing!],
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

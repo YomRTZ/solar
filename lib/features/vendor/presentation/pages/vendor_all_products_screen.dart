@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
+import 'package:flutter_app/app/routing/app_routes.dart';
+import 'package:flutter_app/app/routing/route_data.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_product_card.dart';
 import 'package:flutter_app/features/vendor/data/datasources/vendor_data.dart';
 import 'package:flutter_app/features/catalog/domain/entities/catalog_product.dart';
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_compare_sheet.dart';
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_product_detail_sheet.dart';
+import 'package:flutter_app/features/vendor/presentation/cubit/vendor_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // ───────────────────────────────────────────────────────────────────────────── Vendor All
 class VendorAllProductsScreen extends StatefulWidget {
@@ -21,20 +26,26 @@ class VendorAllProductsScreen extends StatefulWidget {
 
 class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
-
-  // RFQ cart: productId → quantity
-  final Map<String, int> _rfqCart = {};
-
-  // Compare list (max 2)
-  final List<CatalogProduct> _compareList = [];
   static const int _maxCompare = 2;
 
-  int get _cartCount => _rfqCart.values.fold(0, (sum, qty) => sum + qty);
+  // Use the shared VendorCatalogCubit provided by VendorMainScreen so the
+  // cart is in sync with VendorHomeScreen.  A local fallback is created when
+  // this screen is pushed standalone (e.g. directly via go_router).
+  VendorCatalogCubit? _localCubit;
+  VendorCatalogCubit get _catalogCubit {
+    try {
+      return context.read<VendorCatalogCubit>();
+    } catch (_) {
+      _localCubit ??= VendorCatalogCubit();
+      return _localCubit!;
+    }
+  }
+
+  int get _cartCount => _catalogCubit.state.cartCount;
 
   List<CatalogProduct> get _filtered {
-    if (_searchQuery.isEmpty) return VendorData.products;
-    final q = _searchQuery.toLowerCase();
+    if (_catalogCubit.state.query.isEmpty) return VendorData.products;
+    final q = _catalogCubit.state.query.toLowerCase();
     return VendorData.products
         .where((p) => p.name.toLowerCase().contains(q))
         .toList();
@@ -43,37 +54,20 @@ class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
   @override
   void dispose() {
     _searchController.dispose();
+    _localCubit?.close();
     super.dispose();
   }
 
   // ── Cart mutations ─────────────────────────────────────────
-  void _add(String id) =>
-      setState(() => _rfqCart[id] = (_rfqCart[id] ?? 0) + 1);
+  void _add(String id) => _catalogCubit.increment(id);
 
-  void _increment(String id) =>
-      setState(() => _rfqCart[id] = (_rfqCart[id] ?? 0) + 1);
+  void _increment(String id) => _catalogCubit.increment(id);
 
-  void _decrement(String id) {
-    setState(() {
-      final current = _rfqCart[id] ?? 0;
-      if (current <= 1) {
-        _rfqCart.remove(id);
-      } else {
-        _rfqCart[id] = current - 1;
-      }
-    });
-  }
+  void _decrement(String id) => _catalogCubit.decrement(id);
 
   // ── Compare mutations ──────────────────────────────────────
   void _addToCompare(CatalogProduct product) {
-    setState(() {
-      if (_compareList.length >= _maxCompare) {
-        _compareList.removeAt(0); // slide out oldest if full
-      }
-      if (!_compareList.any((p) => p.id == product.id)) {
-        _compareList.add(product);
-      }
-    });
+    _catalogCubit.addToCompare(product, limit: _maxCompare);
   }
 
   // ── Sheet launchers ────────────────────────────────────────
@@ -81,14 +75,12 @@ class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
   // Opens the product detail sheet
   void _openDetailSheet(BuildContext context, CatalogProduct product) {
     // Ensure at least qty 1 when opening the sheet
-    if ((_rfqCart[product.id] ?? 0) == 0) {
-      setState(() => _rfqCart[product.id] = 1);
-    }
+    _catalogCubit.ensureOne(product.id);
 
     VendorProductDetailSheet.show(
       context: context,
       product: product,
-      quantity: _rfqCart[product.id] ?? 1,
+      quantity: _catalogCubit.state.cartQuantities[product.id] ?? 1,
       cartCount: _cartCount,
       onIncrement: () {
         _increment(product.id);
@@ -117,11 +109,11 @@ class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
   void _openCompareSheet(BuildContext context) {
     VendorCompareSheet.show(
       context: context,
-      products: List.unmodifiable(_compareList),
-      rfqCartCounts: Map.unmodifiable(_rfqCart),
+      products: _catalogCubit.state.comparedProducts,
+      rfqCartCounts: _catalogCubit.state.cartQuantities,
       cartCount: _cartCount,
       onAddToRFQ: (p) {
-        setState(() => _rfqCart[p.id] = (_rfqCart[p.id] ?? 0) + 1);
+        _catalogCubit.increment(p.id);
         Navigator.pop(context);
       },
     );
@@ -130,26 +122,29 @@ class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
   // ── Build ──────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF2F4F7),
-        body: Column(
-          children: [
-            SecondAppHeader(
-              title: 'All Products',
-              trailing: _buildCartAction(context),
-            ),
-            _buildSearchBar(),
-            const SizedBox(height: 12),
-            Expanded(child: _buildGrid()),
-          ],
+    return BlocBuilder<VendorCatalogCubit, VendorCatalogState>(
+      bloc: _catalogCubit,
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: const Color(0xFFF2F4F7),
+          body: Column(
+            children: [
+              SecondAppHeader(
+                title: 'All Products',
+                trailing: _buildCartAction(context),
+                trailingRightInset: 16,
+              ),
+              _buildSearchBar(),
+              Expanded(child: _buildGrid()),
+            ],
+          ),
         ),
       ),
     );
@@ -165,12 +160,12 @@ class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(
               Icons.shopping_cart_outlined,
-              color: Colors.white,
+              color: Color(0xFF003A8A),
               size: 22,
             ),
           ),
@@ -205,7 +200,7 @@ class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
   // ── Search bar ────────────────────────────────────────────
   Widget _buildSearchBar() {
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+      margin: const EdgeInsets.fromLTRB(16, 21, 17, 14),
       height: 46,
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
@@ -224,11 +219,11 @@ class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
       child: Row(
         children: [
           SvgPicture.asset('assets/icons/search.svg', width: 24, height: 24),
-          const SizedBox(width: 10),
+          const SizedBox(width: 11),
           Expanded(
             child: TextField(
               controller: _searchController,
-              onChanged: (v) => setState(() => _searchQuery = v),
+              onChanged: _catalogCubit.updateQuery,
               style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -255,12 +250,12 @@ class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
               ),
             ),
           ),
-          if (_searchQuery.isNotEmpty)
+          if (_catalogCubit.state.query.isNotEmpty)
             GestureDetector(
-              onTap: () => setState(() {
+              onTap: () {
                 _searchController.clear();
-                _searchQuery = '';
-              }),
+                _catalogCubit.updateQuery('');
+              },
               child: const Icon(
                 Icons.clear,
                 color: Color(0xFF6C7278),
@@ -302,12 +297,12 @@ class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
         crossAxisCount: 2,
         crossAxisSpacing: 16,
         mainAxisSpacing: 12,
-        childAspectRatio: 156 / 217,
+        childAspectRatio: 156 / 232,
       ),
       itemCount: products.length,
       itemBuilder: (context, i) {
         final product = products[i];
-        final qty = _rfqCart[product.id] ?? 0;
+        final qty = _catalogCubit.state.cartQuantities[product.id] ?? 0;
 
         return VendorProductCard(
           imagePath: product.imagePath,
@@ -320,6 +315,7 @@ class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
           onAdd: () => _add(product.id),
           onIncrement: () => _increment(product.id),
           onDecrement: () => _decrement(product.id),
+          showBrandMark: i < 2,
         );
       },
     );
@@ -334,7 +330,7 @@ class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
       ),
       builder: (ctx) {
         final added = VendorData.products
-            .where((p) => (_rfqCart[p.id] ?? 0) > 0)
+            .where((p) => (_catalogCubit.state.cartQuantities[p.id] ?? 0) > 0)
             .toList();
 
         return Padding(
@@ -381,7 +377,7 @@ class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'x${_rfqCart[p.id]}',
+                        'x${_catalogCubit.state.cartQuantities[p.id]}',
                         style: GoogleFonts.roboto(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
@@ -397,7 +393,23 @@ class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: () => Navigator.pop(ctx),
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    // Navigate to full RFQ cart screen
+                    final cartState = _catalogCubit.state;
+                    final cartItems = VendorData.products
+                        .where((p) => (cartState.cartQuantities[p.id] ?? 0) > 0)
+                        .toList();
+                    context.push(
+                      AppRoutes.vendorCart,
+                      extra: VendorCartRouteData(
+                        cartItems: cartItems,
+                        initialQuantities: Map<String, int>.from(
+                          cartState.cartQuantities,
+                        ),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF003A8A),
                     foregroundColor: Colors.white,
@@ -407,7 +419,7 @@ class _VendorAllProductsScreenState extends State<VendorAllProductsScreen> {
                     ),
                   ),
                   child: Text(
-                    'Submit RFQ',
+                    'View RFQ Cart',
                     style: GoogleFonts.inter(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,

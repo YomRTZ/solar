@@ -5,12 +5,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:flutter_app/app/routing/app_routes.dart';
+import 'package:flutter_app/app/routing/route_data.dart';
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_category_card.dart';
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_product_card.dart';
 import 'package:flutter_app/features/vendor/data/datasources/vendor_data.dart';
+import 'package:flutter_app/features/vendor/domain/entities/vendor_category.dart';
 import 'package:flutter_app/features/catalog/domain/entities/catalog_product.dart';
+import 'package:flutter_app/features/vendor/presentation/cubit/vendor_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-// ───────────────────────────────────────────────────────────────────────────── Vendor Home Screen
+// ───────────────────────────────────────────────────────────────────────────
 class VendorHomeScreen extends StatefulWidget {
   const VendorHomeScreen({super.key});
 
@@ -20,14 +24,15 @@ class VendorHomeScreen extends StatefulWidget {
 
 class _VendorHomeScreenState extends State<VendorHomeScreen> {
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
 
-  // RFQ cart: productId → quantity
-  final Map<String, int> _rfqCart = {};
+  // VendorCatalogCubit is provided by VendorMainScreen's BlocProvider so that
+  // cart state is shared between Home and AllProducts.  Fall back to creating
+  // a local one when this screen is pushed independently (e.g. in tests).
+  VendorCatalogCubit get _catalogCubit => context.read<VendorCatalogCubit>();
 
   List<CatalogProduct> get _filteredProducts {
-    if (_searchQuery.isEmpty) return VendorData.products;
-    final q = _searchQuery.toLowerCase();
+    final q = _catalogCubit.state.query.toLowerCase();
+    if (q.isEmpty) return VendorData.products;
     return VendorData.products
         .where((p) => p.name.toLowerCase().contains(q))
         .toList();
@@ -39,104 +44,110 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
     super.dispose();
   }
 
-  void _add(String id) =>
-      setState(() => _rfqCart[id] = (_rfqCart[id] ?? 0) + 1);
+  // ── Cart helpers ────────────────────────────────────────────
+  void _add(String id) => _catalogCubit.increment(id);
+  void _increment(String id) => _catalogCubit.increment(id);
+  void _decrement(String id) => _catalogCubit.decrement(id);
 
-  void _increment(String id) =>
-      setState(() => _rfqCart[id] = (_rfqCart[id] ?? 0) + 1);
-
-  void _decrement(String id) {
-    setState(() {
-      final current = _rfqCart[id] ?? 0;
-      if (current <= 1) {
-        _rfqCart.remove(id);
-      } else {
-        _rfqCart[id] = current - 1;
-      }
-    });
+  // ── Navigate to RFQ cart with current selections ────────────
+  void _goToCart() {
+    final state = _catalogCubit.state;
+    final cartItems = VendorData.products
+        .where((p) => (state.cartQuantities[p.id] ?? 0) > 0)
+        .toList();
+    if (cartItems.isEmpty) return;
+    context.push(
+      AppRoutes.vendorCart,
+      extra: VendorCartRouteData(
+        cartItems: cartItems,
+        initialQuantities: Map<String, int>.from(state.cartQuantities),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF2F4F7),
-        body: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // ── Search bar ────────────────────────────
-                    _buildSearchBar(),
-                    const SizedBox(height: 16),
-
-                    // ── 4-column, 2-row category grid ────────
-                    _buildCategoryGrid(),
-                    const SizedBox(height: 18),
-
-                    // ── Promo banner ──────────────────────────
-                    _buildBanner(context),
-                    const SizedBox(height: 20),
-
-                    // ── "All Products" heading ────────────────
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'All Products',
-                          style: GoogleFonts.roboto(
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FontStyle.normal,
-                            color: const Color(0xFF23201C),
-                            height: 1,
-                            letterSpacing: 0,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () =>
-                              context.push(AppRoutes.vendorAllProducts),
-                          child: Text(
-                            'See all',
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0xFF003A8A),
+    return BlocBuilder<VendorCatalogCubit, VendorCatalogState>(
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: const Color(0xFFF2F4F7),
+          body: Column(
+            children: [
+              _buildHeader(context, state),
+              _buildSearchBar(state),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.only(bottom: 24),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(18, 0, 17, 0),
+                        child: _buildCategoryGrid(),
+                      ),
+                      const SizedBox(height: 28),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12, right: 15),
+                        child: _buildBanner(context),
+                      ),
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 17, 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'All Products',
+                              style: GoogleFonts.roboto(
+                                fontSize: 12.5,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF23201C),
+                                height: 1,
+                              ),
                             ),
-                          ),
+                            GestureDetector(
+                              onTap: () =>
+                                  context.push(AppRoutes.vendorAllProducts),
+                              child: Text(
+                                'See all',
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF003A8A),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    // ── 2-col product grid ────────────────────
-                    _buildProductGrid(),
-                  ],
+                      ),
+                      const SizedBox(height: 5),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 17, 0),
+                        child: _buildProductGrid(state),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  // ── Header: same dark gradient as home_screen ──────────────
-  Widget _buildHeader(BuildContext context) {
+  // ── Header ──────────────────────────────────────────────────
+  Widget _buildHeader(BuildContext context, VendorCatalogState state) {
     final top = MediaQuery.of(context).padding.top;
     return Container(
       width: double.infinity,
-      height: top + 100,
+      height: top + 133,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -146,30 +157,27 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
       ),
       child: Stack(
         children: [
-          // Logo centred in the visible 100 px area
+          // Logo
           Positioned(
-            top: top + 18,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Image.asset(
-                'assets/images/a_clean_high_resolution_vector_like_logo_image_on.png',
-                width: 56,
-                height: 56,
-                fit: BoxFit.contain,
-                errorBuilder: (ctx, err, st) => const Icon(
-                  Icons.wb_sunny_rounded,
-                  color: Colors.amber,
-                  size: 48,
-                ),
+            top: top + 51,
+            left: 148,
+            right: 148,
+            bottom: 11,
+            child: Image.asset(
+              'assets/images/a_clean_high_resolution_vector_like_logo_image_on.png',
+              fit: BoxFit.contain,
+              errorBuilder: (ctx, err, st) => const Icon(
+                Icons.wb_sunny_rounded,
+                color: Colors.amber,
+                size: 48,
               ),
             ),
           ),
 
           // Notification bell
           Positioned(
-            top: top + 30,
-            right: 16,
+            bottom: 20,
+            right: 22,
             child: Stack(
               clipBehavior: Clip.none,
               children: [
@@ -203,32 +211,32 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
     );
   }
 
-  // ── Search bar ────────────────────────────────────────────
-  Widget _buildSearchBar() {
+  // ── Search bar ───────────────────────────────────────────────
+  Widget _buildSearchBar(VendorCatalogState state) {
     return Container(
+      margin: const EdgeInsets.fromLTRB(16, 21, 17, 14),
       height: 46,
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFEDF1F3), width: 1),
+        border: Border.all(color: const Color(0xFFEDF1F3)),
         boxShadow: const [
           BoxShadow(
             color: Color(0x3DE4E5E7),
             blurRadius: 2,
             offset: Offset(0, 1),
-            spreadRadius: 0,
           ),
         ],
       ),
       child: Row(
         children: [
           SvgPicture.asset('assets/icons/search.svg', width: 24, height: 24),
-          const SizedBox(width: 10),
+          const SizedBox(width: 11),
           Expanded(
             child: TextField(
               controller: _searchController,
-              onChanged: (v) => setState(() => _searchQuery = v),
+              onChanged: _catalogCubit.updateQuery,
               style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -255,148 +263,129 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
               ),
             ),
           ),
-          if (_searchQuery.isNotEmpty)
+          if (state.query.isNotEmpty)
             GestureDetector(
-              onTap: () => setState(() {
+              onTap: () {
                 _searchController.clear();
-                _searchQuery = '';
-              }),
-              child: const Icon(
-                Icons.clear,
-                color: Color(0xFF6C7278),
-                size: 18,
-              ),
+                _catalogCubit.updateQuery('');
+              },
+              child: const Icon(Icons.clear, color: Color(0xFF6C7278), size: 18),
             ),
         ],
       ),
     );
   }
 
-  // ── 4-column, 2-row category grid ────────────────────────
+  // ── Category grid (4 + 4) ────────────────────────────────────
   Widget _buildCategoryGrid() {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        crossAxisSpacing: 3,
-        mainAxisSpacing: 12,
-        mainAxisExtent: 71,
-      ),
-      itemCount: VendorData.homeCategories.length,
-      itemBuilder: (context, i) {
-        final cat = VendorData.homeCategories[i];
-        return Center(
-          child: VendorCategoryCard(
-            iconPath: cat.iconPath,
-            label: cat.name,
-            width: 74,
-            height: 71,
-            iconContainerSize: 28,
-            compact: true,
-            onTap: () {
-              if (cat.id == 'cat_more') {
-                context.push(AppRoutes.vendorCategories);
-              } else {
-                context.push(AppRoutes.vendorAllProducts);
-              }
-            },
-          ),
-        );
-      },
+    return Column(
+      children: [
+        _buildCategoryRow(VendorData.homeCategories.take(4)),
+        const SizedBox(height: 23),
+        _buildCategoryRow(VendorData.homeCategories.skip(4).take(4)),
+      ],
     );
   }
 
-  // ── Promo banner ─────────────────────────────────────────
+  Widget _buildCategoryRow(Iterable<VendorCategory> categories) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: categories.map((cat) {
+        return VendorCategoryCard(
+          iconPath: cat.iconPath,
+          label: cat.name,
+          width: 74,
+          height: 71,
+          iconContainerSize: 28,
+          compact: true,
+          onTap: () {
+            if (cat.id == 'cat_more') {
+              context.push(AppRoutes.vendorCategories);
+            } else {
+              context.push(AppRoutes.vendorAllProducts);
+            }
+          },
+        );
+      }).toList(),
+    );
+  }
+
+  // ── Promo banner ─────────────────────────────────────────────
   Widget _buildBanner(BuildContext context) {
     return GestureDetector(
       onTap: () => context.push(AppRoutes.vendorAllProducts),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Stack(
-          children: [
-            // Background image
-            SizedBox(
-              width: double.infinity,
-              height: 120,
-              child: Image.asset(
-                'assets/solarimages/40e6eb83a0b81c11a222c2e30e9a248524bdf315.jpg',
-                fit: BoxFit.cover,
-                errorBuilder: (ctx, err, st) =>
-                    Container(height: 120, color: const Color(0xFF003A8A)),
+        borderRadius: BorderRadius.circular(10),
+        child: SizedBox(
+          width: double.infinity,
+          height: 104,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/solarimages/40e6eb83a0b81c11a222c2e30e9a248524bdf315.jpg',
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-
-            // Dark overlay
-            Container(
-              height: 120,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    Colors.black.withValues(alpha: 0.65),
-                    Colors.transparent,
+              Positioned.fill(
+                child: DecoratedBox(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      stops: [0, 0.7616],
+                      colors: [Color(0xB3003A8A), Color(0xB3000F24)],
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 13,
+                top: 17,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Premium!',
+                      style: GoogleFonts.roboto(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        height: 1,
+                      ),
+                    ),
+                    const SizedBox(height: 9),
+                    Text(
+                      'Solar Panels',
+                      style: GoogleFonts.roboto(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        height: 1,
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Text(
+                      'For a cleaner tomorrow',
+                      style: GoogleFonts.roboto(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                        height: 1,
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ),
-
-            // Text
-            Positioned(
-              left: 16,
-              top: 0,
-              bottom: 0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Premium!',
-                    style: GoogleFonts.roboto(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      fontStyle: FontStyle.normal,
-                      color: const Color(0xFFFFFFFF),
-                      height: 1,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Solar Panels',
-                    style: GoogleFonts.roboto(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      fontStyle: FontStyle.normal,
-                      color: const Color(0xFFFFFFFF),
-                      height: 1,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'For a cleaner tomorrow',
-                    style: GoogleFonts.roboto(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      fontStyle: FontStyle.normal,
-                      color: const Color(0xFFFFFFFF),
-                      height: 1,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  // ── 2-column product grid ────────────────────────────────
-  Widget _buildProductGrid() {
+  // ── 2-column product grid ────────────────────────────────────
+  Widget _buildProductGrid(VendorCatalogState state) {
     final products = _filteredProducts;
 
     if (products.isEmpty) {
@@ -411,7 +400,6 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
       );
     }
 
-    // Use a GridView inside a ShrinkWrap so it plays nicely inside the outer SingleChildScrollView.
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -419,12 +407,12 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
         crossAxisCount: 2,
         crossAxisSpacing: 16,
         mainAxisSpacing: 12,
-        childAspectRatio: 156 / 217,
+        childAspectRatio: 156 / 232,
       ),
       itemCount: products.length,
       itemBuilder: (context, i) {
         final product = products[i];
-        final qty = _rfqCart[product.id] ?? 0;
+        final qty = state.cartQuantities[product.id] ?? 0;
 
         return VendorProductCard(
           imagePath: product.imagePath,
@@ -435,6 +423,7 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
           onAdd: () => _add(product.id),
           onIncrement: () => _increment(product.id),
           onDecrement: () => _decrement(product.id),
+          showBrandMark: i < 2,
         );
       },
     );

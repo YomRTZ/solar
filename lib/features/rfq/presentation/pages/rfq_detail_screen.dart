@@ -3,8 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/core/widgets/app_text_field.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
+import 'package:flutter_app/core/widgets/app_form_section.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
+import 'package:flutter_app/features/rfq/data/datasources/rfq_data.dart';
 import 'package:flutter_app/features/rfq/domain/entities/rfq.dart';
+import 'package:flutter_app/features/rfq/presentation/cubit/rfq_cubit.dart';
+import 'package:flutter_app/features/vendor/data/datasources/vendor_rfq_data.dart';
+import 'package:flutter_app/features/vendor/domain/entities/vendor_rfq_request.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Two-phase screen: Phase 1 — shows product detail + "Quote Now" / "Reject Quote" buttons Phase 2
 class RFQDetailScreen extends StatefulWidget {
@@ -17,8 +23,8 @@ class RFQDetailScreen extends StatefulWidget {
 }
 
 class _RFQDetailScreenState extends State<RFQDetailScreen> {
-  // false = detail view, true = quote form view
-  bool _showQuoteForm = false;
+  final _formKey = GlobalKey<FormState>();
+  late final RfqDetailCubit _rfqCubit;
 
   // Quote form controllers
   final TextEditingController _quantityController = TextEditingController();
@@ -26,16 +32,23 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
   final TextEditingController _gstController = TextEditingController();
   final TextEditingController _deliveryDateController = TextEditingController();
 
-  bool _isLoading = false;
-
   @override
   void initState() {
     super.initState();
     // Pre-fill from RFQ data
-    _quantityController.text = '20 Units';
-    _unitPriceController.text = '12,340';
-    _gstController.text = '18%';
-    _deliveryDateController.text = '20 Oct 2026';
+    _quantityController.text = widget.rfq.requiredQty;
+    _unitPriceController.text = widget.rfq.quoteUnitPrice ?? widget.rfq.price;
+    _gstController.text = widget.rfq.quoteGst ?? '18%';
+    _deliveryDateController.text =
+        widget.rfq.quoteDeliveryDate ?? widget.rfq.expectedDelivery;
+    _rfqCubit = RfqDetailCubit(
+      initialState: RfqDetailState(
+        quantity: _quantityController.text,
+        unitPrice: _unitPriceController.text,
+        gst: _gstController.text,
+        deliveryDate: _deliveryDateController.text,
+      ),
+    );
   }
 
   @override
@@ -44,15 +57,16 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
     _unitPriceController.dispose();
     _gstController.dispose();
     _deliveryDateController.dispose();
+    _rfqCubit.close();
     super.dispose();
   }
 
-  void _onQuoteNow() => setState(() => _showQuoteForm = true);
+  void _onQuoteNow() => _rfqCubit.showQuoteForm();
 
   void _onRejectQuote() {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(
           'Reject Quote',
           style: GoogleFonts.roboto(fontWeight: FontWeight.w700),
@@ -63,13 +77,18 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context); // close dialog
-              Navigator.pop(context); // go back to list
+              Navigator.pop(dialogContext);
+              RFQData.updateStatus(widget.rfq.id, RFQStatus.rejected);
+              VendorRfqData.updateStatus(
+                widget.rfq.id,
+                VendorRfqStatus.rejected,
+              );
+              Navigator.pop(context, true);
             },
             child: const Text(
               'Reject',
@@ -82,40 +101,87 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
   }
 
   void _onSendQuote() async {
-    setState(() => _isLoading = true);
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+    _rfqCubit.setLoading(true);
     await Future.delayed(const Duration(seconds: 1));
     if (!mounted) return;
-    setState(() => _isLoading = false);
-    Navigator.pop(context); // back to RFQ list
+    _rfqCubit.setLoading(false);
+    final state = _rfqCubit.state;
+    final updatedRfq = widget.rfq.copyWith(
+      status: RFQStatus.pending,
+      quoteUnitPrice: state.unitPrice.trim(),
+      quoteGst: state.gst.trim(),
+      quoteDeliveryDate: state.deliveryDate.trim(),
+    );
+    if (RFQData.update(updatedRfq)) {
+      final quantity =
+          int.tryParse(
+            RegExp(r'\d+').firstMatch(widget.rfq.requiredQty)?.group(0) ?? '',
+          ) ??
+          1;
+      final unitPrice = _parseAmount(state.unitPrice);
+      final gstPercent = _parseAmount(state.gst);
+      final subtotal = unitPrice * quantity;
+      final gstAmount = subtotal * gstPercent / 100;
+      final request = VendorRfqData.getById(widget.rfq.id);
+      VendorRfqData.receiveQuote(
+        widget.rfq.id,
+        supplierName: request?.supplierName ?? 'Supplier',
+        amount: _formatAmount(subtotal + gstAmount),
+        dateLabel:
+            'Quote received ${DateTime.now().toLocal().toString().split(' ').first}',
+        items: [
+          VendorOrderItem(
+            productName: widget.rfq.productTitle,
+            qty: '$quantity x 1 =',
+            price: _formatAmount(subtotal),
+          ),
+        ],
+        subTotal: _formatAmount(subtotal),
+        gst: _formatAmount(gstAmount),
+        total: _formatAmount(subtotal + gstAmount),
+      );
+    }
+    Navigator.pop(context, true);
   }
+
+  double _parseAmount(String value) =>
+      double.tryParse(value.replaceAll(RegExp(r'[^0-9.]'), '')) ?? 0;
+
+  String _formatAmount(double value) => 'Rs. ${value.toStringAsFixed(0)}';
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        extendBodyBehindAppBar: true,
-        body: Column(
-          children: [
-            SecondAppHeader(
-              title: 'RFQ Detail',
-              onBackPressed: () {
-                if (_showQuoteForm) {
-                  setState(() => _showQuoteForm = false);
-                } else {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-            Expanded(
-              child: _showQuoteForm ? _buildQuoteForm() : _buildDetailView(),
-            ),
-          ],
+    return BlocBuilder<RfqDetailCubit, RfqDetailState>(
+      bloc: _rfqCubit,
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          extendBodyBehindAppBar: true,
+          body: Column(
+            children: [
+              SecondAppHeader(
+                title: 'RFQ Detail',
+                onBackPressed: () {
+                  if (state.showQuoteForm) {
+                    _rfqCubit.hideQuoteForm();
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              Expanded(
+                child: state.showQuoteForm
+                    ? _buildQuoteForm(state)
+                    : _buildDetailView(),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -327,19 +393,20 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
   }
 
   // ══════════════════════════════════════════════════════════ PHASE 2 — Quote Form
-  Widget _buildQuoteForm() {
+  Widget _buildQuoteForm(RfqDetailState state) {
     final rfq = widget.rfq;
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 32),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Mini product header
           Row(
             children: [
               Container(
-                width: 56,
-                height: 56,
+                width: 86.62332153320312,
+                height: 85.76611328125,
+                margin: const EdgeInsets.fromLTRB(13.38, 17.23, 0, 16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   color: Colors.white,
@@ -353,62 +420,71 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
                 ),
               ),
               const SizedBox(width: 12),
-              Text(
-                rfq.productTitle,
-                style: GoogleFonts.roboto(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF202020),
+              Expanded(
+                child: Text(
+                  rfq.productTitle,
+                  style: GoogleFonts.roboto(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF202020),
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 24),
-
-          // Quantity
-          _formLabel('Quantity'),
-          const SizedBox(height: 6),
-          _readOnlyField(_quantityController.text),
-          const SizedBox(height: 20),
-
-          // Unit Price
-          _formLabel('Unit Price'),
-          const SizedBox(height: 6),
-          AppTextField(
-            label: '',
-            hint: '12,340',
-            controller: _unitPriceController,
-            keyboardType: TextInputType.number,
-          ),
-          const SizedBox(height: 20),
-
-          // Gst
-          _formLabel('Gst'),
-          const SizedBox(height: 6),
-          AppTextField(
-            label: '',
-            hint: '18%',
-            controller: _gstController,
-            keyboardType: TextInputType.number,
-          ),
-          const SizedBox(height: 20),
-
-          // Delivery Date
-          _formLabel('Delivery Date'),
-          const SizedBox(height: 6),
-          AppTextField(
-            label: '',
-            hint: '20 Oct 2026',
-            controller: _deliveryDateController,
-          ),
-          const SizedBox(height: 32),
-
-          // Send Quote button
-          AppContinueButton(
-            text: 'Send Quote',
-            showArrow: false,
-            isLoading: _isLoading,
-            onPressed: _onSendQuote,
+          Form(
+            key: _formKey,
+            child: AppFormSection(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _formLabel('Quantity'),
+                  const SizedBox(height: 6),
+                  _readOnlyField(state.quantity),
+                  const SizedBox(height: 16),
+                  _formLabel('Unit Price'),
+                  const SizedBox(height: 6),
+                  AppTextField(
+                    label: '',
+                    hint: '12,340',
+                    controller: _unitPriceController,
+                    keyboardType: TextInputType.number,
+                    bottomSpacing: 0,
+                    onChanged: _rfqCubit.setUnitPrice,
+                  ),
+                  const SizedBox(height: 16),
+                  _formLabel('Gst'),
+                  const SizedBox(height: 6),
+                  AppTextField(
+                    label: '',
+                    hint: '18%',
+                    controller: _gstController,
+                    keyboardType: TextInputType.number,
+                    bottomSpacing: 0,
+                    onChanged: _rfqCubit.setGst,
+                  ),
+                  const SizedBox(height: 16),
+                  _formLabel('Delivery Date'),
+                  const SizedBox(height: 6),
+                  AppTextField(
+                    label: '',
+                    hint: '20 Oct 2026',
+                    controller: _deliveryDateController,
+                    bottomSpacing: 0,
+                    onChanged: _rfqCubit.setDeliveryDate,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 18),
+                    child: AppContinueButton(
+                      text: 'Send Quote',
+                      showArrow: false,
+                      isLoading: state.isLoading,
+                      onPressed: _onSendQuote,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/widgets/widgets.dart';
+import 'package:flutter_app/features/company/presentation/cubit/company_form_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompanyDetailsScreen extends StatefulWidget {
   const CompanyDetailsScreen({super.key});
@@ -13,6 +15,8 @@ class CompanyDetailsScreen extends StatefulWidget {
 }
 
 class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
+  final _formKey = GlobalKey<FormState>();
+  late final CompanyFormCubit _companyFormCubit;
   final TextEditingController companyNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
@@ -31,6 +35,16 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
     dispatchLocationController.text = '12-223 Salest, New Delhi';
     gstNumberController.text = '08TGC45879';
     panNumberController.text = '123456789';
+    _companyFormCubit = CompanyFormCubit(
+      initialState: CompanyFormState(
+        companyName: companyNameController.text,
+        email: emailController.text,
+        address: addressController.text,
+        dispatchLocation: dispatchLocationController.text,
+        gstNumber: gstNumberController.text,
+        panNumber: panNumberController.text,
+      ),
+    );
   }
 
   @override
@@ -41,33 +55,21 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
     dispatchLocationController.dispose();
     gstNumberController.dispose();
     panNumberController.dispose();
+    _companyFormCubit.close();
     super.dispose();
   }
 
   void _handleContinue() {
-    // Validate fields
-    if (companyNameController.text.isEmpty ||
-        emailController.text.isEmpty ||
-        addressController.text.isEmpty ||
-        dispatchLocationController.text.isEmpty ||
-        gstNumberController.text.isEmpty ||
-        panNumberController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill all fields'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
+    if (_formKey.currentState?.validate() ?? false) {
+      context.push(AppRoutes.bankDetails);
     }
-
-    // Navigate to Bank Details screen
-    context.push(AppRoutes.bankDetails);
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+    return BlocBuilder<CompanyFormCubit, CompanyFormState>(
+      bloc: _companyFormCubit,
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
@@ -84,53 +86,68 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
             // Form Content
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(19, 23, 14, 25),
-                child: Column(
-                  children: [
-                    AppTextField(
-                      label: 'Company Name',
-                      hint: 'Solar Trade',
-                      controller: companyNameController,
+                padding: const EdgeInsets.fromLTRB(0, 23, 0, 25),
+                child: Form(
+                  key: _formKey,
+                  child: AppFormSection(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        AppTextField(
+                          label: 'Company Name',
+                          hint: 'Solar Trade',
+                          controller: companyNameController,
+                          onChanged: _companyFormCubit.updateCompanyName,
+                        ),
+                        AppTextField(
+                          label: 'Email Address',
+                          hint: 'Solar@gmail.com',
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          onChanged: _companyFormCubit.updateEmail,
+                        ),
+                        AppTextField(
+                          label: 'Address',
+                          hint: '12-223 Salest, New Delhi',
+                          controller: addressController,
+                          onChanged: _companyFormCubit.updateAddress,
+                        ),
+                        AppTextField(
+                          label: 'Dispatch Location',
+                          hint: '12-223 Salest, New Delhi',
+                          controller: dispatchLocationController,
+                          onChanged: _companyFormCubit.updateDispatchLocation,
+                        ),
+                        AppTextField(
+                          label: 'Gst Number',
+                          hint: '08TGC45879',
+                          controller: gstNumberController,
+                          onChanged: _companyFormCubit.updateGstNumber,
+                        ),
+                        AppTextField(
+                          label: 'Pan Number',
+                          hint: '123456789',
+                          controller: panNumberController,
+                          bottomSpacing: 0,
+                          onChanged: _companyFormCubit.updatePanNumber,
+                        ),
+                        // Continue Button
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18),
+                          child: AppContinueButton(
+                            text: 'Continue',
+                            onPressed: _handleContinue,
+                          ),
+                        ),
+                      ],
                     ),
-                    AppTextField(
-                      label: 'Email Address',
-                      hint: 'Solar@gmail.com',
-                      controller: emailController,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    AppTextField(
-                      label: 'Address',
-                      hint: '12-223 Salest, New Delhi',
-                      controller: addressController,
-                    ),
-                    AppTextField(
-                      label: 'Dispatch Location',
-                      hint: '12-223 Salest, New Delhi',
-                      controller: dispatchLocationController,
-                    ),
-                    AppTextField(
-                      label: 'Gst Number',
-                      hint: '08TGC45879',
-                      controller: gstNumberController,
-                    ),
-                    AppTextField(
-                      label: 'Pan Number',
-                      hint: '123456789',
-                      controller: panNumberController,
-                    ),
-                    const SizedBox(height: 18),
-
-                    // Continue Button
-                    AppContinueButton(
-                      text: 'Continue',
-                      onPressed: _handleContinue,
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
           ],
         ),
+      ),
       ),
     );
   }

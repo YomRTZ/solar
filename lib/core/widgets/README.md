@@ -158,6 +158,18 @@ AppTextField(
 
 ---
 
+### Shared form validation
+
+Wrap form fields and their submit button in `AppFormSection`. Text fields,
+dropdowns, and document uploads are required by default; `AppContinueButton`
+validates the containing form before invoking its callback. Invalid fields show
+their own inline error message and error border.
+
+Use `AppFormValidation` for custom validators and `AppFormErrorText` when a
+custom input needs to display an error using the shared style.
+
+---
+
 ## 🎯 Complete Screen Example
 
 Here's a full example combining all three widgets:

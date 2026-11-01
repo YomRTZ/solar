@@ -6,8 +6,12 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/app/routing/route_data.dart';
 import 'package:flutter_app/core/constants/app_colors.dart';
+import 'package:flutter_app/core/validation/app_form_validation.dart';
+import 'package:flutter_app/features/auth/presentation/cubit/login_cubit.dart';
+import 'package:flutter_app/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-// ── Phone formatter: XXXX XXX XXXX ────────────────────────────────────────────
+// â”€â”€ Phone formatter: XXXX XXX XXXX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 class _PhoneFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -47,27 +51,38 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final _formKey = GlobalKey<FormState>();
   final _mobileController = TextEditingController();
-  String _selectedRole = 'Supplier';
+  final LoginCubit _loginCubit = LoginCubit();
 
   @override
   void dispose() {
     _mobileController.dispose();
+    _loginCubit.close();
     super.dispose();
   }
 
   void _continue() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    // Strip the visual spaces before passing the number onward
-    final rawDigits = _mobileController.text.replaceAll(' ', '').trim();
+    final rawDigits = _loginCubit.state.mobileNumber
+        .replaceAll(' ', '')
+        .trim();
+
+    // Sync role and mobile number into the global AuthCubit
+    final auth = context.read<AuthCubit>();
+    auth.selectRole(_loginCubit.state.role);
+    auth.updateMobileNumber(rawDigits);
+
     context.push(
       AppRoutes.otpVerification,
-      extra: OtpRouteData(mobileNumber: '+91 $rawDigits', role: _selectedRole),
+      extra: OtpRouteData(
+        mobileNumber: '+91 $rawDigits',
+        role: _loginCubit.state.role,
+      ),
     );
   }
 
   Widget _buildRoleButton(String role) {
-    final isSelected = _selectedRole == role;
+    final isSelected = _loginCubit.state.role == role;
 
     return Expanded(
       child: SizedBox(
@@ -100,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
             borderRadius: _roleButtonBorderRadius,
             child: InkWell(
               borderRadius: _roleButtonBorderRadius,
-              onTap: () => setState(() => _selectedRole = role),
+              onTap: () => _loginCubit.selectRole(role),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 14),
                 child: Center(
@@ -119,13 +134,15 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
-      ),
+        ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+    return BlocBuilder<LoginCubit, LoginState>(
+      bloc: _loginCubit,
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.white,
         statusBarIconBrightness: Brightness.dark,
@@ -142,9 +159,10 @@ class _LoginScreenState extends State<LoginScreen> {
             builder: (context, constraints) {
               return Form(
                 key: _formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: Stack(
                 children: [
-                  // ── Logo ───────────────────────────────────
+                  // â”€â”€ Logo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                   Positioned(
                     top: 77,
                     bottom: 575,
@@ -156,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  // ── "Welcome Back!" title ──────────────────
+                  // â”€â”€ "Welcome Back!" title â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                   Positioned(
                     top: constraints.maxHeight - 575 + 24,
                     left: 48,
@@ -173,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  // ── Subtitle: 12px below title (~34px title height) ──
+                  // â”€â”€ Subtitle: 12px below title (~34px title height) â”€â”€
                   Positioned(
                     top: constraints.maxHeight - 575 + 24 + 34 + 12,
                     left: 68.5,
@@ -191,10 +209,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  // ── Supplier / Vendor toggle ───────────────
+                  // â”€â”€ Supplier / Vendor toggle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                   // 24px below subtitle
                   // subtitle top = constraints.maxHeight - 575 + 24 + 34 + 12
-                  // subtitle height ~21px → toggle top = subtitle top + 21 + 24
+                  // subtitle height ~21px â†’ toggle top = subtitle top + 21 + 24
                   Positioned(
                     top: constraints.maxHeight - 575 + 24 + 34 + 12 + 21 + 24,
                     left: 16,
@@ -230,7 +248,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  // ── "Mobile number" label ──────────────────
+                  // â”€â”€ "Mobile number" label â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                   // left:16, right:259, 24px below toggle
                   Positioned(
                     top: constraints.maxHeight - 575 + 24 + 34 + 12 + 21 + 24 + 42 + 24,
@@ -248,7 +266,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  // ── Mobile number input ─────────────────────
+                  // â”€â”€ Mobile number input â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                   // left:16, right:17, 3px below label (label height ~16px)
                   Positioned(
                     top: constraints.maxHeight - 575 + 24 + 34 + 12 + 21 + 24 + 42 + 24 + 16 + 3,
@@ -269,6 +287,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: TextFormField(
                         controller: _mobileController,
+                        onChanged: _loginCubit.updateMobileNumber,
                         keyboardType: TextInputType.phone,
                         textInputAction: TextInputAction.done,
                         onFieldSubmitted: (_) => _continue(),
@@ -326,23 +345,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               width: 1.5,
                             ),
                           ),
+                          errorStyle: AppFormValidation.errorStyle,
                         ),
-                        validator: (value) {
-                          final number =
-                              (value ?? '').replaceAll(' ', '').trim();
-                          if (number.isEmpty) {
-                            return 'Enter your mobile number';
-                          }
-                          if (!RegExp(r'^[6-9]\d{9}$').hasMatch(number)) {
-                            return 'Enter a valid 10-digit mobile number';
-                          }
-                          return null;
-                        },
+                        validator: AppFormValidation.phoneNumber,
                       ),
                     ),
                   ),
 
-                  // ── Continue button ────────────────────────
+                  // â”€â”€ Continue button â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                   Positioned(
                     left: 16,
                     right: 17,
@@ -384,6 +394,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 }

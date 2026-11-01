@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/constants/app_colors.dart';
+import 'package:flutter_app/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:flutter_app/features/auth/presentation/cubit/otp_cubit.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   final String mobileNumber;
 
-  // The role selected on the login screen — 'Supplier' or 'Vendor'
+  /// The role selected on the login screen — 'Supplier' or 'Vendor'.
+  /// Also written into [AuthCubit] so downstream screens can read it.
   final String role;
 
   const OtpVerificationScreen({
@@ -23,25 +27,45 @@ class OtpVerificationScreen extends StatefulWidget {
 }
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
-  final List<TextEditingController> otpControllers = List.generate(
-    6,
-    (_) => TextEditingController(),
-  );
-  final List<FocusNode> otpFocusNodes = List.generate(6, (_) => FocusNode());
+  final OtpCubit _otpCubit = OtpCubit();
+  final List<TextEditingController> otpControllers =
+      List.generate(6, (_) => TextEditingController());
+  final List<FocusNode> otpFocusNodes =
+      List.generate(6, (_) => FocusNode());
+
+  @override
+  void initState() {
+    super.initState();
+    // Keep AuthCubit in sync with the role/number passed from LoginScreen.
+    final auth = context.read<AuthCubit>();
+    auth.selectRole(widget.role);
+    auth.updateMobileNumber(
+      widget.mobileNumber.replaceAll(RegExp(r'\D'), ''),
+    );
+  }
 
   @override
   void dispose() {
-    for (final controller in otpControllers) {
-      controller.dispose();
-    }
-    for (final node in otpFocusNodes) {
-      node.dispose();
-    }
+    for (final c in otpControllers) { c.dispose(); }
+    for (final n in otpFocusNodes) { n.dispose(); }
+    _otpCubit.close();
     super.dispose();
   }
 
   void _continue() {
-    // Vendor → vendor create account + plan flow Supplier → original supplier company details flow
+    if (!_otpCubit.state.isComplete) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Enter the 6-digit verification code.')),
+      );
+      return;
+    }
+
+    // Mark OTP as verified in the global auth cubit.
+    context.read<AuthCubit>().verifyOtp();
+
+    // Route based on role:
+    //   Supplier → company details onboarding
+    //   Vendor   → vendor account/create onboarding
     if (widget.role == 'Vendor') {
       context.push(AppRoutes.createAccount);
     } else {
@@ -59,9 +83,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         textAlign: TextAlign.center,
         textAlignVertical: TextAlignVertical.center,
         keyboardType: TextInputType.number,
-        textInputAction: index == 5
-            ? TextInputAction.done
-            : TextInputAction.next,
+        textInputAction:
+            index == 5 ? TextInputAction.done : TextInputAction.next,
         maxLength: 1,
         inputFormatters: [
           FilteringTextInputFormatter.digitsOnly,
@@ -80,17 +103,17 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           fillColor: Colors.white,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Color(0x66B8B8B8), width: 1),
+            borderSide:
+                const BorderSide(color: Color(0x66B8B8B8), width: 1),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(
-              color: AppColors.primaryBlue,
-              width: 1.5,
-            ),
+            borderSide:
+                const BorderSide(color: AppColors.primaryBlue, width: 1.5),
           ),
         ),
         onChanged: (value) {
+          _otpCubit.updateDigit(index, value);
           if (value.isNotEmpty && index < otpFocusNodes.length - 1) {
             otpFocusNodes[index + 1].requestFocus();
           } else if (value.isEmpty && index > 0) {
@@ -151,7 +174,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     ),
                   ),
 
-                  // ── Subtitle: 12px below title (~34px title height) ──
+                  // ── Subtitle ───────────────────────────────
                   Positioned(
                     top: constraints.maxHeight - 575 + 24 + 34 + 12,
                     left: 68.5,
@@ -186,9 +209,15 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   ),
 
                   // ── OTP label + fields ─────────────────────
-                  // top:11 from above, bottom:10 to resend text
                   Positioned(
-                    top: constraints.maxHeight - 575 + 24 + 34 + 12 + 42 + 24 + 11,
+                    top: constraints.maxHeight -
+                        575 +
+                        24 +
+                        34 +
+                        12 +
+                        42 +
+                        24 +
+                        11,
                     left: 16,
                     right: 17,
                     child: Column(
@@ -211,8 +240,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              for (var index = 0; index < 6; index++)
-                                ...[_buildOtpField(index)],
+                              for (var i = 0; i < 6; i++) _buildOtpField(i),
                             ],
                           ),
                         ),
@@ -220,9 +248,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     ),
                   ),
 
-                  // ── Resend OTP text ─────────────────────────
-                  // 10px below input cards, 24px above Continue button
-                  // Continue button: bottom:254, height:48 → resend bottom = 254 + 48 + 24 = 326
+                  // ── Resend OTP ─────────────────────────────
                   Positioned(
                     left: 16,
                     right: 17,
@@ -269,7 +295,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                             fontWeight: FontWeight.w500,
                             height: 1.4,
                             letterSpacing: 14 * -0.01,
-                            color: const Color(0xFFFFFFFF),
+                            color: Colors.white,
                           ),
                         ),
                       ),

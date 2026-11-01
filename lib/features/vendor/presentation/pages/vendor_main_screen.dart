@@ -2,70 +2,88 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_app/features/vendor/presentation/pages/vendor_home_screen.dart';
 import 'package:flutter_app/features/vendor/presentation/pages/vendor_all_categories_screen.dart';
 import 'package:flutter_app/features/vendor/presentation/pages/vendor_rfq_requests_screen.dart';
 import 'package:flutter_app/features/orders/presentation/pages/orders_screen.dart';
-import 'package:flutter_app/features/profile/presentation/pages/vendor_profile_screen.dart';
+import 'package:flutter_app/features/profile/presentation/pages/supplier_profile_screen.dart';
+import 'package:flutter_app/features/vendor/presentation/cubit/vendor_cubit.dart';
 
-// ───────────────────────────────────────────────────────────────────────────── Vendor Main Screen
-class VendorMainScreen extends StatefulWidget {
-  // Optionally start on a specific tab index (default: 0 = Home).
+// ───────────────────────────────────────────────────────────────────────────
+class VendorMainScreen extends StatelessWidget {
   final int initialIndex;
 
   const VendorMainScreen({super.key, this.initialIndex = 0});
 
   @override
-  State<VendorMainScreen> createState() => _VendorMainScreenState();
+  Widget build(BuildContext context) {
+    // Provide the shared cubits at this level so every tab can access them
+    // via context.read<>() without prop-drilling.
+    return MultiBlocProvider(
+      providers: [
+        // VendorNavigationCubit: which tab is active
+        BlocProvider<VendorNavigationCubit>(
+          create: (_) => VendorNavigationCubit(initialTab: initialIndex),
+        ),
+        // VendorCatalogCubit: shared cart + search between Home & AllProducts
+        BlocProvider<VendorCatalogCubit>(create: (_) => VendorCatalogCubit()),
+        // VendorRequestListCubit: filter on the RFQ requests tab
+        BlocProvider<VendorRequestListCubit>(
+          create: (_) => VendorRequestListCubit(),
+        ),
+      ],
+      child: const _VendorMainBody(),
+    );
+  }
 }
 
-class _VendorMainScreenState extends State<VendorMainScreen> {
-  late int _currentIndex;
+// ── Inner stateless body — reads cubits from context ─────────────────────
+class _VendorMainBody extends StatelessWidget {
+  const _VendorMainBody();
 
-  @override
-  void initState() {
-    super.initState();
-    _currentIndex = widget.initialIndex;
-  }
-
-  // Keep each tab alive when switching — use IndexedStack.
-  List<Widget> get _pages => [
+  List<Widget> _pages(BuildContext context) => [
     const VendorHomeScreen(),
-    VendorAllCategoriesScreen(onBackPressed: _showHomeTab),
-    VendorRfqRequestsScreen(onBackPressed: _showHomeTab),
+    VendorAllCategoriesScreen(
+      onBackPressed: null, // handled by nav cubit tap below
+    ),
+    const VendorRfqRequestsScreen(),
     const OrdersScreen(showBackButton: false),
-    const VendorProfileScreen(),
+    SupplierProfileScreen(
+      onBackPressed: () => context.read<VendorNavigationCubit>().selectTab(0),
+    ),
   ];
-
-  void _showHomeTab() {
-    setState(() => _currentIndex = 0);
-  }
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF2F4F7),
-        // IndexedStack keeps all pages mounted so state is preserved
-        body: IndexedStack(index: _currentIndex, children: _pages),
-        bottomNavigationBar: _VendorNavBar(
-          currentIndex: _currentIndex,
-          onTap: (i) => setState(() => _currentIndex = i),
+    return BlocBuilder<VendorNavigationCubit, VendorNavigationState>(
+      builder: (context, navState) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: const Color(0xFFF2F4F7),
+          // IndexedStack keeps all pages mounted so state is preserved
+          body: IndexedStack(
+            index: navState.selectedTab,
+            children: _pages(context),
+          ),
+          bottomNavigationBar: _VendorNavBar(
+            currentIndex: navState.selectedTab,
+            onTap: context.read<VendorNavigationCubit>().selectTab,
+          ),
         ),
       ),
     );
   }
 }
 
-// ───────────────────────────────────────────────────────────────────────────── Bottom navigation
+// ── Bottom nav bar ────────────────────────────────────────────────────────
 class _VendorNavBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -143,10 +161,7 @@ class _VendorNavBar extends StatelessWidget {
                               height: 24,
                             ),
                           ),
-
                         const SizedBox(height: 4),
-
-                        // Label
                         Text(
                           item.label,
                           maxLines: 1,

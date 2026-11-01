@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/core/widgets/app_bottom_sheet.dart';
+import 'package:flutter_app/core/validation/app_form_validation.dart';
+import 'package:flutter_app/features/wallet/presentation/cubit/withdraw_form_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // ───────────────────────────────────────────────────────────────────────────── Public model —
 class BankAccountModel {
@@ -106,25 +111,31 @@ class _WithdrawBalanceContent extends StatefulWidget {
 }
 
 class _WithdrawBalanceContentState extends State<_WithdrawBalanceContent> {
+  final _formKey = GlobalKey<FormState>();
   late final TextEditingController _amountController;
-  int _selectedIndex = 0;
+  late final WithdrawFormCubit _withdrawCubit;
 
   @override
   void initState() {
     super.initState();
     _amountController = TextEditingController(text: widget.initialAmount);
+    _withdrawCubit = WithdrawFormCubit(initialAmount: widget.initialAmount);
   }
 
   @override
   void dispose() {
     _amountController.dispose();
+    _withdrawCubit.close();
     super.dispose();
   }
 
   void _handleWithdraw() {
-    final selected = widget.accounts[_selectedIndex];
+    if (widget.accounts.isEmpty || _withdrawCubit.state.amount.trim().isEmpty) {
+      return;
+    }
+    final selected = widget.accounts[_withdrawCubit.state.selectedAccountIndex];
     if (widget.onWithdraw != null) {
-      widget.onWithdraw!(_amountController.text, selected);
+      widget.onWithdraw!(_withdrawCubit.state.amount, selected);
     } else {
       Navigator.pop(context);
     }
@@ -132,98 +143,122 @@ class _WithdrawBalanceContentState extends State<_WithdrawBalanceContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // ── Amount label ──────────────────────────────────
-        Text(
-          widget.amountLabel,
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-            color: const Color(0xFF6C7278),
-          ),
-        ),
-
-        const SizedBox(height: 8),
-
-        // ── Amount input ──────────────────────────────────
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF7F8FA),
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: const Color(0xFFE5E7EB)),
-          ),
-          child: TextField(
-            controller: _amountController,
-            keyboardType: TextInputType.number,
-            style: GoogleFonts.inter(
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              color: const Color(0xFF1A1A1A),
-            ),
-            decoration: const InputDecoration(
-              isDense: true,
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.zero,
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 22),
-
-        // ── Bank account label ────────────────────────────
-        Text(
-          widget.accountLabel,
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-            color: const Color(0xFF6C7278),
-          ),
-        ),
-
-        const SizedBox(height: 10),
-
-        // ── Account tiles ─────────────────────────────────
-        ...widget.accounts.asMap().entries.map(
-          (entry) => Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: _AccountTile(
-              account: entry.value,
-              isSelected: entry.key == _selectedIndex,
-              onTap: () => setState(() => _selectedIndex = entry.key),
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 8),
-
-        // ── Action button ─────────────────────────────────
-        SizedBox(
-          height: 52,
-          child: ElevatedButton(
-            onPressed: _handleWithdraw,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF003A8A),
-              foregroundColor: Colors.white,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(26),
-              ),
-            ),
-            child: Text(
-              widget.buttonLabel,
+    return BlocBuilder<WithdrawFormCubit, WithdrawFormState>(
+      bloc: _withdrawCubit,
+      builder: (context, state) => Form(
+        key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // ── Amount label ──────────────────────────────────
+            Text(
+              widget.amountLabel,
               style: GoogleFonts.inter(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                letterSpacing: -0.2,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF6C7278),
               ),
             ),
-          ),
+
+            const SizedBox(height: 8),
+
+            // ── Amount input ──────────────────────────────────
+            FormField<String>(
+              initialValue: _amountController.text,
+              validator: (value) => AppFormValidation.requiredText(
+                value,
+                fieldName: widget.amountLabel,
+              ),
+              builder: (field) => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 327,
+                    height: 46,
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: const Color(0xFFEDF1F3)),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x3DE4E5E7),
+                          blurRadius: 2,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      controller: _amountController,
+                      keyboardType: TextInputType.number,
+                      textAlignVertical: TextAlignVertical.center,
+                      onChanged: (value) {
+                        field.didChange(value);
+                        _withdrawCubit.updateAmount(value);
+                      },
+                      style: GoogleFonts.inter(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF1A1A1A),
+                      ),
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                    ),
+                  ),
+                  if (field.errorText != null)
+                    AppFormErrorText(field.errorText!),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 22),
+
+            // ── Bank account label ────────────────────────────
+            Text(
+              widget.accountLabel,
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF6C7278),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            // ── Account tiles ─────────────────────────────────
+            ...widget.accounts.asMap().entries.map(
+              (entry) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: _AccountTile(
+                  account: entry.value,
+                  isSelected: entry.key == state.selectedAccountIndex,
+                  onTap: () => _withdrawCubit.selectAccount(entry.key),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            // ── Action button ─────────────────────────────────
+            AppContinueButton(
+              text: widget.buttonLabel,
+              height: 52,
+              showArrow: false,
+              backgroundColor: const Color(0xFF003A8A),
+              onPressed: _handleWithdraw,
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
@@ -247,24 +282,25 @@ class _AccountTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: const Color(0xFFF7F8FA),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: const Color(0xFFE5E7EB)),
         ),
         child: Row(
           children: [
             // Bank icon
             Container(
-              width: 38,
-              height: 38,
+              width: 52,
+              height: 52,
               decoration: BoxDecoration(
-                color: const Color(0xFFEBF0FB),
+                color: const Color(0xFF003A8A),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(
-                Icons.account_balance_rounded,
-                color: Color(0xFF003A8A),
-                size: 20,
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/icons/Group 256.svg',
+                  width: 28,
+                  height: 20,
+                ),
               ),
             ),
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter_app/features/vendor/presentation/widgets/vendor_price_badge.dart';
@@ -41,88 +42,82 @@ class VendorRfqCartCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(12),
+        height: 110,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          border: Border(bottom: BorderSide(color: Color(0xFFD9D9D9))),
         ),
-        child: Row(
-          children: [
-            // ── Thumbnail ──────────────────────────────────
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                width: 72,
-                height: 72,
-                color: const Color(0xFFD6EAFF),
-                child: isNetworkImage
-                    ? Image.network(
-                        imagePath,
-                        fit: BoxFit.cover,
-                        errorBuilder: (ctx, e, s) => _placeholder(),
-                      )
-                    : Image.asset(
-                        imagePath,
-                        fit: BoxFit.cover,
-                        errorBuilder: (ctx, e, s) => _placeholder(),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: Row(
+            children: [
+              // ── Thumbnail ──────────────────────────────────
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  width: 79,
+                  height: 64,
+                  color: const Color(0xFFD6EAFF),
+                  child: isNetworkImage
+                      ? Image.network(
+                          imagePath,
+                          fit: BoxFit.cover,
+                          errorBuilder: (ctx, e, s) => _placeholder(),
+                        )
+                      : Image.asset(
+                          imagePath,
+                          fit: BoxFit.cover,
+                          errorBuilder: (ctx, e, s) => _placeholder(),
+                        ),
+                ),
+              ),
+
+              const SizedBox(width: 14),
+
+              // ── Info ───────────────────────────────────────
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.roboto(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF23201C),
+                        letterSpacing: 0,
+                        height: 1,
                       ),
-              ),
-            ),
-
-            const SizedBox(width: 12),
-
-            // ── Info ───────────────────────────────────────
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.roboto(
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w600,
-                      fontStyle: FontStyle.normal,
-                      color: const Color(0xFF23201C),
-                      letterSpacing: 0,
-                      height: 1,
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xFF6C7278),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.roboto(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF23201C),
+                        height: 1,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  // Price badge
-                  VendorPriceBadge(price: price),
-                ],
+                    const SizedBox(height: 6),
+                    VendorPriceBadge(price: price),
+                  ],
+                ),
               ),
-            ),
 
-            const SizedBox(width: 10),
-
-            // ── Qty stepper ───────────────────────────────
-            _QtyStepper(
-              quantity: quantity,
-              onDecrement: onDecrement,
-              onIncrement: onIncrement,
-            ),
-          ],
+              const SizedBox(width: 8),
+              _QtyStepper(
+                quantity: quantity,
+                onDecrement: onDecrement,
+                onIncrement: onIncrement,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -148,36 +143,43 @@ class _QtyStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 34,
+      width: 114,
+      height: 30,
       decoration: BoxDecoration(
         color: const Color(0xFF003A8A),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFF003A8A), width: 1),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.fromLTRB(24, 10, 24, 10),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           GestureDetector(
             onTap: onDecrement,
-            child: const Icon(
-              Icons.delete_outline_rounded,
-              color: Colors.white,
-              size: 16,
+            child: SvgPicture.asset(
+              'assets/icons/Delete.svg',
+              width: 10,
+              height: 10,
             ),
           ),
           const SizedBox(width: 10),
           Text(
             '$quantity',
             style: GoogleFonts.inter(
-              fontSize: 13,
+              fontSize: 10,
               fontWeight: FontWeight.w700,
               color: Colors.white,
+              height: 1,
             ),
           ),
           const SizedBox(width: 10),
           GestureDetector(
             onTap: onIncrement,
-            child: const Icon(Icons.add_rounded, color: Colors.white, size: 16),
+            child: SvgPicture.asset(
+              'assets/icons/Add.svg',
+              width: 10,
+              height: 10,
+            ),
           ),
         ],
       ),

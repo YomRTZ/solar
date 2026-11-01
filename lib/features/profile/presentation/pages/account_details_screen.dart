@@ -37,7 +37,7 @@ class AccountDetailsScreen extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.zero,
                     border: Border.all(color: const Color(0xFFEDF1F3)),
                     boxShadow: [
                       BoxShadow(

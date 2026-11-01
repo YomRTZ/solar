@@ -29,6 +29,9 @@ class VendorProductCard extends StatelessWidget {
   // Whether [imagePath] is a network URL (default: false).
   final bool isNetworkImage;
 
+  // Show the small brand mark over the product image.
+  final bool showBrandMark;
+
   const VendorProductCard({
     super.key,
     required this.imagePath,
@@ -40,6 +43,7 @@ class VendorProductCard extends StatelessWidget {
     required this.onDecrement,
     this.onTap,
     this.isNetworkImage = false,
+    this.showBrandMark = false,
   });
 
   @override
@@ -62,19 +66,35 @@ class VendorProductCard extends StatelessWidget {
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(6.5),
                 ),
-                child: Container(
-                  color: const Color(0xFFD6EAFF),
-                  child: isNetworkImage
-                      ? Image.network(
-                          imagePath,
-                          fit: BoxFit.cover,
-                          errorBuilder: (ctx, err, st) => _imgPlaceholder(),
-                        )
-                      : Image.asset(
-                          imagePath,
-                          fit: BoxFit.cover,
-                          errorBuilder: (ctx, err, st) => _imgPlaceholder(),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Container(
+                      color: const Color(0xFFD6EAFF),
+                      child: isNetworkImage
+                          ? Image.network(
+                              imagePath,
+                              fit: BoxFit.cover,
+                              errorBuilder: (ctx, err, st) => _imgPlaceholder(),
+                            )
+                          : Image.asset(
+                              imagePath,
+                              fit: BoxFit.cover,
+                              errorBuilder: (ctx, err, st) => _imgPlaceholder(),
+                            ),
+                    ),
+                    if (showBrandMark)
+                      Positioned(
+                        top: 10,
+                        right: 10,
+                        child: Image.asset(
+                          'assets/solarimages/5dc175c533f86ed941b1004c6b373c14c68068d0.png',
+                          width: 10,
+                          height: 14.6875,
+                          fit: BoxFit.fill,
                         ),
+                      ),
+                  ],
                 ),
               ),
             ),
@@ -83,7 +103,7 @@ class VendorProductCard extends StatelessWidget {
             Expanded(
               flex: 6,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(9, 8, 9, 9),
+                padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

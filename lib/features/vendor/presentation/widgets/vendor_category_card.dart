@@ -18,6 +18,8 @@ class VendorCategoryCard extends StatelessWidget {
 
   // Size of the icon (default: 56).
   final double iconContainerSize;
+  final double? imageWidth;
+  final double? imageHeight;
 
   // Total card width (default: unconstrained — fills parent).
   final double? width;
@@ -38,6 +40,8 @@ class VendorCategoryCard extends StatelessWidget {
     this.onTap,
     this.isNetworkImage = false,
     this.iconContainerSize = 56,
+    this.imageWidth,
+    this.imageHeight,
     this.width,
     this.height,
     this.compact = false,
@@ -56,7 +60,7 @@ class VendorCategoryCard extends StatelessWidget {
       child: Container(
         width: width,
         height: height,
-        padding: EdgeInsets.all(compact ? 4 : 12),
+        padding: EdgeInsets.all(compact ? 4 : 0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
@@ -65,60 +69,77 @@ class VendorCategoryCard extends StatelessWidget {
               : Border.all(color: borderColor, width: compact ? 0.5 : 1.5),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            SizedBox(
-              width: iconContainerSize,
-              height: iconContainerSize,
-              child: _buildImage(),
-            ),
-
-            if (compact)
-              const SizedBox(height: 6)
-            else ...[
-              Container(
-                width: double.infinity,
-                height: 13,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  border: Border(
-                    top: BorderSide(color: Color(0xFFEFEFEF), width: 1),
+            if (compact) ...[
+              const Spacer(),
+              SizedBox(
+                width: iconContainerSize,
+                height: iconContainerSize,
+                child: _buildImage(),
+              ),
+              const SizedBox(height: 3),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: _buildLabel(),
+              ),
+              const Spacer(),
+            ] else ...[
+              const SizedBox(height: 7),
+              Center(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(8),
                   ),
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(8),
+                  child: SizedBox(
+                    width: imageWidth ?? iconContainerSize,
+                    height: imageHeight ?? iconContainerSize,
+                    child: _buildImage(),
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              Container(
+                width: double.infinity,
+                height: 1,
+                color: const Color(0xFFEFEFEF),
+              ),
+              SizedBox(
+                height: 36,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Center(child: _buildLabel()),
+                ),
+              ),
             ],
-
-            Text(
-              label,
-              maxLines: 2,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              style: compact
-                  ? GoogleFonts.roboto(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w500,
-                      fontStyle: FontStyle.normal,
-                      color: const Color(0xFF23201C),
-                      height: 1.3,
-                      letterSpacing: 0,
-                    )
-                  : GoogleFonts.roboto(
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w600,
-                      fontStyle: FontStyle.normal,
-                      color: const Color(0xFF23201C),
-                      height: 1,
-                      letterSpacing: 0,
-                    ),
-            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLabel() {
+    return Text(
+      label,
+      maxLines: 2,
+      textAlign: TextAlign.center,
+      overflow: TextOverflow.ellipsis,
+      style: compact
+          ? GoogleFonts.roboto(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              fontStyle: FontStyle.normal,
+              color: const Color(0xFF23201C),
+              height: 1.3,
+              letterSpacing: 0,
+            )
+          : GoogleFonts.roboto(
+              fontSize: 12.5,
+              fontWeight: FontWeight.w600,
+              fontStyle: FontStyle.normal,
+              color: const Color(0xFF23201C),
+              height: 1,
+              letterSpacing: 0,
+            ),
     );
   }
 

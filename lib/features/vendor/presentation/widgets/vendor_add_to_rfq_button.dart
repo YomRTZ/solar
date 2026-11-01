@@ -3,26 +3,45 @@ import 'package:google_fonts/google_fonts.dart';
 
 class VendorAddToRfqButton extends StatelessWidget {
   final VoidCallback onPressed;
+  final double? buttonWidth;
+  final double buttonHeight;
+  final double borderRadius;
+  final double borderWidth;
+  final EdgeInsetsGeometry padding;
 
-  const VendorAddToRfqButton({super.key, required this.onPressed});
+  const VendorAddToRfqButton({
+    super.key,
+    required this.onPressed,
+    this.buttonWidth,
+    this.buttonHeight = 30,
+    this.borderRadius = 10,
+    this.borderWidth = 1,
+    this.padding = EdgeInsets.zero,
+  });
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final width = constraints.maxWidth.isFinite
-            ? constraints.maxWidth.clamp(0.0, 135.0).toDouble()
-            : 135.0;
+        final width =
+            buttonWidth ??
+            (constraints.maxWidth.isFinite
+                ? constraints.maxWidth.clamp(0.0, 135.0).toDouble()
+                : 135.0);
 
         return GestureDetector(
           onTap: onPressed,
           child: Container(
             width: width,
-            height: 30,
+            height: buttonHeight,
+            padding: padding,
             decoration: BoxDecoration(
               color: const Color(0xFF003A8A),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: const Color(0x1FFFFFFF), width: 1),
+              borderRadius: BorderRadius.circular(borderRadius),
+              border: Border.all(
+                color: const Color(0x1FFFFFFF),
+                width: borderWidth,
+              ),
               boxShadow: const [
                 BoxShadow(
                   color: Color(0xFF375DFB),
@@ -37,7 +56,7 @@ class VendorAddToRfqButton extends StatelessWidget {
               ],
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(9),
+              borderRadius: BorderRadius.circular(borderRadius),
               child: DecoratedBox(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(

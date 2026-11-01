@@ -40,7 +40,7 @@ class VendorAllCategoriesScreen extends StatelessWidget {
             ),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
+                padding: const EdgeInsets.fromLTRB(15, 32, 12, 19),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -49,28 +49,40 @@ class VendorAllCategoriesScreen extends StatelessWidget {
                     const SizedBox(height: 20),
 
                     // ── 2-column category grid ───────────────
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 14,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 152 / 141,
-                          ),
-                      itemCount: _allEntries.length,
-                      itemBuilder: (context, i) {
-                        final entry = _allEntries[i];
-                        return VendorCategoryCard(
-                          iconPath: entry.category.iconPath,
-                          label: entry.category.name,
-                          iconContainerSize: 68,
-                          horizontalBordersOnly: true,
-                          onTap: () =>
-                              context.push(AppRoutes.vendorAllProducts),
-                        );
-                      },
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(6, 0, 4, 0),
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 19,
+                              mainAxisSpacing: 19,
+                              mainAxisExtent: 141,
+                            ),
+                        itemCount: _allEntries.length,
+                        itemBuilder: (context, i) {
+                          final entry = _allEntries[i];
+                          return Center(
+                            child: SizedBox(
+                              width: 152,
+                              height: 141,
+                              child: VendorCategoryCard(
+                                iconPath: entry.category.iconPath,
+                                label: entry.category.name,
+                                width: 152,
+                                height: 141,
+                                imageWidth: 124,
+                                imageHeight: 94,
+                                iconContainerSize: 68,
+                                onTap: () =>
+                                    context.push(AppRoutes.vendorAllProducts),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -87,79 +99,76 @@ class VendorAllCategoriesScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () => context.push(AppRoutes.vendorAllProducts),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Stack(
-          children: [
-            SizedBox(
-              width: double.infinity,
-              height: 120,
-              child: Image.asset(
-                'assets/solarimages/40e6eb83a0b81c11a222c2e30e9a248524bdf315.jpg',
-                fit: BoxFit.cover,
-                errorBuilder: (ctx, err, st) =>
-                    Container(height: 120, color: const Color(0xFF003A8A)),
+        borderRadius: BorderRadius.circular(10),
+        child: SizedBox(
+          width: double.infinity,
+          height: 104,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/solarimages/40e6eb83a0b81c11a222c2e30e9a248524bdf315.jpg',
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-            Container(
-              height: 120,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    Colors.black.withValues(alpha: 0.65),
-                    Colors.transparent,
+              Positioned.fill(
+                child: DecoratedBox(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      stops: [0, 0.7616],
+                      colors: [Color(0xB3003A8A), Color(0xB3000F24)],
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 13,
+                top: 17,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Premium!',
+                      style: GoogleFonts.roboto(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        fontStyle: FontStyle.normal,
+                        color: const Color(0xFFFFFFFF),
+                        height: 1,
+                        letterSpacing: 0,
+                      ),
+                    ),
+                    const SizedBox(height: 9),
+                    Text(
+                      'Solar Panels',
+                      style: GoogleFonts.roboto(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        fontStyle: FontStyle.normal,
+                        color: const Color(0xFFFFFFFF),
+                        height: 1,
+                        letterSpacing: 0,
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Text(
+                      'For a cleaner tomorrow',
+                      style: GoogleFonts.roboto(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        fontStyle: FontStyle.normal,
+                        color: const Color(0xFFFFFFFF),
+                        height: 1,
+                        letterSpacing: 0,
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ),
-            Positioned(
-              left: 16,
-              top: 0,
-              bottom: 0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Premium!',
-                    style: GoogleFonts.roboto(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      fontStyle: FontStyle.normal,
-                      color: const Color(0xFFFFFFFF),
-                      height: 1,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Solar Panels',
-                    style: GoogleFonts.roboto(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      fontStyle: FontStyle.normal,
-                      color: const Color(0xFFFFFFFF),
-                      height: 1,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'For a cleaner tomorrow',
-                    style: GoogleFonts.roboto(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      fontStyle: FontStyle.normal,
-                      color: const Color(0xFFFFFFFF),
-                      height: 1,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

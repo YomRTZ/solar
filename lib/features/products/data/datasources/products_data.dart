@@ -2,14 +2,16 @@ import 'package:flutter_app/features/products/domain/entities/product.dart';
 
 // Sample products data
 class ProductsData {
-  static final List<Product> products = [
+  static const defaultImagePath =
+      'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png';
+
+  static final List<Product> _products = [
     Product(
       id: '1',
       title: 'Solar Trade',
       idNumber: '#MB12345',
       price: '11234',
-      imagePath:
-          'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      imagePath: defaultImagePath,
       status: ProductStatus.inStock,
       category: ProductCategory.panel,
     ),
@@ -18,8 +20,7 @@ class ProductsData {
       title: 'Solar Trade',
       idNumber: '#MB12346',
       price: '11234',
-      imagePath:
-          'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      imagePath: defaultImagePath,
       status: ProductStatus.inStock,
       category: ProductCategory.panel,
     ),
@@ -28,8 +29,7 @@ class ProductsData {
       title: 'Solar Trade',
       idNumber: '#MB12347',
       price: '11234',
-      imagePath:
-          'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      imagePath: defaultImagePath,
       status: ProductStatus.inStock,
       category: ProductCategory.panel,
     ),
@@ -38,8 +38,7 @@ class ProductsData {
       title: 'Solar Trade',
       idNumber: '#MB12348',
       price: '11234',
-      imagePath:
-          'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      imagePath: defaultImagePath,
       status: ProductStatus.inStock,
       category: ProductCategory.panel,
     ),
@@ -48,8 +47,7 @@ class ProductsData {
       title: 'Solar Trade',
       idNumber: '#MB12349',
       price: '11234',
-      imagePath:
-          'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      imagePath: defaultImagePath,
       status: ProductStatus.inStock,
       category: ProductCategory.panel,
     ),
@@ -58,8 +56,7 @@ class ProductsData {
       title: 'Solar Battery 150Ah',
       idNumber: '#BAT001',
       price: '8500',
-      imagePath:
-          'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      imagePath: defaultImagePath,
       status: ProductStatus.inStock,
       category: ProductCategory.battery,
     ),
@@ -68,8 +65,7 @@ class ProductsData {
       title: 'Solar Battery 200Ah',
       idNumber: '#BAT002',
       price: '12000',
-      imagePath:
-          'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      imagePath: defaultImagePath,
       status: ProductStatus.lowStock,
       category: ProductCategory.battery,
     ),
@@ -78,8 +74,7 @@ class ProductsData {
       title: 'Solar Inverter 5KW',
       idNumber: '#INV001',
       price: '15000',
-      imagePath:
-          'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      imagePath: defaultImagePath,
       status: ProductStatus.inStock,
       category: ProductCategory.inverter,
     ),
@@ -88,12 +83,30 @@ class ProductsData {
       title: 'Solar Inverter 10KW',
       idNumber: '#INV002',
       price: '25000',
-      imagePath:
-          'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      imagePath: defaultImagePath,
       status: ProductStatus.outOfStock,
       category: ProductCategory.inverter,
     ),
   ];
+
+  static List<Product> get products => List.unmodifiable(_products);
+
+  static void addProduct(Product product) {
+    _products.insert(0, product);
+  }
+
+  static bool updateProduct(Product product) {
+    final index = _products.indexWhere((item) => item.id == product.id);
+    if (index == -1) return false;
+    _products[index] = product;
+    return true;
+  }
+
+  static bool deleteProduct(String id) {
+    final initialLength = _products.length;
+    _products.removeWhere((product) => product.id == id);
+    return _products.length != initialLength;
+  }
 
   // Get products by category
   static List<Product> getProductsByCategory(ProductCategory category) {

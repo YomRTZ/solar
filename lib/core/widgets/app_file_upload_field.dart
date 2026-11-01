@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:flutter_app/core/validation/app_form_validation.dart';
+
 // Reusable file upload field widget with dashed border and file picker
 class AppFileUploadField extends StatelessWidget {
   // The label text displayed above the upload field
@@ -38,113 +40,120 @@ class AppFileUploadField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: maxWidth,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Label section
-          Container(
-            height: 21,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                label,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  height: 1.6,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: -0.24,
-                  color: const Color(0xFF6C7278),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          
-          // Upload area with dashed border
-          InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(10),
-            child: Container(
-              width: double.infinity,
-              height: uploadHeight,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: CustomPaint(
-                painter: DashedBorderPainter(
-                  color: const Color(0x40000000),
-                  strokeWidth: 1,
-                  dashWidth: 4,
-                  dashSpace: 4,
-                  borderRadius: 10,
-                ),
-                child: Stack(
-                  children: [
-                    // ── Upload icon ──────────────────────────
-                    // top:14, left:21, width:26, height:26
-                    Positioned(
-                      top: 14,
-                      left: 21,
-                      child: SvgPicture.asset(
-                        'assets/icons/cloud_upload_icon.svg',
-                        width: 26,
-                        height: 26,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-
-                    // ── Text section ─────────────────────────
-                    // left:60, right:47, top:8, bottom:8
-                    Positioned(
-                      left: 60,
-                      right: 47,
-                      top: 8,
-                      bottom: 8,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            selectedFileName ?? selectText,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.roboto(
-                              fontSize: 12,
-                              height: 1.0,
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 0,
-                              color: const Color(0xFF000000),
-                            ),
-                          ),
-                          const SizedBox(height: 3),
-                          Text(
-                            helperText,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.roboto(
-                              fontSize: 9,
-                              height: 1.0,
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 0,
-                              color: const Color(0x66000000),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
+    return FormField<String>(
+      key: ValueKey('$label:$selectedFileName'),
+      initialValue: selectedFileName,
+      validator: (_) => AppFormValidation.requiredText(
+        selectedFileName,
+        fieldName: label,
       ),
+      builder: (field) {
+        final hasError = field.errorText != null;
+        return SizedBox(
+          width: maxWidth,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 21,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    label,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 12,
+                      height: 1.6,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: -0.24,
+                      color: const Color(0xFF6C7278),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  width: double.infinity,
+                  height: uploadHeight,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: CustomPaint(
+                    painter: DashedBorderPainter(
+                      color: hasError
+                          ? AppFormValidation.errorColor
+                          : const Color(0x40000000),
+                      strokeWidth: 1,
+                      dashWidth: 4,
+                      dashSpace: 4,
+                      borderRadius: 10,
+                    ),
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          top: 14,
+                          left: 21,
+                          child: SvgPicture.asset(
+                            'assets/icons/cloud_upload_icon.svg',
+                            width: 26,
+                            height: 26,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        Positioned(
+                          left: 60,
+                          right: 47,
+                          top: 8,
+                          bottom: 8,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                selectedFileName ?? selectText,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.roboto(
+                                  fontSize: 12,
+                                  height: 1.0,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0,
+                                  color: const Color(0xFF000000),
+                                ),
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                helperText,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.roboto(
+                                  fontSize: 9,
+                                  height: 1.0,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0,
+                                  color: const Color(0x66000000),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              if (field.errorText != null)
+                AppFormErrorText(field.errorText!),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/widgets/app_header.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
+import 'package:flutter_app/core/widgets/status_result_layout.dart';
 
 // ── Status enum ────────────────────────────────────────────────────────────
 enum VerificationStatus { inProgress, approved, rejected }
@@ -87,13 +88,6 @@ class VerificationStatusScreen extends StatelessWidget {
   }
 }
 
-// ── Shared layout wrapper ──────────────────────────────────────────────────
-// All content sits inside a container: left:19, top:143 from header, right:14
-// The header is 192px, so top from screen = 192 + 143 = 335.
-// Inside the container:
-//   icon:        left:108, right:108, bottom:27
-//   title:       left:53.5, right:53.5, bottom:8 (below icon)
-//   description: left:57, right:57
 class _StatusLayout extends StatelessWidget {
   final Widget icon;
   final Widget title;
@@ -109,64 +103,11 @@ class _StatusLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Stack(
-          children: [
-            // ── Content wrapper ──────────────────────────
-            Positioned(
-              top: 143,
-              left: 19,
-              right: 14,
-              bottom: 0,
-              child: Stack(
-                children: [
-                  // ── Icon ─────────────────────────────
-                  // left:108, right:108, bottom:27 from wrapper
-                  Positioned(
-                    left: 108,
-                    right: 108,
-                    top: 0,
-                    bottom: 27,
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: icon,
-                    ),
-                  ),
-
-                  // ── Title ────────────────────────────
-                  // left:53.5, right:53.5 from wrapper
-                  // positioned below icon area
-                  Positioned(
-                    left: 53.5,
-                    right: 53.5,
-                    top: 138, // icon height ~111 + 27 bottom gap
-                    child: title,
-                  ),
-
-                  // ── Description ──────────────────────
-                  // left:57, right:57 from wrapper
-                  Positioned(
-                    left: 57,
-                    right: 57,
-                    top: 194, // title top + ~48 (title height + 8 gap)
-                    child: description,
-                  ),
-                ],
-              ),
-            ),
-
-            // ── Button ───────────────────────────────────
-            if (button != null)
-              Positioned(
-                left: 19,
-                right: 14,
-                bottom: 48,
-                child: button!,
-              ),
-          ],
-        );
-      },
+    return StatusResultLayout(
+      icon: icon,
+      title: title,
+      description: description,
+      button: button,
     );
   }
 }
@@ -190,9 +131,10 @@ class _InProgressBodyState extends State<_InProgressBody>
       duration: const Duration(milliseconds: 1400),
     )..repeat(reverse: true);
 
-    _pulse = Tween<double>(begin: 0.92, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _pulse = Tween<double>(
+      begin: 0.92,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     Future.delayed(const Duration(seconds: 3), () {
       if (!mounted) return;
@@ -287,7 +229,7 @@ class _ApprovedBody extends StatelessWidget {
               text: 'Supplier',
               style: GoogleFonts.inter(
                 fontSize: 14,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w500,
                 color: const Color(0xFF808080),
                 height: 1.3,
                 letterSpacing: 14 * -0.02,
@@ -351,10 +293,11 @@ class _RejectedBody extends StatelessWidget {
             'Your application need corrections',
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
-              fontSize: 13,
-              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
               color: const Color(0xFF6C7278),
-              height: 1.6,
+              height: 1.3,
+              letterSpacing: 14 * -0.02,
             ),
           ),
           const SizedBox(height: 8),
@@ -362,10 +305,11 @@ class _RejectedBody extends StatelessWidget {
             errorDetail,
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
               color: const Color(0xFFB31515),
-              height: 1.6,
+              height: 1.3,
+              letterSpacing: 14 * -0.02,
             ),
           ),
         ],

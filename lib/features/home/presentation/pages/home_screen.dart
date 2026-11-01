@@ -11,8 +11,10 @@ import 'package:flutter_app/features/home/data/datasources/dashboard_data.dart';
 import 'package:flutter_app/features/rfq/domain/entities/rfq.dart';
 import 'package:flutter_app/features/orders/presentation/pages/orders_screen.dart';
 import 'package:flutter_app/features/products/presentation/pages/my_products_screen.dart';
-import 'package:flutter_app/features/profile/presentation/pages/supplier_profile_screen.dart';
+import 'package:flutter_app/features/profile/presentation/pages/vendor_profile_screen.dart';
 import 'package:flutter_app/features/rfq/presentation/pages/rfq_requests_screen.dart';
+import 'package:flutter_app/features/home/presentation/cubit/home_navigation_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,24 +24,32 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
+  final HomeNavigationCubit _navigationCubit = HomeNavigationCubit();
+
+  @override
+  void dispose() {
+    _navigationCubit.close();
+    super.dispose();
+  }
 
   Widget _bodyForIndex(int index) {
     switch (index) {
       case 0:
-        return _HomeBody(onTabChange: (i) => setState(() => _currentIndex = i));
+        return _HomeBody(onTabChange: _navigationCubit.selectTab);
       case 1:
         return MyProductsScreen(
-          onBackPressed: () => setState(() => _currentIndex = 0),
+          onBackPressed: () => _navigationCubit.selectTab(0),
         );
       case 2:
         return RFQRequestsScreen(
-          onBackPressed: () => setState(() => _currentIndex = 0),
+          onBackPressed: () => _navigationCubit.selectTab(0),
         );
       case 3:
-        return const OrdersScreen();
+        return OrdersScreen(onBackPressed: () => _navigationCubit.selectTab(0));
       case 4:
-        return const SupplierProfileScreen();
+        return VendorProfileScreen(
+          onBackPressed: () => _navigationCubit.selectTab(0),
+        );
       default:
         return const SizedBox.shrink();
     }
@@ -47,21 +57,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        extendBodyBehindAppBar: true,
-        body: _bodyForIndex(_currentIndex),
-        bottomNavigationBar: _AppNavBar(
-          currentIndex: _currentIndex,
-          onTap: (i) => setState(() => _currentIndex = i),
+    return BlocBuilder<HomeNavigationCubit, HomeNavigationState>(
+      bloc: _navigationCubit,
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          extendBodyBehindAppBar: true,
+          body: _bodyForIndex(state.selectedTab),
+          bottomNavigationBar: _AppNavBar(
+            currentIndex: state.selectedTab,
+            onTap: _navigationCubit.selectTab,
+          ),
         ),
       ),
     );
@@ -90,32 +103,42 @@ class _HomeBody extends StatelessWidget {
               children: [
                 // ── Stats 2×2 grid ─────────────────────────
                 _buildStatsGrid(context),
-                const SizedBox(height: 14),
 
                 // ── Create New Product button ───────────────
-                AppContinueButton(
-                  text: 'Create New Product',
-                  showArrow: false,
-                  onPressed: () => context.push(AppRoutes.addProduct),
-                ),
-                const SizedBox(height: 18),
-
-                // ── Recent RFQs heading ─────────────────────
-                Text(
-                  'Recent RFQs',
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF202020),
-                    letterSpacing: -0.3,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 0, 15, 18),
+                  child: AppContinueButton(
+                    text: 'Create New Product',
+                    showArrow: false,
+                    onPressed: () => context.push(AppRoutes.addProduct),
                   ),
                 ),
-                const SizedBox(height: 10),
+
+                // ── Recent RFQs heading ─────────────────────
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 0, 0, 7),
+                  child: Text(
+                    'Recent RFQs',
+                    textAlign: TextAlign.left,
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF202020),
+                      height: 20 / 16,
+                      letterSpacing: -0.24,
+                    ),
+                  ),
+                ),
 
                 // ── RFQ cards ───────────────────────────────
                 ...DashboardData.recentRFQs.asMap().entries.map(
                   (entry) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
+                    padding: EdgeInsets.fromLTRB(
+                      18,
+                      entry.key == 0 ? 7 : 0,
+                      13,
+                      12,
+                    ),
                     child: AppProductCard(
                       statusBadgeOffsetY:
                           entry.value.status.displayName == 'New' ||
@@ -158,44 +181,45 @@ class _HomeBody extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // ── Logo: centered in visible 133px area ──────────
           Positioned(
-            top: top + 46,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Image.asset(
-                'assets/images/a_clean_high_resolution_vector_like_logo_image_on.png',
-                width: 64,
-                height: 71,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) => const Icon(
-                  Icons.wb_sunny_rounded,
-                  color: Colors.amber,
-                  size: 60,
-                ),
+            top: top + 51,
+            left: 148,
+            right: 148,
+            bottom: 11,
+            child: Image.asset(
+              'assets/images/a_clean_high_resolution_vector_like_logo_image_on.png',
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) => const Icon(
+                Icons.wb_sunny_rounded,
+                color: Colors.amber,
+                size: 48,
               ),
             ),
           ),
 
           // ── Notification bell ──────────────────────────────
           Positioned(
-            top: top + 65,
-            right: 12,
+            bottom: 20,
+            right: 22,
             child: Stack(
               clipBehavior: Clip.none,
               children: [
                 Image.asset(
                   'assets/icons/image_1374.png',
-                  width: 32,
-                  height: 32,
+                  width: 28,
+                  height: 28,
+                  errorBuilder: (context, error, stackTrace) => const Icon(
+                    Icons.notifications_outlined,
+                    color: Colors.white,
+                    size: 26,
+                  ),
                 ),
                 Positioned(
                   top: 0,
                   right: 0,
                   child: Container(
-                    width: 9,
-                    height: 9,
+                    width: 8,
+                    height: 8,
                     decoration: const BoxDecoration(
                       color: Color(0xFFFF3B30),
                       shape: BoxShape.circle,
@@ -212,33 +236,40 @@ class _HomeBody extends StatelessWidget {
 
   // ── Stats 2×2 grid ─────────────────────────────────────────
   Widget _buildStatsGrid(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            _StatCard(
-              label: 'All Products',
-              value: DashboardData.allProducts.toString(),
-            ),
-            const SizedBox(width: 11),
-            _StatCard(
-              label: 'New RFQs',
-              value: DashboardData.newRFQs.toString(),
-            ),
-          ],
-        ),
-        const SizedBox(height: 11),
-        Row(
-          children: [
-            _StatCard(label: 'Orders', value: DashboardData.orders.toString()),
-            const SizedBox(width: 11),
-            _StatCard(
-              label: 'My Balance',
-              value: DashboardData.myBalance.toStringAsFixed(0),
-            ),
-          ],
-        ),
-      ],
+    return Container(
+      margin: const EdgeInsets.fromLTRB(18, 26, 10, 17),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              _StatCard(
+                label: 'All Products',
+                value: DashboardData.allProducts.toString(),
+              ),
+              const SizedBox(width: 11),
+              _StatCard(
+                label: 'New RFQs',
+                value: DashboardData.newRFQs.toString(),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              _StatCard(
+                label: 'Orders',
+                value: DashboardData.orders.toString(),
+              ),
+              const SizedBox(width: 11),
+              _StatCard(
+                label: 'My Balance',
+                value: DashboardData.myBalance.toStringAsFixed(0),
+                onTap: () => context.push(AppRoutes.wallet),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -247,49 +278,53 @@ class _HomeBody extends StatelessWidget {
 class _StatCard extends StatelessWidget {
   final String label;
   final String value;
-  const _StatCard({required this.label, required this.value});
+  final VoidCallback? onTap;
+  const _StatCard({required this.label, required this.value, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
-        height: 103,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          gradient: const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF003A8A), Color(0xFF2D476A)],
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: 103,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF003A8A), Color(0xFF2D476A)],
+            ),
           ),
-        ),
-        padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              maxLines: 1,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                height: 1.2,
-                letterSpacing: -0.24,
-                color: Colors.white.withValues(alpha: 0.85),
+          padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                maxLines: 1,
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  height: 1.2,
+                  letterSpacing: -0.24,
+                  color: Colors.white.withValues(alpha: 0.85),
+                ),
               ),
-            ),
-            Text(
-              value,
-              maxLines: 1,
-              style: GoogleFonts.inter(
-                fontSize: 26,
-                fontWeight: FontWeight.w700,
-                height: 1.0,
-                letterSpacing: -0.5,
-                color: Colors.white,
+              Text(
+                value,
+                maxLines: 1,
+                style: GoogleFonts.inter(
+                  fontSize: 26,
+                  fontWeight: FontWeight.w700,
+                  height: 1.0,
+                  letterSpacing: -0.5,
+                  color: Colors.white,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

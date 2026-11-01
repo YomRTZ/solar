@@ -35,13 +35,14 @@ import 'package:flutter_app/features/vendor/presentation/pages/vendor_all_catego
 import 'package:flutter_app/features/vendor/presentation/pages/vendor_all_products_screen.dart';
 import 'package:flutter_app/features/vendor/presentation/pages/vendor_home_screen.dart';
 import 'package:flutter_app/features/vendor/presentation/pages/vendor_main_screen.dart';
-import 'package:flutter_app/features/vendor/presentation/pages/vendor_upload_documents_screen.dart';
+import 'package:flutter_app/features/vendor/presentation/pages/documents_screen.dart';
 import 'package:flutter_app/features/vendor/presentation/pages/vendor_bank_details_screen.dart';
 import 'package:flutter_app/features/terms/presentation/pages/vendor_terms_of_service_screen.dart';
 import 'package:flutter_app/features/terms/presentation/pages/terms_of_service_screen.dart';
 import 'package:flutter_app/features/verification/presentation/pages/verification_status_screen.dart';
 import 'package:flutter_app/features/wallet/presentation/pages/my_wallet_screen.dart';
 import 'package:flutter_app/features/orders/domain/entities/order.dart';
+import 'package:flutter_app/features/vendor/domain/entities/vendor_rfq_request.dart';
 import 'package:flutter_app/features/products/domain/entities/product.dart';
 import 'package:flutter_app/features/rfq/domain/entities/rfq.dart';
 import 'package:flutter_app/app/routing/app_routes.dart';
@@ -114,10 +115,10 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
         AppRoutes.trackStatus,
         (state) => TrackStatusScreen(order: _requiredExtra<Order>(state)),
       ),
-      _route(AppRoutes.profile, (_) => const SupplierProfileScreen()),
+      _route(AppRoutes.profile, (_) => const VendorProfileScreen()),
       _route(AppRoutes.updateProfile, (_) => const UpdateProfileScreen()),
       _route(AppRoutes.accountDetails, (_) => const AccountDetailsScreen()),
-      _route(AppRoutes.vendorProfile, (_) => const VendorProfileScreen()),
+      _route(AppRoutes.vendorProfile, (_) => const SupplierProfileScreen()),
       _route(AppRoutes.wallet, (_) => const MyWalletScreen()),
       _route(AppRoutes.vendorHome, (_) => const VendorHomeScreen()),
       _route(
@@ -133,7 +134,14 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
         (_) => const VendorAllProductsScreen(),
       ),
       _route(AppRoutes.supplierDetails, (_) => const SupplierDetailsScreen()),
-      _route(AppRoutes.vendorCheckout, (_) => const VendorCheckoutScreen()),
+      _route(
+        AppRoutes.vendorCheckout,
+        (state) => VendorCheckoutScreen(
+          request: state.extra is VendorRfqRequest
+              ? state.extra as VendorRfqRequest
+              : null,
+        ),
+      ),
       _route(
         AppRoutes.vendorPaymentStatus,
         (state) =>
@@ -148,8 +156,14 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
       }),
       _route(AppRoutes.vendorRfqStatus, (_) => const VendorRfqStatusScreen()),
       _route(AppRoutes.vendorTerms, (_) => const VendorTermsOfServiceScreen()),
-      _route(AppRoutes.vendorUploadDocuments, (_) => const VendorUploadDocumentsScreen()),
-      _route(AppRoutes.vendorBankDetails, (_) => const VendorBankDetailsScreen()),
+      _route(
+        AppRoutes.vendorUploadDocuments,
+        (_) => const VendorDocumentsScreen(),
+      ),
+      _route(
+        AppRoutes.vendorBankDetails,
+        (_) => const VendorBankDetailsScreen(),
+      ),
     ],
   );
   return router;

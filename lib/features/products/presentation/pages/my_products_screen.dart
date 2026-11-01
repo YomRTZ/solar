@@ -9,6 +9,8 @@ import 'package:flutter_app/core/widgets/app_expandable_card.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/products/domain/entities/product.dart';
 import 'package:flutter_app/features/products/data/datasources/products_data.dart';
+import 'package:flutter_app/features/products/presentation/cubit/product_list_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MyProductsScreen extends StatefulWidget {
   final bool showBackButton;
@@ -25,22 +27,22 @@ class MyProductsScreen extends StatefulWidget {
 }
 
 class _MyProductsScreenState extends State<MyProductsScreen> {
-  ProductCategory selectedCategory = ProductCategory.all;
-  String searchQuery = '';
+  final ProductListCubit _productListCubit = ProductListCubit();
   final TextEditingController searchController = TextEditingController();
 
   @override
   void dispose() {
     searchController.dispose();
+    _productListCubit.close();
     super.dispose();
   }
 
   List<Product> get filteredProducts {
     List<Product> products = ProductsData.getProductsByCategory(
-      selectedCategory,
+      _productListCubit.state.category,
     );
-    if (searchQuery.isNotEmpty) {
-      final q = searchQuery.toLowerCase();
+    if (_productListCubit.state.query.isNotEmpty) {
+      final q = _productListCubit.state.query.toLowerCase();
       products = products
           .where(
             (p) =>
@@ -54,53 +56,62 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        extendBodyBehindAppBar: true,
-        body: Column(
-          children: [
-            // ── SecondAppHeader ──────────────────────────────
-            SecondAppHeader(
-              title: 'My Products',
-              showBackButton: widget.showBackButton,
-              onBackPressed:
-                  widget.onBackPressed ??
-                  () {
-                    if (Navigator.of(context).canPop()) {
-                      Navigator.of(context).pop();
-                    }
-                  },
-            ),
+    return BlocBuilder<ProductListCubit, ProductListState>(
+      bloc: _productListCubit,
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          extendBodyBehindAppBar: true,
+          body: Column(
+            children: [
+              // ── SecondAppHeader ──────────────────────────────
+              SecondAppHeader(
+                title: 'My Products',
+                showBackButton: widget.showBackButton,
+                onBackPressed:
+                    widget.onBackPressed ??
+                    () {
+                      if (Navigator.of(context).canPop()) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+              ),
 
-            // ── Search Bar ───────────────────────────────────
-            _buildSearchBar(),
-            const SizedBox(height: 12),
+              // ── Search Bar ───────────────────────────────────
+              _buildSearchBar(),
 
-            // ── Category Tabs ────────────────────────────────
-            _buildCategoryTabs(),
-            const SizedBox(height: 12),
-
-            // ── Products List ────────────────────────────────
-            Expanded(
-              child: filteredProducts.isEmpty
-                  ? _buildEmptyState()
-                  : ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-                      itemCount: filteredProducts.length,
-                      itemBuilder: (context, index) {
-                        return _buildProductCard(filteredProducts[index]);
-                      },
-                    ),
-            ),
-          ],
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.only(left: 18, right: 15),
+                  child: Column(
+                    children: [
+                      _buildCategoryTabs(),
+                      Expanded(
+                        child: filteredProducts.isEmpty
+                            ? _buildEmptyState()
+                            : ListView.builder(
+                                padding: const EdgeInsets.fromLTRB(0, 4, 0, 24),
+                                itemCount: filteredProducts.length,
+                                itemBuilder: (context, index) {
+                                  return _buildProductCard(
+                                    filteredProducts[index],
+                                  );
+                                },
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -109,9 +120,8 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
   // ── Search bar ─────────────────────────────────────────────
   Widget _buildSearchBar() {
     return Container(
-      width: 327,
       height: 46,
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      margin: const EdgeInsets.fromLTRB(16, 21, 17, 0),
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -129,11 +139,11 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
       child: Row(
         children: [
           SvgPicture.asset('assets/icons/search.svg', width: 24, height: 24),
-          const SizedBox(width: 10),
+          const SizedBox(width: 11),
           Expanded(
             child: TextField(
               controller: searchController,
-              onChanged: (v) => setState(() => searchQuery = v),
+              onChanged: _productListCubit.updateQuery,
               style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -160,12 +170,12 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
               ),
             ),
           ),
-          if (searchQuery.isNotEmpty)
+          if (_productListCubit.state.query.isNotEmpty)
             GestureDetector(
-              onTap: () => setState(() {
+              onTap: () {
                 searchController.clear();
-                searchQuery = '';
-              }),
+                _productListCubit.clearQuery();
+              },
               child: const Icon(
                 Icons.clear,
                 color: Color(0xFF6C7278),
@@ -179,17 +189,18 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
 
   // ── Category tabs ──────────────────────────────────────────
   Widget _buildCategoryTabs() {
-    return Align(
+    return Container(
+      margin: const EdgeInsets.fromLTRB(0, 14, 0, 11),
       alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 16),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             _categoryTab(ProductCategory.all),
             const SizedBox(width: 12.85),
             _categoryTab(ProductCategory.panel),
-            const SizedBox(width: 12.86),
+            const SizedBox(width: 12.85),
             _categoryTab(ProductCategory.battery),
           ],
         ),
@@ -198,9 +209,9 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
   }
 
   Widget _categoryTab(ProductCategory category) {
-    final isSelected = selectedCategory == category;
+    final isSelected = _productListCubit.state.category == category;
     return GestureDetector(
-      onTap: () => setState(() => selectedCategory = category),
+      onTap: () => _productListCubit.selectCategory(category),
       child: Container(
         width: 72.43,
         height: 27,
@@ -283,6 +294,8 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
 
   // ── Edit product ──────────────────────────────────────────
   void _editProduct(Product product) {
-    context.push(AppRoutes.editProduct, extra: product);
+    context.push<bool>(AppRoutes.editProduct, extra: product).then((changed) {
+      if (changed == true && mounted) setState(() {});
+    });
   }
 }

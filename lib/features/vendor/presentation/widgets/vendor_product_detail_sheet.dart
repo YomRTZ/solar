@@ -42,6 +42,12 @@ class VendorProductDetailSheet extends StatelessWidget {
       context: context,
       horizontalPadding: 0,
       bottomPadding: 0,
+      handleTopMargin: 12,
+      topTrailingAction: _CartBadge(count: cartCount),
+      sheetWidth: null,
+      sheetHeight: null,
+      horizontalMargin: 0,
+      includeSafeAreaBottom: false,
       child: VendorProductDetailSheet(
         product: product,
         quantity: quantity,
@@ -56,53 +62,114 @@ class VendorProductDetailSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final safeBottom = MediaQuery.of(context).padding.bottom;
-
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16, 0, 16, safeBottom + 16),
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.fromLTRB(20, 43, 20, 25),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ── Cart badge row ──────────────────────────────
-          Align(
-            alignment: Alignment.centerRight,
-            child: _CartBadge(count: cartCount),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 1),
+                      child: Image.asset(
+                        'assets/solarimages/5dc175c533f86ed941b1004c6b373c14c68068d0.png',
+                        width: 10,
+                        height: 14.6875,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    const SizedBox(width: 1.31),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 1),
+                      child: Text(
+                        product.brandName,
+                        style: GoogleFonts.roboto(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          height: 1,
+                          letterSpacing: 0,
+                          color: const Color(0xFF008000),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 8),
+
+                // ── Product hero row ────────────────────────────
+                _ProductHero(product: product),
+
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 8.5),
+                  child: _QuantityStepper(
+                    quantity: quantity,
+                    onDecrement: onDecrement,
+                    onIncrement: onIncrement,
+                  ),
+                ),
+              ],
+            ),
           ),
 
-          const SizedBox(height: 8),
-
-          // ── Product hero row ────────────────────────────
-          _ProductHero(product: product),
-
-          const SizedBox(height: 16),
-
-          // ── Quantity stepper ────────────────────────────
-          _QuantityStepper(
-            quantity: quantity,
-            onDecrement: onDecrement,
-            onIncrement: onIncrement,
-          ),
-
-          const SizedBox(height: 16),
+          const SizedBox(height: 15),
 
           // ── Spec table ──────────────────────────────────
           _SpecTable(product: product),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 15),
 
-          // ── Action buttons ──────────────────────────────
-          Row(
-            children: [
-              Expanded(
-                child: _OutlineBtn(
-                  label: 'Add to Compare',
-                  onTap: onAddToCompare,
+          // ── Action buttons ───────────────────────────────
+          LayoutBuilder(
+            builder: (context, constraints) {
+              const gap = 10.0;
+              const buttonWidths = 159.0 + 147.0;
+              final totalWidth = constraints.maxWidth.clamp(
+                0.0,
+                buttonWidths + gap,
+              );
+              final buttonScale = totalWidth >= buttonWidths + gap
+                  ? 1.0
+                  : ((totalWidth - gap).clamp(0.0, buttonWidths)) /
+                        buttonWidths;
+
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                  width: totalWidth,
+                  child: Row(
+                    children: [
+                      _OutlineBtn(
+                        label: 'Add to Compare',
+                        onTap: onAddToCompare,
+                        width: 159 * buttonScale,
+                      ),
+                      SizedBox(width: totalWidth > gap ? gap : 0),
+                      VendorAddToRfqButton(
+                        onPressed: onAddToRFQ,
+                        buttonWidth: 147 * buttonScale,
+                        buttonHeight: 41,
+                        borderRadius: 10,
+                        borderWidth: 1,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 10,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(child: VendorAddToRfqButton(onPressed: onAddToRFQ)),
-            ],
+              );
+            },
           ),
         ],
       ),
@@ -174,7 +241,7 @@ class _ProductHero extends StatelessWidget {
         // Thumbnail
         Container(
           width: 80,
-          height: 80,
+          height: 70,
           decoration: BoxDecoration(
             color: const Color(0xFFD6EAFF),
             borderRadius: BorderRadius.circular(10),
@@ -191,38 +258,13 @@ class _ProductHero extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(width: 14),
+        const SizedBox(width: 16),
 
         // Name + price + stock
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Brand chip
-              Row(
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF27AE60),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    product.brandName,
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xFF6C7278),
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 4),
-
               Text(
                 product.name,
                 maxLines: 2,
@@ -242,7 +284,7 @@ class _ProductHero extends StatelessWidget {
               // Price badge
               VendorPriceBadge(price: product.price),
 
-              const SizedBox(height: 6),
+              const SizedBox(height: 8),
 
               // Stock status
               Row(
@@ -260,11 +302,13 @@ class _ProductHero extends StatelessWidget {
                   const SizedBox(width: 5),
                   Text(
                     product.inStock ? 'In Stock' : 'Out of Stock',
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
+                    style: GoogleFonts.roboto(
+                      fontSize: 12,
                       fontWeight: FontWeight.w500,
+                      height: 1,
+                      letterSpacing: 0,
                       color: product.inStock
-                          ? const Color(0xFF27AE60)
+                          ? const Color(0xFF008000)
                           : const Color(0xFFE74C3C),
                     ),
                   ),
@@ -295,51 +339,81 @@ class _QuantityStepper extends StatelessWidget {
       children: [
         Text(
           'Quantity',
-          style: GoogleFonts.inter(
+          style: GoogleFonts.roboto(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: const Color(0xFF1A1A1A),
+            height: 1.32,
+            letterSpacing: 0,
+            color: const Color(0xFF333333),
           ),
         ),
-        const Spacer(),
-        // Stepper row: [🗑] [count] [+]
+        const SizedBox(width: 16),
         Container(
-          height: 36,
+          width: 135,
+          height: 30,
           decoration: BoxDecoration(
             color: const Color(0xFF003A8A),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              GestureDetector(
-                onTap: onDecrement,
-                child: const Icon(
-                  Icons.delete_outline_rounded,
-                  color: Colors.white,
-                  size: 18,
-                ),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: const Color(0x1FFFFFFF), width: 1),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0xFF375DFB),
+                blurRadius: 0,
+                spreadRadius: 1,
               ),
-              const SizedBox(width: 16),
-              Text(
-                '$quantity',
-                style: GoogleFonts.inter(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(width: 16),
-              GestureDetector(
-                onTap: onIncrement,
-                child: const Icon(
-                  Icons.add_rounded,
-                  color: Colors.white,
-                  size: 18,
-                ),
+              BoxShadow(
+                color: Color(0x7A253EA7),
+                offset: Offset(0, 1),
+                blurRadius: 2,
               ),
             ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(9),
+            child: DecoratedBox(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0x1FFFFFFF), Color(0x00FFFFFF)],
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: onDecrement,
+                        child: const Icon(
+                          Icons.delete_outline_rounded,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                      ),
+                      Text(
+                        '$quantity',
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          height: 1,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: onIncrement,
+                        child: const Icon(
+                          Icons.add_rounded,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ],
@@ -367,18 +441,18 @@ class _SpecTable extends StatelessWidget {
       ),
       child: Column(
         children: rows.asMap().entries.map((entry) {
-          final isLast = entry.key == rows.length - 1;
+          final isAlternate = entry.key.isEven;
           final label = entry.value.$1;
           final value = entry.value.$2;
 
           return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+            height: 32,
+            padding: const EdgeInsets.symmetric(horizontal: 14),
             decoration: BoxDecoration(
-              border: isLast
-                  ? null
-                  : const Border(
-                      bottom: BorderSide(color: Color(0xFFE5E7EB), width: 1),
-                    ),
+              color: isAlternate ? const Color(0xFFF7F7F8) : Colors.white,
+              border: const Border(
+                bottom: BorderSide(color: Color(0xFFE5E7EB), width: 1),
+              ),
             ),
             child: Row(
               children: [
@@ -386,10 +460,12 @@ class _SpecTable extends StatelessWidget {
                   width: 110,
                   child: Text(
                     label,
-                    style: GoogleFonts.inter(
+                    style: GoogleFonts.plusJakartaSans(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: const Color(0xFF6C7278),
+                      height: 1.6,
+                      letterSpacing: -0.24,
+                      color: const Color(0xFF1D2939),
                     ),
                   ),
                 ),
@@ -397,9 +473,10 @@ class _SpecTable extends StatelessWidget {
                   child: Text(
                     value,
                     style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF1A1A1A),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      height: 20 / 11,
+                      color: const Color(0xFF1D2939),
                     ),
                   ),
                 ),
@@ -415,18 +492,26 @@ class _SpecTable extends StatelessWidget {
 class _OutlineBtn extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
-  const _OutlineBtn({required this.label, required this.onTap});
+  final double width;
+  const _OutlineBtn({
+    required this.label,
+    required this.onTap,
+    required this.width,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 44,
+        width: width,
+        height: 41,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+        alignment: Alignment.center,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: const Color(0xFF003A8A), width: 1.5),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: const Color(0xFF003A8A), width: 2),
         ),
         child: Center(
           child: Text(

@@ -188,28 +188,27 @@ AppContinueButton(
 
 ## ✅ Validation
 
-Both screens include form validation:
+Both screens use the shared form validation behavior. `AppFormSection` wraps
+the form fields, and `AppContinueButton` validates the form before calling its
+submit callback. Empty fields display an inline error beside the specific
+field; no screen-level "fill all fields" snackbar is needed.
 
 ```dart
-void _handleContinue() {
-  // Check if any field is empty
-  if (companyNameController.text.isEmpty ||
-      emailController.text.isEmpty ||
-      // ... other fields
-  ) {
-    // Show error message
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Please fill all fields'),
-        backgroundColor: Colors.red,
+AppFormSection(
+  child: Column(
+    children: [
+      AppTextField(
+        label: 'Company Name',
+        hint: 'Solar Trade',
+        controller: companyNameController,
       ),
-    );
-    return;
-  }
-  
-  // All fields filled - proceed
-  Navigator.push(...);
-}
+      AppContinueButton(
+        text: 'Continue',
+        onPressed: _handleContinue,
+      ),
+    ],
+  ),
+)
 ```
 
 ## 📱 Screen Flow Examples
