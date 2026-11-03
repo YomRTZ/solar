@@ -15,6 +15,9 @@ class AppExpandableCard extends StatelessWidget {
   // Price (will be displayed with "Rs." prefix)
   final String price;
 
+  // Optional quantity (e.g., "10x1") - will be displayed before the price
+  final String? quantity;
+
   // Status badge text (e.g., "In Stock", "Out of Stock")
   final String statusText;
 
@@ -39,12 +42,16 @@ class AppExpandableCard extends StatelessWidget {
   // Whether to show the arrow icon (default: true)
   final bool showArrow;
 
+  // Whether to apply gray background (for first item in list)
+  final bool applyGrayBackground;
+
   const AppExpandableCard({
     super.key,
     required this.imagePath,
     required this.title,
     required this.idNumber,
     required this.price,
+    this.quantity,
     required this.statusText,
     this.statusBackgroundColor = const Color(0xFFD3F3E1),
     this.statusTextColor = const Color(0xFF217552),
@@ -53,6 +60,7 @@ class AppExpandableCard extends StatelessWidget {
     this.maxWidth = 327,
     this.height = 103,
     this.showArrow = true,
+    this.applyGrayBackground = false,
   });
 
   double? get _statusBadgeWidth {
@@ -165,9 +173,9 @@ class AppExpandableCard extends StatelessWidget {
       child: Container(
         width: maxWidth,
         height: height,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          border: Border(
+        decoration: BoxDecoration(
+          color: applyGrayBackground ? const Color(0xFFF5F5F5) : Colors.white,
+          border: const Border(
             bottom: BorderSide(color: Color(0xFFE0E0E0), width: 1),
           ),
         ),
@@ -235,17 +243,35 @@ class AppExpandableCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 1),
-                        Text(
-                          'Rs. $price',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.roboto(
-                            fontSize: 10,
-                            height: 16 / 10,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0,
-                            color: const Color(0xFF000000),
-                          ),
+                        Row(
+                          children: [
+                            if (quantity != null) ...[
+                              Text(
+                                '$quantity= ',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.roboto(
+                                  fontSize: 10,
+                                  height: 16 / 10,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0,
+                                  color: const Color(0xFF000000),
+                                ),
+                              ),
+                            ],
+                            Text(
+                              'Rs. $price',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.roboto(
+                                fontSize: 10,
+                                height: 16 / 10,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0,
+                                color: const Color(0xFF000000),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

@@ -121,8 +121,8 @@ class _VendorCheckoutScreenState extends State<VendorCheckoutScreen> {
             child: Column(
               children: [
                 const SecondAppHeader(
-                  title: 'Checkout (Ui will be',
-                  subtitle: 'Different)',
+                  title: 'Checkout (Ui will be Different)',
+                  titleMaxLines: 2,
                 ),
                 Expanded(
                   child: SingleChildScrollView(

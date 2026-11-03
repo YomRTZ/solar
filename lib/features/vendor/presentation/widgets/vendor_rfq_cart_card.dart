@@ -158,8 +158,8 @@ class _QtyStepper extends StatelessWidget {
             onTap: onDecrement,
             child: SvgPicture.asset(
               'assets/icons/Delete.svg',
-              width: 10,
-              height: 10,
+              width: 16,
+              height: 16,
             ),
           ),
           const SizedBox(width: 10),
@@ -177,8 +177,8 @@ class _QtyStepper extends StatelessWidget {
             onTap: onIncrement,
             child: SvgPicture.asset(
               'assets/icons/Add.svg',
-              width: 10,
-              height: 10,
+              width: 16,
+              height: 16,
             ),
           ),
         ],

@@ -10,6 +10,9 @@ class SecondAppHeader extends StatelessWidget {
   // Optional secondary line shown beneath the title.
   final String? subtitle;
 
+  // Maximum lines used by the title.
+  final int titleMaxLines;
+
   // Whether to show the back arrow (default: true).
   final bool showBackButton;
 
@@ -26,6 +29,7 @@ class SecondAppHeader extends StatelessWidget {
     super.key,
     required this.title,
     this.subtitle,
+    this.titleMaxLines = 1,
     this.showBackButton = true,
     this.onBackPressed,
     this.trailing,
@@ -78,7 +82,7 @@ class SecondAppHeader extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        maxLines: 1,
+                        maxLines: titleMaxLines,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.inter(
                           fontSize: 20,

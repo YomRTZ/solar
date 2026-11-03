@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:flutter_app/app/routing/app_routes.dart';
+import 'package:flutter_app/core/widgets/second_app_header.dart';
 
 /// Supplier profile screen — tab 4 of [HomeScreen].
 /// Layout:
-///   • Dark gradient header with "My Profile" title
-///   • Avatar circle overlapping header/body boundary
+///   • SecondAppHeader with "My Profile" title
+///   • Avatar circle in body content (NOT overlapping header)
 ///   • Solar Trade + Rahul Roy labels below avatar
 ///   • Business Information card (Edit → company details)
 ///   • Account Details → My Wallet
@@ -25,14 +25,6 @@ class SupplierProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusBarH = MediaQuery.of(context).padding.top;
-    // Header height: status bar + 80 px of content
-    const double headerContentH = 80;
-    final double headerH = statusBarH + headerContentH;
-    // Avatar sits half above / half below the header bottom edge
-    const double avatarSize = 84.0;
-    final double avatarTop = headerH - avatarSize / 2;
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -43,98 +35,81 @@ class SupplierProfileScreen extends StatelessWidget {
       ),
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Stack(
+        body: Column(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // ── Gradient header ────────────────────────
-                _SupplierProfileHeader(
-                  height: headerH,
-                  onBackPressed:
-                      onBackPressed ?? () => context.go(AppRoutes.vendorMain),
-                ),
-
-                // ── Scrollable body ────────────────────────
-                Expanded(
-                  child: SingleChildScrollView(
-                    // Leave room for the avatar + name/contact block
-                    padding: EdgeInsets.fromLTRB(
-                      20,
-                      avatarSize / 2 + 12 + 22 + 4 + 18 + 31,
-                      20,
-                      32,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // ── Business Information card ────────
-                        _buildBusinessCard(context),
-                        const SizedBox(height: 107),
-
-                        // ── Logout ───────────────────────────
-                        _buildLinkRow(
-                          context,
-                          icon: Icons.logout_rounded,
-                          label: 'Logout',
-                          onTap: () => context.go(AppRoutes.login),
-                          showArrow: false,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+            // ── Header ─────────────────────────────────────
+            SecondAppHeader(
+              title: 'My Profile',
+              onBackPressed:
+                  onBackPressed ?? () => context.go(AppRoutes.vendorMain),
             ),
 
-            // ── Overlapping avatar + name + contact ────────
-            Positioned(
-              top: avatarTop,
-              left: 0,
-              right: 0,
-              child: Column(
-                children: [
-                  // Avatar circle
-                  Container(
-                    width: avatarSize,
-                    height: avatarSize,
-                    decoration: const BoxDecoration(
-                      color: _avatarBg,
-                      shape: BoxShape.circle,
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      'ST',
-                      style: GoogleFonts.inter(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
-                        color: _blue,
-                        letterSpacing: 1,
+            // ── Scrollable body ────────────────────────────
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // ── Avatar + Name + Contact ─────────────
+                    const SizedBox(height: 8),
+                    Center(
+                      child: Container(
+                        width: 84,
+                        height: 84,
+                        decoration: const BoxDecoration(
+                          color: _avatarBg,
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'ST',
+                          style: GoogleFonts.inter(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w700,
+                            color: _blue,
+                            letterSpacing: 1,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Solar Trade',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFF202020),
-                      letterSpacing: -0.2,
+                    const SizedBox(height: 12),
+                    Text(
+                      'Solar Trade',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF202020),
+                        letterSpacing: -0.2,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Rahul Roy',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xFF6C7278),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Rahul Roy',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF6C7278),
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 31),
+
+                    // ── Business Information card ────────
+                    _buildBusinessCard(context),
+                    const SizedBox(height: 107),
+
+                    // ── Logout ───────────────────────────
+                    _buildLinkRow(
+                      context,
+                      icon: Icons.logout_rounded,
+                      label: 'Logout',
+                      onTap: () => context.go(AppRoutes.login),
+                      showArrow: false,
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -303,60 +278,6 @@ class SupplierProfileScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-// ── Gradient header widget ────────────────────────────────────
-class _SupplierProfileHeader extends StatelessWidget {
-  final double height;
-  final VoidCallback onBackPressed;
-
-  const _SupplierProfileHeader({
-    required this.height,
-    required this.onBackPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: height,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF003A8A), Color(0xFF000F24)],
-        ),
-      ),
-      alignment: Alignment.bottomLeft,
-      padding: const EdgeInsets.fromLTRB(16, 0, 20, 16),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: onBackPressed,
-            child: SvgPicture.asset(
-              'assets/icons/arrow-narrow-left.svg',
-              width: 24,
-              height: 24,
-              colorFilter: const ColorFilter.mode(
-                Colors.white,
-                BlendMode.srcIn,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            'My Profile',
-            style: GoogleFonts.inter(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              letterSpacing: -0.4,
-            ),
-          ),
-        ],
       ),
     );
   }

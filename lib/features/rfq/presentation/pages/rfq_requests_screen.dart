@@ -89,6 +89,8 @@ class _RFQRequestsScreenState extends State<RFQRequestsScreen> {
                                     title: rfq.productTitle,
                                     idNumber: rfq.rfqNumber,
                                     price: rfq.price,
+                                    quantity: rfq.requiredQty,
+                                    applyGrayBackground: index == 0,
                                     statusText: rfq.status.displayName,
                                     statusBackgroundColor:
                                         rfq.status.backgroundColor,

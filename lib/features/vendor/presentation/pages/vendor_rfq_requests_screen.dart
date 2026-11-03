@@ -254,13 +254,8 @@ class _RfqDetailSheet extends StatelessWidget {
 
           const SizedBox(height: 18),
 
-          // ── Order items table ──────────────────────────
-          _RequestItemsTable(items: request.items),
-
-          const SizedBox(height: 8),
-
-          // ── Totals table ───────────────────────────────
-          _SummaryTable(request: request),
+          // ── Order and totals table ─────────────────────
+          _RequestDetailsTable(request: request),
 
           const SizedBox(height: 20),
 
@@ -296,129 +291,125 @@ class _RfqDetailSheet extends StatelessWidget {
 }
 
 // ───────────────────────────────────────────────────────────────────────────── Summary row helper
-class _SummaryRow extends StatelessWidget {
+class _RequestDetailsTable extends StatelessWidget {
+  final VendorRfqRequest request;
+
+  const _RequestDetailsTable({required this.request});
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = <_RequestTableRowData>[
+      for (final item in request.items)
+        _RequestTableRowData(
+          label: item.productName,
+          detail: _formatQuantity(item.qty),
+          value: item.price,
+        ),
+      _RequestTableRowData(label: 'Sub Total', value: request.subTotal),
+      _RequestTableRowData(label: 'Gst 18%', value: request.gst),
+      _RequestTableRowData(label: 'Total', value: request.total, isBold: true),
+    ];
+
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFE5E7EB)),
+      ),
+      child: Column(
+        children: [
+          for (var index = 0; index < rows.length; index++)
+            _RequestTableRow(
+              row: rows[index],
+              index: index,
+              isLast: index == rows.length - 1,
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RequestTableRowData {
   final String label;
   final String value;
+  final String? detail;
   final bool isBold;
 
-  const _SummaryRow({
+  const _RequestTableRowData({
     required this.label,
     required this.value,
+    this.detail,
     this.isBold = false,
+  });
+}
+
+class _RequestTableRow extends StatelessWidget {
+  final _RequestTableRowData row;
+  final int index;
+  final bool isLast;
+
+  const _RequestTableRow({
+    required this.row,
+    required this.index,
+    required this.isLast,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.inter(
-            fontSize: 12,
-            fontWeight: isBold ? FontWeight.w700 : FontWeight.w500,
-            color: const Color(0xFF6C7278),
-          ),
-        ),
-        Text(
-          value,
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            fontWeight: isBold ? FontWeight.w800 : FontWeight.w600,
-            color: const Color(0xFF1A1A1A),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SummaryTable extends StatelessWidget {
-  final VendorRfqRequest request;
-
-  const _SummaryTable({required this.request});
-
-  @override
-  Widget build(BuildContext context) {
-    final rows = [
-      ('Sub Total', request.subTotal, false),
-      ('Gst 18%', request.gst, false),
-      ('Total', request.total, true),
-    ];
+    final rowColor = index >= 2 && index.isEven
+        ? const Color(0xFFF5F5F5)
+        : Colors.white;
 
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
+        color: rowColor,
+        border: isLast
+            ? null
+            : const Border(bottom: BorderSide(color: Color(0xFFE5E7EB))),
       ),
-      child: Column(
-        children: rows.asMap().entries.map((entry) {
-          final isLast = entry.key == rows.length - 1;
-          final (label, value, isBold) = entry.value;
-
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-            decoration: BoxDecoration(
-              border: isLast
-                  ? null
-                  : const Border(bottom: BorderSide(color: Color(0xFFE5E7EB))),
-            ),
-            child: _SummaryRow(label: label, value: value, isBold: isBold),
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
-
-class _RequestItemsTable extends StatelessWidget {
-  final List<VendorOrderItem> items;
-
-  const _RequestItemsTable({required this.items});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
-      ),
-      child: Column(
-        children: items.asMap().entries.map((entry) {
-          final isLast = entry.key == items.length - 1;
-          final item = entry.value;
-
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-            decoration: BoxDecoration(
-              border: isLast
-                  ? null
-                  : const Border(bottom: BorderSide(color: Color(0xFFE5E7EB))),
-            ),
+      child: Row(
+        children: [
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.productName,
+                  row.label,
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF1A1A1A),
+                    fontWeight: row.isBold ? FontWeight.w700 : FontWeight.w500,
+                    color: row.detail == null
+                        ? const Color(0xFF6C7278)
+                        : const Color(0xFF1A1A1A),
                   ),
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  '${_formatQuantity(item.qty)} ${item.price}',
-                  style: GoogleFonts.roboto(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF1A1A1A),
+                if (row.detail != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    row.detail!,
+                    style: GoogleFonts.roboto(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF1A1A1A),
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
-          );
-        }).toList(),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            row.value,
+            textAlign: TextAlign.right,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              fontWeight: row.isBold ? FontWeight.w800 : FontWeight.w600,
+              color: const Color(0xFF1A1A1A),
+            ),
+          ),
+        ],
       ),
     );
   }

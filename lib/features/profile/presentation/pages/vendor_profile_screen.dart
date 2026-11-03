@@ -11,7 +11,7 @@ import 'package:flutter_app/core/widgets/second_app_header.dart';
 ///   • Compact gradient header + "My Profile" title
 ///   • Centred avatar (ST initials) + Solar Trade + Solar@gmail.com
 ///   • Business Information card (Edit → company details)
-///   • Account Details → bank details page
+///   • Account Details → wallet page
 ///   • Documents → upload documents page
 ///   • Logout row
 class VendorProfileScreen extends StatelessWidget {
@@ -61,50 +61,28 @@ class VendorProfileScreen extends StatelessWidget {
                     const SizedBox(height: 20),
 
                     // ── Account Details ───────────────────────
-                    _buildActionRow(
+                    _buildLinkRow(
                       context,
-                      icon: SizedBox(
-                        width: 36,
-                        height: 36,
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              left: 8,
-                              top: 9,
-                              child: Image.asset(
-                                'assets/icons/account_details_icon.png',
-                                width: 15,
-                                height: 15,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      icon: Icons.account_balance_wallet_outlined,
                       label: 'Account Details',
                       onTap: () => context.push(AppRoutes.wallet),
                     ),
 
                     // ── Documents ─────────────────────────────
-                    _buildActionRow(
+                    _buildLinkRow(
                       context,
-                      icon: const Icon(
-                        Icons.description_outlined,
-                        color: _blue,
-                        size: 20,
-                      ),
+                      icon: Icons.description_outlined,
                       label: 'Documents',
                       onTap: () =>
                           context.push(AppRoutes.vendorUploadDocuments),
                     ),
 
+                    const SizedBox(height: 20),
+
                     // ── Logout ────────────────────────────────
-                    _buildActionRow(
+                    _buildLinkRow(
                       context,
-                      icon: const Icon(
-                        Icons.logout_rounded,
-                        color: _blue,
-                        size: 20,
-                      ),
+                      icon: Icons.logout_rounded,
                       label: 'Logout',
                       onTap: () => context.go(AppRoutes.login),
                       showArrow: false,
@@ -282,10 +260,10 @@ class VendorProfileScreen extends StatelessWidget {
     );
   }
 
-  // ── Generic tappable action row ───────────────────────────────
-  Widget _buildActionRow(
+  // ── Generic tappable link row ─────────────────────────────────
+  Widget _buildLinkRow(
     BuildContext context, {
-    required Widget icon,
+    required IconData icon,
     required String label,
     required VoidCallback onTap,
     bool showArrow = true,
@@ -309,7 +287,7 @@ class VendorProfileScreen extends StatelessWidget {
                   color: _avatarBg,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Center(child: icon),
+                child: Icon(icon, color: _blue, size: 20),
               ),
               const SizedBox(width: 12),
               Expanded(
