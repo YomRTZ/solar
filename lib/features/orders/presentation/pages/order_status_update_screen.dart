@@ -30,7 +30,7 @@ class OrderStatusUpdateScreen extends StatefulWidget {
 class _OrderStatusUpdateScreenState extends State<OrderStatusUpdateScreen> {
   final _formKey = GlobalKey<FormState>();
   static const _addImageAsset =
-      'assets/icons/5ceff9d5d9cae078a369c65ead35be73405d7dcd.png';
+      'assets/icons/ic_add_image.png';
   late final TextEditingController _transporterController;
   late final TextEditingController _trackingNumberController;
   late final TextEditingController _dispatchDateController;

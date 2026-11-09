@@ -2,7 +2,7 @@ import 'package:flutter_app/features/rfq/domain/entities/rfq.dart';
 
 class RFQData {
   static const String _solarImage =
-      'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png';
+      'assets/solarimages/solar_panel_product.png';
 
   static final List<RFQ> _rfqList = [
     RFQ(

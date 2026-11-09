@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +12,8 @@ import 'package:flutter_app/core/widgets/app_dropdown_field.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/products/presentation/cubit/product_editor_cubit.dart';
-import 'package:flutter_app/features/products/data/datasources/products_data.dart';
+import 'package:flutter_app/features/products/data/datasources/product_assets.dart';
+import 'package:flutter_app/features/products/domain/repositories/product_repository.dart';
 import 'package:flutter_app/features/products/domain/entities/product.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -86,14 +87,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
       RegExp(r'^#'),
       '',
     );
-    ProductsData.addProduct(
+    context.read<ProductRepository>().addProduct(
       Product(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         title: state.productName.trim(),
         idNumber: '#$modelNumber',
         price: state.price.trim(),
         imagePath: state.imagePaths.isEmpty
-            ? ProductsData.defaultImagePath
+            ? ProductAssets.defaultImagePath
             : state.imagePaths.first,
         status: _statusFromValue(state.stock),
         category: _categoryFromValue(state.category),
@@ -176,7 +177,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // ── Add Images ──────────────────────────────────────────
                       _buildAddImages(),
 
                       Form(
@@ -185,7 +185,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              // ── Product Name ─────────────────────────────────────────
                               AppTextField(
                                 label: 'Product Name',
                                 hint: 'Solar Trade',
@@ -193,7 +192,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 onChanged: _editorCubit.updateProductName,
                               ),
 
-                              // ── Select Category ──────────────────────────────────────
                               AppDropdownFieldString(
                                 label: 'Select Category',
                                 hint: 'Panel',
@@ -202,7 +200,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 onChanged: _editorCubit.selectCategory,
                               ),
 
-                              // ── Model Number ─────────────────────────────────────────
                               AppTextField(
                                 label: 'Model Number',
                                 hint: 'MB12345',
@@ -210,7 +207,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 onChanged: _editorCubit.updateModelNumber,
                               ),
 
-                              // ── Select Brand ─────────────────────────────────────────
                               AppDropdownFieldString(
                                 label: 'Select Brand',
                                 hint: 'Long',
@@ -219,7 +215,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 onChanged: _editorCubit.selectBrand,
                               ),
 
-                              // ── Price (Excluding Tax) ────────────────────────────────
                               AppTextField(
                                 label: 'Price (Excluding Tax)',
                                 hint: '1234',
@@ -228,7 +223,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 onChanged: _editorCubit.updatePrice,
                               ),
 
-                              // ── Tax Amount ───────────────────────────────────────────
                               AppTextField(
                                 label: 'Tax Amount',
                                 hint: '12',
@@ -237,7 +231,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 onChanged: _editorCubit.updateTaxAmount,
                               ),
 
-                              // ── Min Order Qty ────────────────────────────────────────
                               AppTextField(
                                 label: 'Min Order Qty',
                                 hint: '12',
@@ -247,7 +240,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     _editorCubit.updateMinimumOrderQuantity,
                               ),
 
-                              // ── Stock ────────────────────────────────────────────────
                               AppDropdownFieldString(
                                 label: 'Stock',
                                 hint: 'In Stock',
@@ -256,7 +248,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 onChanged: _editorCubit.selectStock,
                               ),
 
-                              // ── Warranty ─────────────────────────────────────────────
                               AppTextField(
                                 label: 'Warranty',
                                 hint: '09/2026',
@@ -264,7 +255,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 onChanged: _editorCubit.updateWarranty,
                               ),
 
-                              // ── Dispatch Dist. ───────────────────────────────────────
                               AppTextField(
                                 label: 'Dispatch Dist.',
                                 hint: 'New Delhi',
@@ -273,7 +263,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 bottomSpacing: 0,
                               ),
 
-                              // ── Continue Button ──────────────────────────────────────
                               Padding(
                                 padding: const EdgeInsets.only(top: 18),
                                 child: AppContinueButton(
@@ -298,7 +287,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 
-  // ──────────────────────────────────────────────────────────── Add Images Row
   Widget _buildAddImages() {
     return Container(
       width: double.infinity,
@@ -340,7 +328,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: Image.asset(
-                      'assets/icons/5ceff9d5d9cae078a369c65ead35be73405d7dcd.png',
+                      'assets/icons/ic_add_image.png',
                       fit: BoxFit.contain,
                     ),
                   ),

@@ -67,7 +67,7 @@ class SecondAppHeader extends StatelessWidget {
                   GestureDetector(
                     onTap: onBackPressed ?? () => Navigator.pop(context),
                     child: SvgPicture.asset(
-                      'assets/icons/arrow-narrow-left.svg',
+                      'assets/icons/ic_arrow_back.svg',
                       width: 24,
                       height: 24,
                       fit: BoxFit.contain,

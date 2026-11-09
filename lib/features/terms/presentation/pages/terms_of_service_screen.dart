@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/core/widgets/app_header.dart';
@@ -13,7 +13,6 @@ class TermsOfServiceScreen extends StatelessWidget {
 
   const TermsOfServiceScreen({super.key, this.onAccept, this.onDecline});
 
-  // ── Terms content data ──────────────────────────────────────
   static const List<_TermsSection> _sections = [
     _TermsSection(
       title: '1. Terms',
@@ -78,10 +77,8 @@ class TermsOfServiceScreen extends StatelessWidget {
         extendBodyBehindAppBar: true,
         body: Column(
           children: [
-            // ── Reusable gradient header ──────────────────────
             const AppHeader(title: 'Terms of Service', height: 133),
 
-            // ── Scrollable content ────────────────────────────
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
@@ -94,7 +91,6 @@ class TermsOfServiceScreen extends StatelessWidget {
               ),
             ),
 
-            // ── Bottom action buttons ─────────────────────────
             _buildBottomButtons(context),
           ],
         ),
@@ -102,7 +98,6 @@ class TermsOfServiceScreen extends StatelessWidget {
     );
   }
 
-  // ── Single terms section ──────────────────────────────────
   Widget _buildSection(_TermsSection section) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 24),
@@ -143,7 +138,6 @@ class TermsOfServiceScreen extends StatelessWidget {
     );
   }
 
-  // ── Individual bullet row ─────────────────────────────────
   Widget _buildBullet(String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
@@ -179,7 +173,6 @@ class TermsOfServiceScreen extends StatelessWidget {
     );
   }
 
-  // ── Decline + Accept buttons ──────────────────────────────
   Widget _buildBottomButtons(BuildContext context) {
     return SafeArea(
       top: false,
@@ -197,7 +190,6 @@ class TermsOfServiceScreen extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // ── Decline (outlined) ──────────────────────────
             Expanded(
               child: SizedBox(
                 height: 48,
@@ -228,7 +220,6 @@ class TermsOfServiceScreen extends StatelessWidget {
             ),
             const SizedBox(width: 12),
 
-            // ── Accept (reusable filled button) ────────────
             Expanded(
               child: AppContinueButton(
                 text: 'Accept',
@@ -243,7 +234,6 @@ class TermsOfServiceScreen extends StatelessWidget {
   }
 }
 
-// ── Data class for a terms section ──────────────────────────
 class _TermsSection {
   final String title;
   final String paragraph;

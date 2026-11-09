@@ -1,6 +1,5 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+﻿import 'package:flutter_bloc/flutter_bloc.dart';
 
-// ── Auth state ─────────────────────────────────────────────────────────────
 enum AuthStatus { unauthenticated, authenticated }
 
 class AuthState {
@@ -38,7 +37,6 @@ class AuthState {
   );
 }
 
-// ── AuthCubit ──────────────────────────────────────────────────────────────
 /// App-wide authentication state.
 ///
 /// Provided at the root [MultiBlocProvider] so every screen can read/update
@@ -46,20 +44,15 @@ class AuthState {
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(const AuthState());
 
-  // ── Called from LoginScreen when role toggle changes ──────
   void selectRole(String role) => emit(state.copyWith(role: role));
 
-  // ── Called from LoginScreen when number is typed ──────────
   void updateMobileNumber(String value) =>
       emit(state.copyWith(mobileNumber: value));
 
-  // ── Called from OtpVerificationScreen on success ──────────
   void verifyOtp() => emit(state.copyWith(otpVerified: true));
 
-  // ── Called after onboarding is fully complete ─────────────
   void markAuthenticated() =>
       emit(state.copyWith(status: AuthStatus.authenticated));
 
-  // ── Log out ───────────────────────────────────────────────
   void logout() => emit(const AuthState());
 }

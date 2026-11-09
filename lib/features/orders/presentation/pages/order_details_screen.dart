@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
@@ -27,20 +27,17 @@ class OrderDetailsScreen extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // ── Header ──────────────────────────────────────
             SecondAppHeader(
               title: 'Order Details',
               onBackPressed: () => Navigator.pop(context),
             ),
 
-            // ── Scrollable content ───────────────────────────
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // ── Status badge (top-right) ──────────────
                     Align(
                       alignment: Alignment.centerRight,
                       child: _StatusBadge(status: order.status),
@@ -54,18 +51,15 @@ class OrderDetailsScreen extends StatelessWidget {
                     const Divider(height: 1, color: Color(0xFFEDF1F3)),
                     const SizedBox(height: 20),
 
-                    // ── Product row ───────────────────────────
                     _buildProductRow(),
                     const SizedBox(height: 20),
 
                     const Divider(height: 1, color: Color(0xFFEDF1F3)),
                     const SizedBox(height: 16),
 
-                    // ── Subtotal / GST / Total ────────────────
                     _buildPricingSection(),
                     const SizedBox(height: 32),
 
-                    // ── Track History button ──────────────────
                     AppContinueButton(
                       text: 'Track History',
                       showArrow: false,
@@ -91,7 +85,6 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  // ── Top info: two-column label / value rows ──────────────────
   Widget _buildTopInfoSection() {
     return Column(
       children: [
@@ -177,7 +170,6 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  // ── Product image + name + price + qty ───────────────────────
   Widget _buildProductRow() {
     return Row(
       children: [
@@ -250,7 +242,6 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  // ── Subtotal / GST / Total ───────────────────────────────────
   Widget _buildPricingSection() {
     return Column(
       children: [
@@ -294,7 +285,6 @@ class OrderDetailsScreen extends StatelessWidget {
   }
 }
 
-// ── Status badge widget ──────────────────────────────────────────
 class _StatusBadge extends StatelessWidget {
   final OrderStatus status;
   const _StatusBadge({required this.status});

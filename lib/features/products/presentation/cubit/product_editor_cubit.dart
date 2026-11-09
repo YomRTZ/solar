@@ -28,7 +28,7 @@ class ProductEditorState {
     this.brand,
     this.stock,
     this.imagePaths = const [
-      'assets/solarimages/fdd201d94ef3bf047ca70bbe9fc6ef424e0afe26.png',
+      'assets/solarimages/solar_panel_product.png',
     ],
     this.isLoading = false,
     this.showSuccessBanner = false,

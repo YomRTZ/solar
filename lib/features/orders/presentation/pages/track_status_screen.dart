@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,7 +10,6 @@ import 'package:flutter_app/features/orders/data/datasources/order_dispatch_upda
 import 'package:flutter_app/features/orders/data/datasources/orders_data.dart';
 import 'package:flutter_app/features/orders/domain/entities/order.dart';
 
-// ───────────────────────────────────────────────────────────────────────────── DATA MODEL
 
 enum TrackStep { orderConfirmed, dispatched, inTransit, delivered }
 
@@ -60,7 +59,6 @@ class TrackEvent {
   bool get isActive => dateTime != null || subText != null;
 }
 
-// ───────────────────────────────────────────────────────────────────────────── SCREEN
 
 class TrackStatusScreen extends StatelessWidget {
   final Order order;
@@ -83,10 +81,8 @@ class TrackStatusScreen extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // ── Header ──────────────────────────────────────
             const SecondAppHeader(title: 'Track Status'),
 
-            // ── Timeline ─────────────────────────────────────
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(24, 28, 24, 32),
@@ -97,7 +93,6 @@ class TrackStatusScreen extends StatelessWidget {
                     ..._buildTimeline(),
                     const SizedBox(height: 36),
 
-                    // ── Back to dashboard ──────────────────
                     _DashboardButton(onTap: () => context.go(AppRoutes.home)),
                   ],
                 ),
@@ -167,7 +162,6 @@ class TrackStatusScreen extends StatelessWidget {
   }
 }
 
-// ───────────────────────────────────────────────────────────────────────────── TIMELINE ROW
 
 class _TimelineRow extends StatelessWidget {
   final TrackEvent event;
@@ -191,7 +185,6 @@ class _TimelineRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ── Left column: icon + vertical connector ─────────
           SizedBox(
             width: 36,
             child: Column(
@@ -203,7 +196,7 @@ class _TimelineRow extends StatelessWidget {
                     alignment: Alignment.center,
                     children: [
                       SvgPicture.asset(
-                        'assets/icons/Ellipse 65.svg',
+                        'assets/icons/ic_timeline_marker.svg',
                         width: 32,
                         height: 32,
                         colorFilter: ColorFilter.mode(
@@ -213,7 +206,7 @@ class _TimelineRow extends StatelessWidget {
                       ),
                       switch (event.step) {
                         TrackStep.orderConfirmed => SvgPicture.asset(
-                          'assets/icons/location-tick1.svg',
+                          'assets/icons/ic_status_location_confirmed.svg',
                           width: 32,
                           height: 32,
                           colorFilter: ColorFilter.mode(
@@ -222,14 +215,14 @@ class _TimelineRow extends StatelessWidget {
                           ),
                         ),
                         TrackStep.dispatched => Image.asset(
-                          'assets/icons/shop.png',
+                          'assets/icons/ic_status_dispatched.png',
                           width: 18,
                           height: 18,
                           color: timelineColor,
                           colorBlendMode: BlendMode.srcIn,
                         ),
                         TrackStep.inTransit => SvgPicture.asset(
-                          'assets/icons/truck-fast.svg',
+                          'assets/icons/ic_delivery_truck.svg',
                           width: 18,
                           height: 18,
                           colorFilter: ColorFilter.mode(
@@ -238,7 +231,7 @@ class _TimelineRow extends StatelessWidget {
                           ),
                         ),
                         TrackStep.delivered => SvgPicture.asset(
-                          'assets/icons/Vector1.svg',
+                          'assets/icons/ic_status_delivered.svg',
                           width: 16.56,
                           height: 19.1427,
                           colorFilter: ColorFilter.mode(
@@ -263,7 +256,6 @@ class _TimelineRow extends StatelessWidget {
           ),
           const SizedBox(width: 16),
 
-          // ── Right column: title + date + images ────────────
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(bottom: showConnector ? 20 : 0),
@@ -346,7 +338,6 @@ class _TimelineRow extends StatelessWidget {
   }
 }
 
-// ───────────────────────────────────────────────────────────────────────────── DASHED VERTICAL
 
 class _DashedLine extends StatelessWidget {
   final Color color;
@@ -392,7 +383,6 @@ class _DashedLinePainter extends CustomPainter {
       oldDelegate.color != color;
 }
 
-// ───────────────────────────────────────────────────────────────────────────── THUMBNAIL
 
 class _Thumbnail extends StatelessWidget {
   final String? path;
@@ -426,7 +416,6 @@ class _Thumbnail extends StatelessWidget {
   }
 }
 
-// ───────────────────────────────────────────────────────────────────────────── BACK TO DASHBOARD
 
 class _DashboardButton extends StatelessWidget {
   final VoidCallback onTap;

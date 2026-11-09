@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,7 +7,8 @@ import 'package:flutter_app/core/widgets/app_dropdown_field.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/core/widgets/app_form_section.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
-import 'package:flutter_app/features/products/data/datasources/products_data.dart';
+import 'package:flutter_app/features/products/data/datasources/product_assets.dart';
+import 'package:flutter_app/features/products/domain/repositories/product_repository.dart';
 import 'package:flutter_app/features/products/domain/entities/product.dart';
 import 'package:flutter_app/features/products/presentation/cubit/product_editor_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -99,7 +100,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         category: p != null ? _categoryFromEnum(p.category) : 'Panel',
         brand: p?.brand.isNotEmpty == true ? p!.brand : 'Long',
         stock: p != null ? _stockFromEnum(p.status) : 'In Stock',
-        imagePaths: [p?.imagePath ?? ProductsData.defaultImagePath],
+        imagePaths: [p?.imagePath ?? ProductAssets.defaultImagePath],
         showSuccessBanner: false,
         isUpdated: false,
       ),
@@ -150,7 +151,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     if (!_editorCubit.state.isUpdated) {
-      // ── First click: "Update" ──────────────────────────
       // Show loading, then display the success banner and switch button to "Continue"
       _editorCubit.setLoading(true);
       await Future.delayed(const Duration(seconds: 1));
@@ -169,7 +169,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         idNumber: '#$modelNumber',
         price: state.price.trim(),
         imagePath: state.imagePaths.isEmpty
-            ? ProductsData.defaultImagePath
+            ? ProductAssets.defaultImagePath
             : state.imagePaths.first,
         status: _statusFromValue(state.stock),
         category: _categoryFromValue(state.category),
@@ -180,9 +180,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
         dispatchDistrict: state.dispatchDistrict.trim(),
       );
       if (widget.product == null) {
-        ProductsData.addProduct(updatedProduct);
+        context.read<ProductRepository>().addProduct(updatedProduct);
       } else {
-        ProductsData.updateProduct(updatedProduct);
+        context.read<ProductRepository>().updateProduct(updatedProduct);
       }
       _editorCubit.markUpdated();
       _editorCubit.setSuccessBanner(true);
@@ -194,7 +194,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
         curve: Curves.easeOutCubic,
       );
     } else {
-      // ── Second click: "Continue" ──────────────────────
       // Proceed back to the previous screen
       if (mounted) Navigator.pop(context, true);
     }
@@ -259,7 +258,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              // ── Product Name ─────────────────────────────────────────
                               AppTextField(
                                 label: 'Product Name',
                                 hint: 'Solar Trade',
@@ -267,7 +265,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 onChanged: _editorCubit.updateProductName,
                               ),
 
-                              // ── Select Category ──────────────────────────────────────
                               AppDropdownFieldString(
                                 label: 'Select Category',
                                 hint: 'Panel',
@@ -276,7 +273,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 onChanged: _editorCubit.selectCategory,
                               ),
 
-                              // ── Model Number ─────────────────────────────────────────
                               AppTextField(
                                 label: 'Model Number',
                                 hint: 'MB12345',
@@ -284,7 +280,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 onChanged: _editorCubit.updateModelNumber,
                               ),
 
-                              // ── Select Brand ─────────────────────────────────────────
                               AppDropdownFieldString(
                                 label: 'Select Brand',
                                 hint: 'Long',
@@ -293,7 +288,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 onChanged: _editorCubit.selectBrand,
                               ),
 
-                              // ── Price (Excluding Tax) ────────────────────────────────
                               AppTextField(
                                 label: 'Price (Excluding Tax)',
                                 hint: '1234',
@@ -302,7 +296,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 keyboardType: TextInputType.number,
                               ),
 
-                              // ── Tax Amount ───────────────────────────────────────────
                               AppTextField(
                                 label: 'Tax Amount',
                                 hint: '12',
@@ -311,7 +304,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 keyboardType: TextInputType.number,
                               ),
 
-                              // ── Min Order Qty ────────────────────────────────────────
                               AppTextField(
                                 label: 'Min Order Qty',
                                 hint: '12',
@@ -321,7 +313,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 keyboardType: TextInputType.number,
                               ),
 
-                              // ── Stock ────────────────────────────────────────────────
                               AppDropdownFieldString(
                                 label: 'Stock',
                                 hint: 'In Stock',
@@ -330,7 +321,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 onChanged: _editorCubit.selectStock,
                               ),
 
-                              // ── Warranty ─────────────────────────────────────────────
                               AppTextField(
                                 label: 'Warranty',
                                 hint: '09/2026',
@@ -338,7 +328,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 onChanged: _editorCubit.updateWarranty,
                               ),
 
-                              // ── Dispatch Dist. ───────────────────────────────────────
                               AppTextField(
                                 label: 'Dispatch Dist.',
                                 hint: 'New Delhi',
@@ -347,7 +336,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 bottomSpacing: 0,
                               ),
 
-                              // ── Continue Button ──────────────────────────────────────
                               Padding(
                                 padding: const EdgeInsets.only(top: 18),
                                 child: AppContinueButton(
@@ -372,7 +360,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
     );
   }
 
-  // ──────────────────────────────────────────────────────────── Success Banner
   Widget _buildSuccessBanner() {
     return Container(
       width: double.infinity,
@@ -390,7 +377,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SvgPicture.asset(
-                  'assets/icons/green-check-icon.svg',
+                  'assets/icons/ic_check_success.svg',
                   width: 20,
                   height: 20,
                 ),
@@ -436,7 +423,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
             child: GestureDetector(
               onTap: () => _editorCubit.setSuccessBanner(false),
               child: SvgPicture.asset(
-                'assets/icons/cross-icon.svg',
+                'assets/icons/ic_close.svg',
                 width: 9.096354484558105,
                 height: 10,
               ),

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/core/widgets/widgets.dart';
 import 'package:flutter_app/features/profile/presentation/cubit/profile_form_cubit.dart';
@@ -90,10 +90,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // ── Header ──────────────────────────────────────
             const SecondAppHeader(title: 'Update Profile'),
 
-            // ── Scrollable form ──────────────────────────────
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(0, 23, 0, 25),
@@ -137,7 +135,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         onChanged: _profileFormCubit.updatePanNumber,
                       ),
 
-                      // ── Update button ────────────────────────
                       Padding(
                         padding: const EdgeInsets.only(top: 18),
                         child: AppContinueButton(

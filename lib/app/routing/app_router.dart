@@ -9,7 +9,7 @@ import 'package:flutter_app/features/catalog/presentation/pages/all_products_scr
 import 'package:flutter_app/features/company/presentation/pages/company_bank_demo_screen.dart';
 import 'package:flutter_app/features/company/presentation/pages/company_details_screen.dart';
 import 'package:flutter_app/features/documents/presentation/pages/upload_documents_screen.dart';
-import 'package:flutter_app/features/home/presentation/pages/home_screen.dart';
+import 'package:flutter_app/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:flutter_app/features/orders/presentation/pages/order_details_screen.dart';
 import 'package:flutter_app/features/orders/presentation/pages/order_status_update_screen.dart';
 import 'package:flutter_app/features/orders/presentation/pages/orders_screen.dart';
@@ -25,24 +25,24 @@ import 'package:flutter_app/features/profile/presentation/pages/update_profile_s
 import 'package:flutter_app/features/rfq/presentation/pages/rfq_detail_screen.dart';
 import 'package:flutter_app/features/rfq/presentation/pages/rfq_requests_screen.dart';
 import 'package:flutter_app/features/splash/presentation/pages/splash_screen.dart';
-import 'package:flutter_app/features/vendor/presentation/pages/vendor_checkout_screen.dart';
-import 'package:flutter_app/features/vendor/presentation/pages/vendor_payment_status_screen.dart';
-import 'package:flutter_app/features/vendor/presentation/pages/vendor_rfq_requests_screen.dart';
-import 'package:flutter_app/features/vendor/presentation/pages/vendor_rfq_cart_screen.dart';
-import 'package:flutter_app/features/vendor/presentation/pages/vendor_rfq_status_screen.dart';
-import 'package:flutter_app/features/supplier/presentation/pages/supplier_details_screen.dart';
-import 'package:flutter_app/features/vendor/presentation/pages/vendor_all_categories_screen.dart';
-import 'package:flutter_app/features/vendor/presentation/pages/vendor_all_products_screen.dart';
-import 'package:flutter_app/features/vendor/presentation/pages/vendor_home_screen.dart';
-import 'package:flutter_app/features/vendor/presentation/pages/vendor_main_screen.dart';
-import 'package:flutter_app/features/vendor/presentation/pages/documents_screen.dart';
-import 'package:flutter_app/features/vendor/presentation/pages/vendor_bank_details_screen.dart';
+import 'package:flutter_app/features/shopping/presentation/pages/checkout_screen.dart';
+import 'package:flutter_app/features/shopping/presentation/pages/payment_status_screen.dart';
+import 'package:flutter_app/features/shopping/presentation/pages/rfq_cart_screen.dart';
+import 'package:flutter_app/features/shopping/presentation/pages/rfq_status_screen.dart';
+import 'package:flutter_app/features/catalog/presentation/pages/catalog_vendor_details_screen.dart';
+import 'package:flutter_app/features/catalog/presentation/pages/catalog_categories_screen.dart';
+import 'package:flutter_app/features/catalog/presentation/pages/catalog_all_products_screen.dart';
+import 'package:flutter_app/features/catalog/presentation/pages/catalog_browse_screen.dart';
+import 'package:flutter_app/features/shopping/presentation/pages/shopping_rfq_list_screen.dart';
+import 'package:flutter_app/features/dashboard/presentation/pages/marketplace_screen.dart';
+import 'package:flutter_app/features/documents/presentation/pages/my_documents_screen.dart';
+import 'package:flutter_app/features/bank/presentation/pages/bank_details_edit_screen.dart';
 import 'package:flutter_app/features/terms/presentation/pages/vendor_terms_of_service_screen.dart';
 import 'package:flutter_app/features/terms/presentation/pages/terms_of_service_screen.dart';
 import 'package:flutter_app/features/verification/presentation/pages/verification_status_screen.dart';
 import 'package:flutter_app/features/wallet/presentation/pages/my_wallet_screen.dart';
 import 'package:flutter_app/features/orders/domain/entities/order.dart';
-import 'package:flutter_app/features/vendor/domain/entities/vendor_rfq_request.dart';
+import 'package:flutter_app/features/catalog/domain/entities/catalog_rfq_request.dart';
 import 'package:flutter_app/features/products/domain/entities/product.dart';
 import 'package:flutter_app/features/rfq/domain/entities/rfq.dart';
 import 'package:flutter_app/app/routing/app_routes.dart';
@@ -88,8 +88,8 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
         (_) => const VerificationStatusScreen.rejected(),
       ),
       _route(AppRoutes.choosePlan, (_) => const ChoosePlanScreen()),
-      _route(AppRoutes.home, (_) => const HomeScreen()),
-      _route(AppRoutes.vendorMain, (_) => const VendorMainScreen()),
+      _route(AppRoutes.home, (_) => const DashboardScreen()),
+      _route(AppRoutes.vendorMain, (_) => const MarketplaceScreen()),
       _route(AppRoutes.addProduct, (_) => const AddProductScreen()),
       _route(
         AppRoutes.editProduct,
@@ -120,50 +120,46 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
       _route(AppRoutes.accountDetails, (_) => const AccountDetailsScreen()),
       _route(AppRoutes.vendorProfile, (_) => const SupplierProfileScreen()),
       _route(AppRoutes.wallet, (_) => const MyWalletScreen()),
-      _route(AppRoutes.vendorHome, (_) => const VendorHomeScreen()),
+      _route(AppRoutes.vendorHome, (_) => const CatalogBrowseScreen()),
       _route(
         AppRoutes.vendorCategories,
-        (_) => const VendorAllCategoriesScreen(),
+        (_) => const CatalogCategoriesScreen(),
       ),
       _route(
-        AppRoutes.vendorRfqRequests,
-        (_) => const VendorRfqRequestsScreen(),
+        AppRoutes.catalogRfqRequests,
+        (_) => const ShoppingRfqListScreen(),
       ),
       _route(
         AppRoutes.vendorAllProducts,
-        (_) => const VendorAllProductsScreen(),
+        (_) => const CatalogAllProductsScreen(),
       ),
-      _route(AppRoutes.supplierDetails, (_) => const SupplierDetailsScreen()),
+      _route(
+        AppRoutes.supplierDetails,
+        (_) => const CatalogVendorDetailsScreen(),
+      ),
       _route(
         AppRoutes.vendorCheckout,
-        (state) => VendorCheckoutScreen(
-          request: state.extra is VendorRfqRequest
-              ? state.extra as VendorRfqRequest
+        (state) => CheckoutScreen(
+          request: state.extra is CatalogRfqRequest
+              ? state.extra as CatalogRfqRequest
               : null,
         ),
       ),
       _route(
         AppRoutes.vendorPaymentStatus,
-        (state) =>
-            VendorPaymentStatusScreen(isSuccess: _requiredExtra<bool>(state)),
+        (state) => PaymentStatusScreen(isSuccess: _requiredExtra<bool>(state)),
       ),
       _route(AppRoutes.vendorCart, (state) {
         final data = _requiredExtra<VendorCartRouteData>(state);
-        return VendorRfqCartScreen(
+        return RfqCartScreen(
           cartItems: data.cartItems,
           initialQuantities: data.initialQuantities,
         );
       }),
-      _route(AppRoutes.vendorRfqStatus, (_) => const VendorRfqStatusScreen()),
+      _route(AppRoutes.vendorRfqStatus, (_) => const RfqStatusScreen()),
       _route(AppRoutes.vendorTerms, (_) => const VendorTermsOfServiceScreen()),
-      _route(
-        AppRoutes.vendorUploadDocuments,
-        (_) => const VendorDocumentsScreen(),
-      ),
-      _route(
-        AppRoutes.vendorBankDetails,
-        (_) => const VendorBankDetailsScreen(),
-      ),
+      _route(AppRoutes.vendorUploadDocuments, (_) => const MyDocumentsScreen()),
+      _route(AppRoutes.vendorBankDetails, (_) => const BankDetailsEditScreen()),
     ],
   );
   return router;

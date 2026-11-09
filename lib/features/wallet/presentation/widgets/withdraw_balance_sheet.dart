@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -8,7 +8,6 @@ import 'package:flutter_app/core/validation/app_form_validation.dart';
 import 'package:flutter_app/features/wallet/presentation/cubit/withdraw_form_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-// ───────────────────────────────────────────────────────────────────────────── Public model —
 class BankAccountModel {
   final String name;
   final String maskedNumber;
@@ -16,7 +15,6 @@ class BankAccountModel {
   const BankAccountModel({required this.name, required this.maskedNumber});
 }
 
-// ───────────────────────────────────────────────────────────────────────────── Withdraw Balance
 class WithdrawBalanceSheet extends StatelessWidget {
   final List<BankAccountModel> accounts;
   final String initialAmount;
@@ -87,7 +85,6 @@ class WithdrawBalanceSheet extends StatelessWidget {
   }
 }
 
-// ───────────────────────────────────────────────────────────────────────────── Stateful content —
 class _WithdrawBalanceContent extends StatefulWidget {
   final List<BankAccountModel> accounts;
   final String initialAmount;
@@ -152,7 +149,6 @@ class _WithdrawBalanceContentState extends State<_WithdrawBalanceContent> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // ── Amount label ──────────────────────────────────
             Text(
               widget.amountLabel,
               style: GoogleFonts.inter(
@@ -164,7 +160,6 @@ class _WithdrawBalanceContentState extends State<_WithdrawBalanceContent> {
 
             const SizedBox(height: 8),
 
-            // ── Amount input ──────────────────────────────────
             FormField<String>(
               initialValue: _amountController.text,
               validator: (value) => AppFormValidation.requiredText(
@@ -222,7 +217,6 @@ class _WithdrawBalanceContentState extends State<_WithdrawBalanceContent> {
 
             const SizedBox(height: 22),
 
-            // ── Bank account label ────────────────────────────
             Text(
               widget.accountLabel,
               style: GoogleFonts.inter(
@@ -234,7 +228,6 @@ class _WithdrawBalanceContentState extends State<_WithdrawBalanceContent> {
 
             const SizedBox(height: 10),
 
-            // ── Account tiles ─────────────────────────────────
             ...widget.accounts.asMap().entries.map(
               (entry) => Padding(
                 padding: const EdgeInsets.only(bottom: 10),
@@ -248,7 +241,6 @@ class _WithdrawBalanceContentState extends State<_WithdrawBalanceContent> {
 
             const SizedBox(height: 8),
 
-            // ── Action button ─────────────────────────────────
             AppContinueButton(
               text: widget.buttonLabel,
               height: 52,
@@ -263,7 +255,6 @@ class _WithdrawBalanceContentState extends State<_WithdrawBalanceContent> {
   }
 }
 
-// ───────────────────────────────────────────────────────────────────────────── Account tile
 class _AccountTile extends StatelessWidget {
   final BankAccountModel account;
   final bool isSelected;
@@ -297,7 +288,7 @@ class _AccountTile extends StatelessWidget {
               ),
               child: Center(
                 child: SvgPicture.asset(
-                  'assets/icons/Group 256.svg',
+                  'assets/icons/ic_bank.svg',
                   width: 28,
                   height: 20,
                 ),

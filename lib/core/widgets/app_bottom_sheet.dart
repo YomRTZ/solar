@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // A generic bottom-sheet shell that provides
@@ -45,7 +45,6 @@ class AppBottomSheet extends StatelessWidget {
     this.includeSafeAreaBottom = true,
   });
 
-  // ── Static convenience launcher ─────────────────────────
   static Future<T?> show<T>({
     required BuildContext context,
     required Widget child,
@@ -118,7 +117,6 @@ class AppBottomSheet extends StatelessWidget {
                   : MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // ── Drag handle ────────────────────────────────
                 if (showHandle)
                   Center(
                     child: Container(
@@ -134,7 +132,6 @@ class AppBottomSheet extends StatelessWidget {
                 else
                   const SizedBox(height: 20),
 
-                // ── Title ──────────────────────────────────────
                 if (title != null) ...[
                   Text(
                     title!,
@@ -148,7 +145,6 @@ class AppBottomSheet extends StatelessWidget {
                   const SizedBox(height: 20),
                 ],
 
-                // ── Content ────────────────────────────────────
                 if (sheetHeight == null) child else Expanded(child: child),
               ],
             ),

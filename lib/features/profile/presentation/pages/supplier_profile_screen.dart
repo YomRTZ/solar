@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
@@ -37,21 +37,18 @@ class SupplierProfileScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         body: Column(
           children: [
-            // ── Header ─────────────────────────────────────
             SecondAppHeader(
               title: 'My Profile',
               onBackPressed:
                   onBackPressed ?? () => context.go(AppRoutes.vendorMain),
             ),
 
-            // ── Scrollable body ────────────────────────────
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // ── Avatar + Name + Contact ─────────────
                     const SizedBox(height: 8),
                     Center(
                       child: Container(
@@ -96,11 +93,9 @@ class SupplierProfileScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 31),
 
-                    // ── Business Information card ────────
                     _buildBusinessCard(context),
                     const SizedBox(height: 107),
 
-                    // ── Logout ───────────────────────────
                     _buildLinkRow(
                       context,
                       icon: Icons.logout_rounded,
@@ -118,7 +113,6 @@ class SupplierProfileScreen extends StatelessWidget {
     );
   }
 
-  // ── Business Information card ─────────────────────────────────
   Widget _buildBusinessCard(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -136,7 +130,6 @@ class SupplierProfileScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ── Section header ─────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
             child: Row(
@@ -181,7 +174,6 @@ class SupplierProfileScreen extends StatelessWidget {
           ),
           const Divider(height: 1, color: _divider),
 
-          // ── Info rows ──────────────────────────────────────
           _infoRow('Business', 'Solar Trade Rahul Roy'),
           _infoRow('Contact Person', 'Rahul Roy'),
           _infoRow('Address', '13-223 Saket,\nNew Delhi'),
@@ -229,7 +221,6 @@ class SupplierProfileScreen extends StatelessWidget {
     );
   }
 
-  // ── Generic tappable link row ─────────────────────────────────
   Widget _buildLinkRow(
     BuildContext context, {
     required IconData icon,

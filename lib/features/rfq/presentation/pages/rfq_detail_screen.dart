@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/core/widgets/app_text_field.dart';
@@ -8,8 +8,8 @@ import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/rfq/data/datasources/rfq_data.dart';
 import 'package:flutter_app/features/rfq/domain/entities/rfq.dart';
 import 'package:flutter_app/features/rfq/presentation/cubit/rfq_cubit.dart';
-import 'package:flutter_app/features/vendor/data/datasources/vendor_rfq_data.dart';
-import 'package:flutter_app/features/vendor/domain/entities/vendor_rfq_request.dart';
+import 'package:flutter_app/features/catalog/data/datasources/catalog_rfq_data.dart';
+import 'package:flutter_app/features/catalog/domain/entities/catalog_rfq_request.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Two-phase screen: Phase 1 — shows product detail + "Quote Now" / "Reject Quote" buttons Phase 2
@@ -84,9 +84,9 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
             onPressed: () {
               Navigator.pop(dialogContext);
               RFQData.updateStatus(widget.rfq.id, RFQStatus.rejected);
-              VendorRfqData.updateStatus(
+              CatalogRfqData.updateStatus(
                 widget.rfq.id,
-                VendorRfqStatus.rejected,
+                CatalogRfqStatus.rejected,
               );
               Navigator.pop(context, true);
             },
@@ -123,15 +123,15 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
       final gstPercent = _parseAmount(state.gst);
       final subtotal = unitPrice * quantity;
       final gstAmount = subtotal * gstPercent / 100;
-      final request = VendorRfqData.getById(widget.rfq.id);
-      VendorRfqData.receiveQuote(
+      final request = CatalogRfqData.getById(widget.rfq.id);
+      CatalogRfqData.receiveQuote(
         widget.rfq.id,
         supplierName: request?.supplierName ?? 'Supplier',
         amount: _formatAmount(subtotal + gstAmount),
         dateLabel:
             'Quote received ${DateTime.now().toLocal().toString().split(' ').first}',
         items: [
-          VendorOrderItem(
+          CatalogOrderItem(
             productName: widget.rfq.productTitle,
             qty: '$quantity x 1 =',
             price: _formatAmount(subtotal),
@@ -187,7 +187,6 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
     );
   }
 
-  // ══════════════════════════════════════════════════════════ PHASE 1 — Detail View
   Widget _buildDetailView() {
     final rfq = widget.rfq;
     return SingleChildScrollView(
@@ -392,7 +391,6 @@ class _RFQDetailScreenState extends State<RFQDetailScreen> {
     );
   }
 
-  // ══════════════════════════════════════════════════════════ PHASE 2 — Quote Form
   Widget _buildQuoteForm(RfqDetailState state) {
     final rfq = widget.rfq;
     return SingleChildScrollView(

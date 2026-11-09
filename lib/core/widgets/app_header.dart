@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -8,7 +8,6 @@ class AppHeader extends StatelessWidget {
   final bool showBackButton;
   final VoidCallback? onBackPressed;
 
-  // ── Deprecated params kept for API compatibility ──────────
   @Deprecated('Total height is now fixed at 192px. This parameter has no effect.')
   final double visibleHeight;
 
@@ -44,7 +43,6 @@ class AppHeader extends StatelessWidget {
       height: totalHeight,
       child: Stack(
         children: [
-          // ── Gradient background ───────────────────────────
           Positioned.fill(
             child: const DecoratedBox(
               decoration: BoxDecoration(
@@ -57,7 +55,6 @@ class AppHeader extends StatelessWidget {
             ),
           ),
 
-          // ── Back arrow ────────────────────────────────────
           // left:24, right:312, top:68, bottom:100
           if (showBackButton)
             Positioned(
@@ -68,7 +65,7 @@ class AppHeader extends StatelessWidget {
               child: GestureDetector(
                 onTap: onBackPressed ?? () => Navigator.pop(context),
                 child: SvgPicture.asset(
-                  'assets/icons/arrow-narrow-left.svg',
+                  'assets/icons/ic_arrow_back.svg',
                   width: 24,
                   height: 24,
                   fit: BoxFit.contain,
@@ -76,7 +73,6 @@ class AppHeader extends StatelessWidget {
               ),
             ),
 
-          // ── Title ─────────────────────────────────────────
           // left:24, right:9, top:116, bottom:34
           Positioned(
             top: 116,

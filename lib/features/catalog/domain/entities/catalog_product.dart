@@ -1,4 +1,4 @@
-// Catalog / Vendor product model
+﻿// Catalog / Vendor product model
 class CatalogProduct {
   final String id;
   final String name;
@@ -6,7 +6,6 @@ class CatalogProduct {
   final String price;
   final String imagePath;
 
-  // ── Extended fields used in the vendor detail sheet ────────
   final String modelNumber;
   final String category;
   final String warranty;

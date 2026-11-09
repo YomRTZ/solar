@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -74,7 +74,6 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
     );
   }
 
-  // ── Header ─────────────────────────────────────────────────
   Widget _buildHeader(BuildContext context) {
     final top = MediaQuery.of(context).padding.top;
     return Container(
@@ -95,7 +94,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
             GestureDetector(
               onTap: () => Navigator.pop(context),
               child: SvgPicture.asset(
-                'assets/icons/arrow-narrow-left.svg',
+                'assets/icons/ic_arrow_back.svg',
                 width: 24,
                 height: 24,
                 fit: BoxFit.contain,
@@ -167,7 +166,6 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
     );
   }
 
-  // ── Search bar ─────────────────────────────────────────────
   Widget _buildSearchBar() {
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 21, 17, 14),
@@ -225,7 +223,6 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
     );
   }
 
-  // ── 2-column grid ─────────────────────────────────────────
   Widget _buildGrid() {
     final products = _filtered;
 
@@ -261,7 +258,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
       itemCount: products.length,
       itemBuilder: (context, index) {
         final product = products[index];
-        final qty = _catalogCubit.state.rfqQuantities[product.id] ?? 0;
+        final qty = _catalogCubit.state.cartQuantities[product.id] ?? 0;
 
         // Reusable AppCatalogCard
         return AppCatalogCard(
@@ -278,7 +275,6 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
     );
   }
 
-  // ── Cart summary bottom sheet ─────────────────────────────
   void _showCartSummary(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -287,7 +283,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
       ),
       builder: (_) {
         final addedProducts = CatalogData.products
-            .where((p) => (_catalogCubit.state.rfqQuantities[p.id] ?? 0) > 0)
+            .where((p) => (_catalogCubit.state.cartQuantities[p.id] ?? 0) > 0)
             .toList();
 
         return Padding(
@@ -334,7 +330,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'x${_catalogCubit.state.rfqQuantities[p.id]}',
+                        'x${_catalogCubit.state.cartQuantities[p.id]}',
                         style: GoogleFonts.roboto(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,

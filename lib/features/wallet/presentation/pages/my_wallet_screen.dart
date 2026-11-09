@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/wallet/presentation/widgets/withdraw_balance_sheet.dart';
 
-// ───────────────────────────────────────────────────────────────────────────── Model
 enum _TransactionType { credit, debit }
 
 class _Transaction {
@@ -22,7 +21,6 @@ class _Transaction {
   });
 }
 
-// ───────────────────────────────────────────────────────────────────────────── Screen
 class MyWalletScreen extends StatelessWidget {
   const MyWalletScreen({super.key});
 
@@ -120,7 +118,6 @@ class MyWalletScreen extends StatelessWidget {
   }
 }
 
-// ───────────────────────────────────────────────────────────────────────────── Balance card
 class _BalanceCard extends StatelessWidget {
   final VoidCallback onWithdrawTap;
   const _BalanceCard({required this.onWithdrawTap});
@@ -144,7 +141,7 @@ class _BalanceCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SvgPicture.asset('assets/icons/Big box.svg', width: 34, height: 52),
+          SvgPicture.asset('assets/icons/ic_package_box.svg', width: 34, height: 52),
           const SizedBox(height: 4),
           Text(
             'Wallet Balance',
@@ -180,7 +177,7 @@ class _BalanceCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SvgPicture.asset(
-                  'assets/icons/feather_upload-cloud.svg',
+                  'assets/icons/ic_wallet_upload.svg',
                   width: 20,
                   height: 18,
                 ),
@@ -205,7 +202,6 @@ class _BalanceCard extends StatelessWidget {
   }
 }
 
-// ───────────────────────────────────────────────────────────────────────────── Transaction card
 class _TransactionCard extends StatelessWidget {
   final _Transaction transaction;
   const _TransactionCard({required this.transaction});
@@ -240,8 +236,8 @@ class _TransactionCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             child: isCredit
-                ? SvgPicture.asset('assets/icons/import.svg')
-                : SvgPicture.asset('assets/icons/export.svg'),
+                ? SvgPicture.asset('assets/icons/ic_import.svg')
+                : SvgPicture.asset('assets/icons/ic_export.svg'),
           ),
 
           const SizedBox(width: 12),

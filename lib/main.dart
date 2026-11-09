@@ -6,6 +6,8 @@ import 'package:flutter_app/app/routing/app_router.dart';
 import 'package:flutter_app/core/bloc/app_bloc_observer.dart';
 import 'package:flutter_app/core/theme/app_theme.dart';
 import 'package:flutter_app/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:flutter_app/features/products/data/repositories/in_memory_product_repository.dart';
+import 'package:flutter_app/features/products/domain/repositories/product_repository.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,18 +24,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      // ── Global cubits provided to the entire widget tree ──
+    return MultiRepositoryProvider(
       providers: [
-        // AuthCubit: tracks logged-in role, mobile number, and auth status.
-        // Screens read it via context.read<AuthCubit>() or BlocBuilder.
-        BlocProvider<AuthCubit>(create: (_) => AuthCubit()),
+        RepositoryProvider<ProductRepository>(
+          create: (_) => InMemoryProductRepository(),
+        ),
       ],
-      child: MaterialApp.router(
-        title: 'SolarTradeXHub',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        routerConfig: appRouter,
+      child: MultiBlocProvider(
+        providers: [BlocProvider<AuthCubit>(create: (_) => AuthCubit())],
+        child: MaterialApp.router(
+          title: 'SolarTradeXHub',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          routerConfig: appRouter,
+        ),
       ),
     );
   }

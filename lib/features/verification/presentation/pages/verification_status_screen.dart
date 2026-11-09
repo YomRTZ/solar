@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
@@ -8,10 +8,8 @@ import 'package:flutter_app/core/widgets/app_header.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/core/widgets/status_result_layout.dart';
 
-// ── Status enum ────────────────────────────────────────────────────────────
 enum VerificationStatus { inProgress, approved, rejected }
 
-// ── Main Screen ────────────────────────────────────────────────────────────
 class VerificationStatusScreen extends StatelessWidget {
   final VerificationStatus status;
   final VoidCallback? onContinue;
@@ -112,7 +110,6 @@ class _StatusLayout extends StatelessWidget {
   }
 }
 
-// ── STATE 1 — In Progress ─────────────────────────────────────────────────
 class _InProgressBody extends StatefulWidget {
   @override
   State<_InProgressBody> createState() => _InProgressBodyState();
@@ -154,7 +151,7 @@ class _InProgressBodyState extends State<_InProgressBody>
       icon: ScaleTransition(
         scale: _pulse,
         child: Image.asset(
-          'assets/icons/image_1_1.png',
+          'assets/icons/ic_status_verification_pending.png',
           width: 111,
           height: 111,
           fit: BoxFit.contain,
@@ -186,7 +183,6 @@ class _InProgressBodyState extends State<_InProgressBody>
   }
 }
 
-// ── STATE 2 — Approved ────────────────────────────────────────────────────
 class _ApprovedBody extends StatelessWidget {
   final VoidCallback onContinue;
   const _ApprovedBody({required this.onContinue});
@@ -195,7 +191,7 @@ class _ApprovedBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return _StatusLayout(
       icon: Image.asset(
-        'assets/icons/image_1.png',
+        'assets/icons/ic_status_success.png',
         width: 111,
         height: 111,
         fit: BoxFit.contain,
@@ -257,7 +253,6 @@ class _ApprovedBody extends StatelessWidget {
   }
 }
 
-// ── STATE 3 — Rejected ────────────────────────────────────────────────────
 class _RejectedBody extends StatelessWidget {
   final String errorDetail;
   final VoidCallback onUpdateDetails;
@@ -270,7 +265,7 @@ class _RejectedBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return _StatusLayout(
       icon: Image.asset(
-        'assets/icons/image_1_2.png',
+        'assets/icons/ic_status_failure.png',
         width: 111,
         height: 111,
         fit: BoxFit.contain,

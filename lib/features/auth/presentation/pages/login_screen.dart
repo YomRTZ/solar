@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     left: 88.5,
                     right: 89.5,
                     child: Image.asset(
-                      'assets/images/photo_5979016740496674893_x.jpg',
+                      'assets/images/solar_panels_auth_background.jpg',
                       fit: BoxFit.contain,
                     ),
                   ),

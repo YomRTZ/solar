@@ -1,4 +1,4 @@
-import 'package:file_picker/file_picker.dart';
+﻿import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -28,7 +28,6 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
     super.dispose();
   }
 
-  // ── Real file picker ────────────────────────────────────────
   Future<void> _pickFile(void Function(String fileName) onPicked) async {
     try {
       final result = await FilePicker.platform.pickFiles(
@@ -71,14 +70,12 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
           extendBodyBehindAppBar: true,
           body: Column(
             children: [
-              // ── Header ──────────────────────────────────────
               const AppHeader(
                 title: 'Upload Documents',
                 height: 133,
                 titleBelowBackButton: true,
               ),
 
-              // ── Scrollable form body ─────────────────────────
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(0, 23, 0, 25),
@@ -88,7 +85,6 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // ── GST Certificate ────────────────
                           AppFileUploadField(
                             label: 'Gst Certificate',
                             maxWidth: double.infinity,
@@ -100,7 +96,6 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                           ),
                           const SizedBox(height: 16),
 
-                          // ── PAN Card ───────────────────────
                           AppFileUploadField(
                             label: 'Pan Card',
                             maxWidth: double.infinity,
@@ -112,7 +107,6 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                           ),
                           const SizedBox(height: 16),
 
-                          // ── Business Registration ──────────
                           AppFileUploadField(
                             label: 'Business Registration',
                             maxWidth: double.infinity,
@@ -125,7 +119,6 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                           ),
                           const SizedBox(height: 16),
 
-                          // ── Cancelled Cheque ───────────────
                           AppFileUploadField(
                             label: 'Cancelled Cheque',
                             maxWidth: double.infinity,
@@ -136,7 +129,6 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                             onTap: () => _pickFile(_cubit.setCancelledCheque),
                           ),
 
-                          // ── Continue button ────────────────
                           Padding(
                             padding: const EdgeInsets.only(top: 18),
                             child: AppContinueButton(

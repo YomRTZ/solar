@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
@@ -11,7 +11,6 @@ import 'package:flutter_app/features/orders/domain/entities/order.dart';
 import 'package:flutter_app/features/orders/presentation/cubit/orders_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-// ── Filter enum ────────────────────────────────────────────────────────────────
 enum _Filter { all, pending, delivered }
 
 extension _FilterExt on _Filter {
@@ -27,7 +26,6 @@ extension _FilterExt on _Filter {
   }
 }
 
-// ───────────────────────────────────────────────────────────────────────────── ORDERS SCREEN
 class OrdersScreen extends StatefulWidget {
   final bool showBackButton;
   final VoidCallback? onBackPressed;
@@ -72,7 +70,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // ── Header ──────────────────────────────────────
               SecondAppHeader(
                 title: 'My Orders',
                 showBackButton: widget.showBackButton,
@@ -106,7 +103,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 
-  // ── Filter tabs: All / Pending / Delivered ───────────────────
   Widget _buildFilterTabs() {
     return Container(
       margin: const EdgeInsets.fromLTRB(0, 28, 0, 11),
@@ -152,7 +148,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 
-  // ── Order card ───────────────────────────────────────────────
   Widget _buildOrderCard(Order order) {
     return AppExpandableCard(
       imagePath: order.productImagePath,
@@ -167,7 +162,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 
-  // ── Empty state ───────────────────────────────────────────────
   Widget _buildEmptyState() {
     return Center(
       child: Column(

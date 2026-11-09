@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
@@ -10,7 +10,6 @@ import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/features/plan/presentation/cubit/plan_selection_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-// ───────────────────────────────────────────────────────────────────────────── Vendor — Choose a
 class ChoosePlanScreen extends StatefulWidget {
   const ChoosePlanScreen({super.key});
 
@@ -58,7 +57,7 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
                   scaleY: 4 / 3,
                   alignment: Alignment.bottomLeft,
                   child: Image.asset(
-                    'assets/images/photo_5979016740496674897_y.jpg',
+                    'assets/images/solar_panels_plan_background.jpg',
                     fit: BoxFit.cover,
                     alignment: Alignment.bottomLeft,
                   ),
@@ -283,7 +282,6 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
   }
 }
 
-// ───────────────────────────────────────────────────────────────────────────── Feature row — blue
 class _FeatureRow extends StatelessWidget {
   final String label;
   const _FeatureRow({required this.label});
@@ -299,7 +297,7 @@ class _FeatureRow extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               SvgPicture.asset(
-                'assets/icons/Vectorcheckbox.svg',
+                'assets/icons/ic_plan_checkbox.svg',
                 width: 28,
                 height: 28,
                 colorFilter: const ColorFilter.mode(
@@ -308,7 +306,7 @@ class _FeatureRow extends StatelessWidget {
                 ),
               ),
               SvgPicture.asset(
-                'assets/icons/Vectorright.svg',
+                'assets/icons/ic_plan_feature_check.svg',
                 width: 15,
                 height: 14.2,
                 colorFilter: const ColorFilter.mode(
@@ -335,7 +333,6 @@ class _FeatureRow extends StatelessWidget {
   }
 }
 
-// ───────────────────────────────────────────────────────────────────────────── Plan card
 class _PlanCard extends StatelessWidget {
   final String tag;
   final String price;
@@ -403,7 +400,7 @@ class _PlanCard extends StatelessWidget {
                           top: 4.14,
                           left: 2.77,
                           child: SvgPicture.asset(
-                            'assets/icons/Vectorcheckbox.svg',
+                            'assets/icons/ic_plan_checkbox.svg',
                             width: 20.60515594482422,
                             height: 20.606464385986328,
                             colorFilter: const ColorFilter.mode(
@@ -434,7 +431,7 @@ class _PlanCard extends StatelessWidget {
                           top: 7.5,
                           left: 5.5,
                           child: SvgPicture.asset(
-                            'assets/icons/Vectorright.svg',
+                            'assets/icons/ic_plan_feature_check.svg',
                             width: 15,
                             height: 14.2,
                             colorFilter: const ColorFilter.mode(

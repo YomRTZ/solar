@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,7 +8,7 @@ import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/widgets/app_expandable_card.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/products/domain/entities/product.dart';
-import 'package:flutter_app/features/products/data/datasources/products_data.dart';
+import 'package:flutter_app/features/products/domain/repositories/product_repository.dart';
 import 'package:flutter_app/features/products/presentation/cubit/product_list_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -38,9 +38,9 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
   }
 
   List<Product> get filteredProducts {
-    List<Product> products = ProductsData.getProductsByCategory(
-      _productListCubit.state.category,
-    );
+    List<Product> products = context
+        .read<ProductRepository>()
+        .getProductsByCategory(_productListCubit.state.category);
     if (_productListCubit.state.query.isNotEmpty) {
       final q = _productListCubit.state.query.toLowerCase();
       products = products
@@ -71,7 +71,6 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
           extendBodyBehindAppBar: true,
           body: Column(
             children: [
-              // ── SecondAppHeader ──────────────────────────────
               SecondAppHeader(
                 title: 'My Products',
                 showBackButton: widget.showBackButton,
@@ -84,7 +83,6 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
                     },
               ),
 
-              // ── Search Bar ───────────────────────────────────
               _buildSearchBar(),
 
               Expanded(
@@ -117,7 +115,6 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
     );
   }
 
-  // ── Search bar ─────────────────────────────────────────────
   Widget _buildSearchBar() {
     return Container(
       height: 46,
@@ -138,7 +135,7 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
       ),
       child: Row(
         children: [
-          SvgPicture.asset('assets/icons/search.svg', width: 24, height: 24),
+          SvgPicture.asset('assets/icons/ic_search.svg', width: 24, height: 24),
           const SizedBox(width: 11),
           Expanded(
             child: TextField(
@@ -187,7 +184,6 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
     );
   }
 
-  // ── Category tabs ──────────────────────────────────────────
   Widget _buildCategoryTabs() {
     return Container(
       margin: const EdgeInsets.fromLTRB(0, 14, 0, 11),
@@ -236,7 +232,6 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
     );
   }
 
-  // ── Product card ───────────────────────────────────────────
   Widget _buildProductCard(Product product) {
     switch (product.status) {
       case ProductStatus.inStock:
@@ -266,7 +261,6 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
     }
   }
 
-  // ── Empty state ────────────────────────────────────────────
   Widget _buildEmptyState() {
     return Center(
       child: Column(
@@ -292,7 +286,6 @@ class _MyProductsScreenState extends State<MyProductsScreen> {
     );
   }
 
-  // ── Edit product ──────────────────────────────────────────
   void _editProduct(Product product) {
     context.push<bool>(AppRoutes.editProduct, extra: product).then((changed) {
       if (changed == true && mounted) setState(() {});

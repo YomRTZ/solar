@@ -49,7 +49,7 @@ class OrderDispatchFormState {
     this.trackingNumber = '12,340',
     this.dispatchDate = '20 Oct 2026',
     this.proofImageAssetPath =
-        'assets/solarimages/03f133a91b6e5ade2638722f368e27d2f92f051b.png',
+        'assets/solarimages/solar_installation_delivery.png',
     this.proofImageBytes,
     this.isLoading = false,
   });

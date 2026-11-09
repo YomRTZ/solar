@@ -31,9 +31,9 @@ abstract final class AppRoutes {
   static const wallet = '/wallet';
   static const vendorHome = '/vendor/home';
   static const vendorCategories = '/vendor/categories';
-  static const vendorRfqRequests = '/vendor/rfqs';
+  static const catalogRfqRequests = '/vendor/rfqs';
   static const vendorAllProducts = '/vendor/products';
-  static const supplierDetails = '/supplier/details';
+  static const supplierDetails = '/Vendor/details';
   static const vendorCheckout = '/vendor/checkout';
   static const vendorPaymentStatus = '/vendor/payment-status';
   static const vendorCart = '/vendor/rfq-cart';

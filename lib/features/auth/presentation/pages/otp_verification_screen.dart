@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
@@ -145,19 +145,17 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
             builder: (context, constraints) {
               return Stack(
                 children: [
-                  // ── Logo ───────────────────────────────────
                   Positioned(
                     top: 77,
                     bottom: 575,
                     left: 88.5,
                     right: 89.5,
                     child: Image.asset(
-                      'assets/images/photo_5979016740496674893_x.jpg',
+                      'assets/images/solar_panels_auth_background.jpg',
                       fit: BoxFit.contain,
                     ),
                   ),
 
-                  // ── "Verify OTP" title ─────────────────────
                   Positioned(
                     top: constraints.maxHeight - 575 + 24,
                     left: 48,
@@ -174,7 +172,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     ),
                   ),
 
-                  // ── Subtitle ───────────────────────────────
                   Positioned(
                     top: constraints.maxHeight - 575 + 24 + 34 + 12,
                     left: 68.5,
@@ -208,7 +205,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     ),
                   ),
 
-                  // ── OTP label + fields ─────────────────────
                   Positioned(
                     top: constraints.maxHeight -
                         575 +
@@ -248,7 +244,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     ),
                   ),
 
-                  // ── Resend OTP ─────────────────────────────
                   Positioned(
                     left: 16,
                     right: 17,
@@ -266,7 +261,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     ),
                   ),
 
-                  // ── Continue button ────────────────────────
                   Positioned(
                     left: 16,
                     right: 17,

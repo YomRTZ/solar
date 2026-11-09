@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
@@ -27,15 +27,13 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // ── Full-screen background ────────────────────────
           Positioned.fill(
             child: Image.asset(
-              'assets/images/photo_5979016740496674867_y.jpg',
+              'assets/images/solartradeshub_brand_logo.jpg',
               fit: BoxFit.cover,
             ),
           ),
 
-          // ── Dark transparent overlay ──────────────────────
           Positioned.fill(
             child: DecoratedBox(
               decoration: BoxDecoration(
@@ -57,12 +55,11 @@ class _SplashScreenState extends State<SplashScreen> {
             top: 59,
             bottom: 497,
             child: Image.asset(
-              'assets/images/a_clean_high_resolution_vector_like_logo_image_on.png',
+              'assets/images/solartradeshub_logo.png',
               fit: BoxFit.contain,
             ),
           ),
 
-          // ── Text block: stacked below logo ───────────────
           // Logo bottom edge = screen_height - 497
           // "Connecting"  : 14px below logo   → left:44, right:53
           // "Solar..."    : 10px below above   → left:59, right:45

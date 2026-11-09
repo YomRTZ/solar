@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Reusable catalog product card — 156×217px
@@ -36,7 +36,6 @@ class AppCatalogCard extends StatelessWidget {
     this.isNetworkImage = false,
   });
 
-  // ── Shared gradient decoration for both button states ──────
   static const BoxDecoration _btnDecoration = BoxDecoration(
     gradient: LinearGradient(
       begin: Alignment.topCenter,
@@ -83,10 +82,8 @@ class AppCatalogCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(7),
         child: Column(
           children: [
-            // ── Image section (top 97px) ──────────────────────
             _buildImage(),
 
-            // ── Content section (bottom 120px) ───────────────
             _buildContent(),
           ],
         ),
@@ -94,7 +91,6 @@ class AppCatalogCard extends StatelessWidget {
     );
   }
 
-  // ── Image ─────────────────────────────────────────────────
   Widget _buildImage() {
     return SizedBox(
       width: 156,
@@ -112,7 +108,6 @@ class AppCatalogCard extends StatelessWidget {
         child: const Icon(Icons.image_outlined, color: Colors.grey, size: 32),
       );
 
-  // ── Content ───────────────────────────────────────────────
   Widget _buildContent() {
     return Container(
       width: 156,
@@ -127,7 +122,6 @@ class AppCatalogCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Texts wrapper ──────────────────────────────────
           SizedBox(
             width: 136,
             child: Column(
@@ -166,7 +160,6 @@ class AppCatalogCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
 
-          // ── Price ──────────────────────────────────────────
           Container(
             padding:
                 const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
@@ -185,14 +178,12 @@ class AppCatalogCard extends StatelessWidget {
           ),
           const Spacer(),
 
-          // ── Action button ──────────────────────────────────
           quantity == 0 ? _buildAddButton() : _buildQtyRow(),
         ],
       ),
     );
   }
 
-  // ── "Add to RFQ" button (quantity == 0) ──────────────────
   Widget _buildAddButton() {
     return GestureDetector(
       onTap: onAdd,
@@ -206,7 +197,6 @@ class AppCatalogCard extends StatelessWidget {
     );
   }
 
-  // ── Qty row: [🗑] [count] [+] (quantity > 0) ─────────────
   Widget _buildQtyRow() {
     return Container(
       height: 30,

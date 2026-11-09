@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter_app/core/widgets/app_header.dart';
 
-// ───────────────────────────────────────────────────────────────────────────
 class VendorTermsOfServiceScreen extends StatelessWidget {
   const VendorTermsOfServiceScreen({super.key});
 
@@ -23,13 +22,11 @@ class VendorTermsOfServiceScreen extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // ── Header ──────────────────────────────────────
             AppHeader(
               title: 'Terms of Service',
               onBackPressed: () => Navigator.maybePop(context),
             ),
 
-            // ── Scrollable T&C content ───────────────────────
             const Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.fromLTRB(20, 21, 20, 24),
@@ -43,7 +40,6 @@ class VendorTermsOfServiceScreen extends StatelessWidget {
   }
 }
 
-// ── Terms content ─────────────────────────────────────────────────────────
 class _TermsContent extends StatelessWidget {
   const _TermsContent();
 
@@ -110,7 +106,6 @@ class _TermsContent extends StatelessWidget {
   }
 }
 
-// ── Small building blocks ─────────────────────────────────────────────────
 
 class _SectionHeading extends StatelessWidget {
   final String number;

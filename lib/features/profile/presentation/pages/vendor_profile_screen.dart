@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
@@ -39,28 +39,23 @@ class VendorProfileScreen extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // ── Header ──────────────────────────────────────
             SecondAppHeader(
               title: 'My Profile',
               onBackPressed: onBackPressed ?? () => context.go(AppRoutes.home),
             ),
 
-            // ── Scrollable content ───────────────────────────
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(20, 28, 20, 32),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // ── Avatar ────────────────────────────────
                     _buildAvatar(),
                     const SizedBox(height: 24),
 
-                    // ── Business Information card ─────────────
                     _buildBusinessCard(context),
                     const SizedBox(height: 20),
 
-                    // ── Account Details ───────────────────────
                     _buildLinkRow(
                       context,
                       icon: Icons.account_balance_wallet_outlined,
@@ -68,7 +63,6 @@ class VendorProfileScreen extends StatelessWidget {
                       onTap: () => context.push(AppRoutes.wallet),
                     ),
 
-                    // ── Documents ─────────────────────────────
                     _buildLinkRow(
                       context,
                       icon: Icons.description_outlined,
@@ -79,7 +73,6 @@ class VendorProfileScreen extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    // ── Logout ────────────────────────────────
                     _buildLinkRow(
                       context,
                       icon: Icons.logout_rounded,
@@ -97,7 +90,6 @@ class VendorProfileScreen extends StatelessWidget {
     );
   }
 
-  // ── Centred avatar + name + email ─────────────────────────────
   Widget _buildAvatar() {
     return Column(
       children: [
@@ -141,7 +133,6 @@ class VendorProfileScreen extends StatelessWidget {
     );
   }
 
-  // ── Business Information card ─────────────────────────────────
   Widget _buildBusinessCard(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -162,7 +153,6 @@ class VendorProfileScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ── Section header ─────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
             child: Row(
@@ -207,7 +197,6 @@ class VendorProfileScreen extends StatelessWidget {
           ),
           const Divider(height: 1, color: _divider),
 
-          // ── Info rows ──────────────────────────────────────
           _infoRow('Company Name', 'Solar Trade'),
           _infoRow('Email Address', 'Solar@gmail.com'),
           _infoRow('Address', '13-223 Saket,\nNew Delhi'),
@@ -260,7 +249,6 @@ class VendorProfileScreen extends StatelessWidget {
     );
   }
 
-  // ── Generic tappable link row ─────────────────────────────────
   Widget _buildLinkRow(
     BuildContext context, {
     required IconData icon,
