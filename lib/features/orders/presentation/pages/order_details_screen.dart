@@ -5,12 +5,35 @@ import 'package:go_router/go_router.dart';
 
 import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/widgets/widgets.dart';
+import 'package:flutter_app/features/orders/data/datasources/orders_data.dart';
 import 'package:flutter_app/features/orders/domain/entities/order.dart';
 
-class OrderDetailsScreen extends StatelessWidget {
+class OrderDetailsScreen extends StatefulWidget {
   final Order order;
 
   const OrderDetailsScreen({super.key, required this.order});
+
+  @override
+  State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
+}
+
+class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
+  bool _hasShippingRequest = false;
+
+  Order get order => widget.order;
+
+  @override
+  void initState() {
+    super.initState();
+    _hasShippingRequest = OrdersData.hasShippingRequest(order.id);
+  }
+
+  Future<void> _createShippingRequest() async {
+    final accepted = await context.push<bool>(AppRoutes.createShipment);
+    if (accepted != true || !mounted) return;
+    OrdersData.markShippingRequested(order.id);
+    setState(() => _hasShippingRequest = true);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,20 +83,35 @@ class OrderDetailsScreen extends StatelessWidget {
                     _buildPricingSection(),
                     const SizedBox(height: 32),
 
+                    if (_hasShippingRequest)
+                      AppContinueButton(
+                        text: 'Bids Received',
+                        showArrow: false,
+                        onPressed: () => context.push(AppRoutes.bidsReceived),
+                      )
+                    else
+                      AppContinueButton(
+                        text: 'Create Shipping Request',
+                        showArrow: false,
+                        onPressed: _createShippingRequest,
+                      ),
+                    if (!_hasShippingRequest) ...[
+                      const SizedBox(height: 12),
+                      AppContinueButton(
+                        text: 'Self Pickup (My Vehicle)',
+                        showArrow: false,
+                        onPressed: () => context.push(
+                          AppRoutes.orderStatusUpdate,
+                          extra: order,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 12),
                     AppContinueButton(
-                      text: 'Track History',
+                      text: 'Track Order',
                       showArrow: false,
                       onPressed: () =>
                           context.push(AppRoutes.trackStatus, extra: order),
-                    ),
-                    const SizedBox(height: 12),
-                    AppContinueButton(
-                      text: 'Update Status',
-                      showArrow: false,
-                      onPressed: () => context.push(
-                        AppRoutes.orderStatusUpdate,
-                        extra: order,
-                      ),
                     ),
                   ],
                 ),

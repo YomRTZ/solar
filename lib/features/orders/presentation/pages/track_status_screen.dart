@@ -61,6 +61,9 @@ class TrackEvent {
 
 
 class TrackStatusScreen extends StatelessWidget {
+  static const _inTransitMapPath =
+      'assets/solarimages/Location_screen_confirm.jpg';
+
   final Order order;
 
   const TrackStatusScreen({super.key, required this.order});
@@ -123,6 +126,7 @@ class TrackStatusScreen extends StatelessWidget {
             TrackEvent(
               step: TrackStep.inTransit,
               dateTime: '18 Oct 2026 | 09:10 AM',
+              imagePaths: [_inTransitMapPath],
             ),
             TrackEvent(
               step: TrackStep.delivered,
@@ -148,6 +152,7 @@ class TrackStatusScreen extends StatelessWidget {
             TrackEvent(
               step: TrackStep.inTransit,
               dateTime: hasProgress ? dispatchUpdate?.dispatchDate : null,
+              imagePaths: const [_inTransitMapPath],
             ),
             const TrackEvent(step: TrackStep.delivered),
           ];
@@ -304,8 +309,32 @@ class _TimelineRow extends StatelessWidget {
                     ),
                   ],
 
+                  if (event.step == TrackStep.inTransit &&
+                      event.imagePaths.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: Image.asset(
+                        event.imagePaths.first,
+                        key: const ValueKey('in-transit-location-map'),
+                        width: double.infinity,
+                        height: 128,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          width: double.infinity,
+                          height: 128,
+                          color: const Color(0xFFF1F3F5),
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.map_outlined,
+                            color: Color(0xFF808080),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]
                   // Dispatch photo thumbnails
-                  if (event.imagePaths.isNotEmpty ||
+                  else if (event.imagePaths.isNotEmpty ||
                       event.imageBytes != null) ...[
                     const SizedBox(height: 10),
                     SizedBox(

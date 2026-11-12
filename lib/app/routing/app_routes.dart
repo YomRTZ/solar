@@ -3,6 +3,16 @@ abstract final class AppRoutes {
   static const login = '/login';
   static const otpVerification = '/auth/otp';
   static const createAccount = '/account/create';
+  static const transporterCreateAccount = '/transporter/account/create';
+  static const transporterHome = '/transporter/home';
+  static const transporterProfile = '/transporter/profile';
+  static const transporterMyBids = '/transporter/my-bids';
+  static const transporterMyTrips = '/transporter/my-trips';
+  static const transporterTripVerified = '/transporter/trips/verified';
+  static const transporterDeliveryVerify = '/transporter/delivery/verify';
+  static const transporterDeliveryStatus = '/transporter/delivery/status';
+  static const transporterPlaceBid = '/transporter/place-bid';
+  static const transporterBidStatus = '/transporter/bid-status';
   static const companyDetails = '/company/details';
   static const companyDemo = '/company/demo';
   static const bankDetails = '/bank/details';
@@ -22,6 +32,8 @@ abstract final class AppRoutes {
   static const rfqDetail = '/rfqs/detail';
   static const orders = '/orders';
   static const orderDetails = '/orders/detail';
+  static const createShipment = '/orders/create-shipment';
+  static const bidsReceived = '/orders/bids-received';
   static const orderStatusUpdate = '/orders/status-update';
   static const trackStatus = '/orders/track-status';
   static const profile = '/profile';

@@ -18,6 +18,9 @@ class CatalogRfqRequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final title = request.items.isEmpty
+        ? request.supplierName
+        : request.items.first.productName;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -60,7 +63,7 @@ class CatalogRfqRequestCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          request.supplierName,
+                          title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.roboto(

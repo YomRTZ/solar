@@ -2,6 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:flutter_app/features/account/presentation/pages/create_account_screen.dart';
+import 'package:flutter_app/features/account/presentation/pages/create_transporter_account_screen.dart';
+import 'package:flutter_app/features/dashboard/presentation/pages/transporter_dashboard_screen.dart';
+import 'package:flutter_app/features/dashboard/presentation/pages/transporter_my_bids_screen.dart';
+import 'package:flutter_app/features/transporter/domain/entities/transporter_job.dart';
+import 'package:flutter_app/features/transporter/presentation/pages/bid_status_screen.dart';
+import 'package:flutter_app/features/transporter/presentation/pages/transporter_delivery_status_screen.dart';
+import 'package:flutter_app/features/transporter/presentation/pages/transporter_my_trips_screen.dart';
+import 'package:flutter_app/features/transporter/presentation/pages/place_bid_screen.dart';
+import 'package:flutter_app/features/transporter/presentation/pages/transporter_trip_verified_screen.dart';
+import 'package:flutter_app/features/transporter/presentation/pages/transporter_verify_delivery_screen.dart';
 import 'package:flutter_app/features/auth/presentation/pages/login_screen.dart';
 import 'package:flutter_app/features/auth/presentation/pages/otp_verification_screen.dart';
 import 'package:flutter_app/features/bank/presentation/pages/bank_details_screen.dart';
@@ -11,6 +21,8 @@ import 'package:flutter_app/features/company/presentation/pages/company_details_
 import 'package:flutter_app/features/documents/presentation/pages/upload_documents_screen.dart';
 import 'package:flutter_app/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:flutter_app/features/orders/presentation/pages/order_details_screen.dart';
+import 'package:flutter_app/features/orders/presentation/pages/create_shipment_screen.dart';
+import 'package:flutter_app/features/orders/presentation/pages/bids_received_screen.dart';
 import 'package:flutter_app/features/orders/presentation/pages/order_status_update_screen.dart';
 import 'package:flutter_app/features/orders/presentation/pages/orders_screen.dart';
 import 'package:flutter_app/features/orders/presentation/pages/track_status_screen.dart';
@@ -20,6 +32,7 @@ import 'package:flutter_app/features/products/presentation/pages/edit_product_sc
 import 'package:flutter_app/features/products/presentation/pages/my_products_screen.dart';
 import 'package:flutter_app/features/profile/presentation/pages/account_details_screen.dart';
 import 'package:flutter_app/features/profile/presentation/pages/supplier_profile_screen.dart';
+import 'package:flutter_app/features/profile/presentation/pages/transporter_profile_screen.dart';
 import 'package:flutter_app/features/profile/presentation/pages/vendor_profile_screen.dart';
 import 'package:flutter_app/features/profile/presentation/pages/update_profile_screen.dart';
 import 'package:flutter_app/features/rfq/presentation/pages/rfq_detail_screen.dart';
@@ -65,6 +78,47 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
         );
       }),
       _route(AppRoutes.createAccount, (_) => const CreateAccountScreen()),
+      _route(
+        AppRoutes.transporterCreateAccount,
+        (_) => const CreateTransporterAccountScreen(),
+      ),
+      _route(
+        AppRoutes.transporterHome,
+        (_) => const TransporterDashboardScreen(),
+      ),
+      _route(
+        AppRoutes.transporterProfile,
+        (_) => const TransporterProfileScreen(),
+      ),
+      _route(
+        AppRoutes.transporterMyBids,
+        (_) => const TransporterMyBidsScreen(),
+      ),
+      _route(
+        AppRoutes.transporterMyTrips,
+        (_) => const TransporterMyTripsScreen(),
+      ),
+      _route(
+        AppRoutes.transporterTripVerified,
+        (state) => TransporterTripVerifiedScreen(
+          trip: _requiredExtra<TransporterTrip>(state),
+        ),
+      ),
+      _route(
+        AppRoutes.transporterDeliveryVerify,
+        (state) => TransporterVerifyDeliveryScreen(
+          trip: _requiredExtra<TransporterTrip>(state),
+        ),
+      ),
+      _route(
+        AppRoutes.transporterDeliveryStatus,
+        (_) => const TransporterDeliveryStatusScreen(),
+      ),
+      _route(
+        AppRoutes.transporterPlaceBid,
+        (state) => PlaceBidScreen(job: _requiredExtra<TransporterJob>(state)),
+      ),
+      _route(AppRoutes.transporterBidStatus, (_) => const BidStatusScreen()),
       _route(AppRoutes.companyDemo, (_) => const DemoHomeScreen()),
       _route(AppRoutes.companyDetails, (_) => const CompanyDetailsScreen()),
       _route(AppRoutes.bankDetails, (_) => const BankDetailsScreen()),
@@ -107,6 +161,8 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
         AppRoutes.orderDetails,
         (state) => OrderDetailsScreen(order: _requiredExtra<Order>(state)),
       ),
+      _route(AppRoutes.createShipment, (_) => const CreateShipmentScreen()),
+      _route(AppRoutes.bidsReceived, (_) => const BidsReceivedScreen()),
       _route(
         AppRoutes.orderStatusUpdate,
         (state) => OrderStatusUpdateScreen(order: _requiredExtra<Order>(state)),

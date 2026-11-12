@@ -12,7 +12,7 @@ import 'package:flutter_app/features/auth/presentation/cubit/otp_cubit.dart';
 class OtpVerificationScreen extends StatefulWidget {
   final String mobileNumber;
 
-  /// The role selected on the login screen — 'Supplier' or 'Vendor'.
+  /// The role selected on the login screen.
   /// Also written into [AuthCubit] so downstream screens can read it.
   final String role;
 
@@ -64,9 +64,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     context.read<AuthCubit>().verifyOtp();
 
     // Route based on role:
-    //   Supplier → company details onboarding
-    //   Vendor   → vendor account/create onboarding
-    if (widget.role == 'Vendor') {
+    //   Supplier    → company details onboarding
+    //   Vendor      → vendor account/create onboarding
+    //   Transporter → transporter account/create onboarding
+    if (widget.role == 'Transporter') {
+      context.push(AppRoutes.transporterCreateAccount);
+    } else if (widget.role == 'Vendor') {
       context.push(AppRoutes.createAccount);
     } else {
       context.push(AppRoutes.companyDetails);

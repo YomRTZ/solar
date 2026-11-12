@@ -5,13 +5,13 @@ class CatalogRfqData {
   static final List<CatalogRfqRequest> _requests = [
     CatalogRfqRequest(
       id: 'rfq_001',
-      supplierName: 'SunTech Sol.',
+      supplierName: 'Sharma Motors',
       amount: 'Rs. 1,23,000',
       dateLabel: "Valid till 15th Oct'25",
       status: CatalogRfqStatus.received,
       items: [
         CatalogOrderItem(
-          productName: '100×100 Solar Panel',
+          productName: '10 KW Solar Panel',
           qty: '10x1 =',
           price: 'Rs. 2,23,000',
         ),

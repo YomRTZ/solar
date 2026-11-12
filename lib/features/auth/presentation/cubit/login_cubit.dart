@@ -4,7 +4,7 @@ class LoginState {
   final String role;
   final String mobileNumber;
 
-  const LoginState({this.role = 'Supplier', this.mobileNumber = ''});
+  const LoginState({this.role = 'Vendor', this.mobileNumber = ''});
 
   LoginState copyWith({String? role, String? mobileNumber}) => LoginState(
     role: role ?? this.role,

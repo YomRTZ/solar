@@ -38,7 +38,7 @@ class VerificationStatusScreen extends StatelessWidget {
   const VerificationStatusScreen.rejected({
     super.key,
     this.onUpdateDetails,
-    this.errorDetail = 'Invalid Gst Certificate',
+    this.errorDetail = 'Invalid GST Certificate',
   }) : status = VerificationStatus.rejected,
        onContinue = null;
 
@@ -79,7 +79,7 @@ class VerificationStatusScreen extends StatelessWidget {
         );
       case VerificationStatus.rejected:
         return _RejectedBody(
-          errorDetail: errorDetail ?? 'Invalid Gst Certificate',
+          errorDetail: errorDetail ?? 'Invalid GST Certificate',
           onUpdateDetails: onUpdateDetails ?? () => Navigator.pop(context),
         );
     }
@@ -285,7 +285,7 @@ class _RejectedBody extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'Your application need corrections',
+            'Your application needs corrections',
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
               fontSize: 14,

@@ -1,6 +1,8 @@
 import 'package:flutter_app/features/orders/domain/entities/order.dart';
 
 class OrdersData {
+  static final Set<String> _shippingRequestOrderIds = {};
+
   static final List<Order> _orders = [
     const Order(
       id: '#ORD123456',
@@ -33,6 +35,13 @@ class OrdersData {
   ];
 
   static List<Order> get orders => List.unmodifiable(_orders);
+
+  static bool hasShippingRequest(String orderId) =>
+      _shippingRequestOrderIds.contains(orderId);
+
+  static void markShippingRequested(String orderId) {
+    _shippingRequestOrderIds.add(orderId);
+  }
 
   static Order? getById(String id) {
     for (final order in _orders) {

@@ -5,7 +5,7 @@ enum AuthStatus { unauthenticated, authenticated }
 class AuthState {
   final AuthStatus status;
 
-  /// 'Supplier' or 'Vendor' — set at login role-selection
+  /// Role selected at login.
   final String role;
 
   /// Raw mobile digits (no spaces / country code)
