@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:flutter_app/app/routing/app_routes.dart';
+import 'package:flutter_app/core/validation/app_form_validation.dart';
 import 'package:flutter_app/core/widgets/app_form_section.dart';
 import 'package:flutter_app/core/widgets/app_text_field.dart';
 import 'package:flutter_app/core/widgets/app_header.dart';
@@ -106,9 +107,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                     ),
                                     AppTextField(
                                       label: 'Gst Number',
-                                      hint: '9876546879',
+                                      hint: '22AAAAA0000A1Z5',
                                       controller: gstNumberController,
-                                      keyboardType: TextInputType.number,
+                                      keyboardType: TextInputType.text,
+                                      validator: AppFormValidation.gstNumber,
                                       onChanged: _accountFormCubit.updateGstNumber,
                                     ),
                                     AppTextField(

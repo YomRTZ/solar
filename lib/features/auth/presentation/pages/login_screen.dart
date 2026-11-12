@@ -11,7 +11,7 @@ import 'package:flutter_app/features/auth/presentation/cubit/login_cubit.dart';
 import 'package:flutter_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-// â”€â”€ Phone formatter: XXXX XXX XXXX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Phone formatter: XXXX XXX XXXX
 class _PhoneFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -130,6 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginCubit, LoginState>(
@@ -145,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         child: Scaffold(
           backgroundColor: Colors.white,
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true, // fix: was false, keyboard was covering field
           body: SafeArea(
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -154,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   child: Stack(
                     children: [
-                      // â”€â”€ Logo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                      // Logo
                       Positioned(
                         top: 77,
                         bottom: 575,
@@ -165,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           fit: BoxFit.contain,
                         ),
                       ),
-                      // â”€â”€ "Welcome Back!" title â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                      // "Welcome Back!" title
                       Positioned(
                         top: constraints.maxHeight - 575 + 24,
                         left: 48,
@@ -182,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
 
-                      // â”€â”€ Subtitle: 12px below title (~34px title height) â”€â”€
+                      // Subtitle: 12px below title (~34px title height)
                       Positioned(
                         top: constraints.maxHeight - 575 + 24 + 34 + 12,
                         left: 68.5,
@@ -200,10 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
 
-                      // â”€â”€ Account type selector â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-                      // 24px below subtitle
-                      // subtitle top = constraints.maxHeight - 575 + 24 + 34 + 12
-                      // subtitle height ~21px â†’ toggle top = subtitle top + 21 + 24
+                      // Account type selector — 24px below subtitle
                       Positioned(
                         top:
                             constraints.maxHeight -
@@ -271,8 +269,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
 
-                      // â”€â”€ "Mobile number" label â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-                      // left:16, right:259, 24px below toggle
+                      // "Mobile number" label
                       Positioned(
                         top:
                             constraints.maxHeight -
@@ -298,8 +295,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
 
-                      // â”€â”€ Mobile number input â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-                      // left:16, right:17, 3px below label (label height ~16px)
+                      // Mobile number input
                       Positioned(
                         top:
                             constraints.maxHeight -
@@ -361,7 +357,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               contentPadding: const EdgeInsets.fromLTRB(
                                 14,
                                 12.5,
-                                106,
+                                14,   // fix: was 106, was blocking text input
                                 12.5,
                               ),
                               enabledBorder: OutlineInputBorder(
@@ -395,7 +391,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
 
-                      // â”€â”€ Continue button â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                      // Continue button
                       Positioned(
                         left: 16,
                         right: 17,

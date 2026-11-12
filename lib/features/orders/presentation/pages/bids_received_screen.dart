@@ -94,9 +94,9 @@ class _BidsReceivedScreenState extends State<BidsReceivedScreen> {
                       ),
                     )
                   : ListView.separated(
-                      padding: const EdgeInsets.fromLTRB(18, 18, 18, 28),
+                      padding: const EdgeInsets.fromLTRB(14, 27, 6, 28),
                       itemCount: visibleBids.length,
-                      separatorBuilder: (_, _) => const SizedBox(height: 12),
+                      separatorBuilder: (_, _) => const SizedBox(height: 11),
                       itemBuilder: (context, index) {
                         final bid = visibleBids[index];
                         return _BidCard(
@@ -156,7 +156,8 @@ class _BidCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 key: ValueKey('received-bid-avatar-${bid.id}'),
-                radius: 22,
+                radius: 31,
+                backgroundColor: const Color(0xFFCBE0FF),
                 backgroundImage: const AssetImage(
                   'assets/solarimages/avater.png',
                 ),
@@ -315,7 +316,8 @@ class _BidPriceBreakupSheetState extends State<_BidPriceBreakupSheet> {
                 children: [
                   const CircleAvatar(
                     key: ValueKey('received-bid-details-avatar'),
-                    radius: 20,
+                    radius: 31,
+                    backgroundColor: Color(0xFFCBE0FF),
                     backgroundImage: AssetImage(
                       'assets/solarimages/avater.png',
                     ),

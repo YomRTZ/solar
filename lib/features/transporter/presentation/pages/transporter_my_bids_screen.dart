@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:flutter_app/core/widgets/app_header.dart';
+import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/transporter/domain/entities/transporter_job.dart';
+import 'package:flutter_app/features/transporter/presentation/cubit/transporter_cubit.dart';
 
 class TransporterMyBidsScreen extends StatelessWidget {
   const TransporterMyBidsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+    return BlocBuilder<TransporterCubit, TransporterState>(
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
@@ -22,19 +25,20 @@ class TransporterMyBidsScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         body: Column(
           children: [
-            const AppHeader(title: 'My Bids'),
+            const SecondAppHeader(title: 'My Bids'),
             Expanded(
               child: ListView.separated(
-                padding: const EdgeInsets.fromLTRB(19, 17, 15, 20),
-                itemCount: TransporterBid.sampleBids.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 10),
+                padding: const EdgeInsets.fromLTRB(19, 24, 11, 20),
+                itemCount: state.myBids.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 12),
                 itemBuilder: (context, index) =>
-                    _TransporterBidCard(bid: TransporterBid.sampleBids[index]),
+                    _TransporterBidCard(bid: state.myBids[index]),
               ),
             ),
           ],
         ),
       ),
+    ),
     );
   }
 }
@@ -60,14 +64,16 @@ class _TransporterBidCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final job = bid.job;
     return Container(
+      height: 134,
       padding: const EdgeInsets.fromLTRB(9, 8, 8, 8),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: const Color(0xFFD8D8D8)),
-        borderRadius: BorderRadius.circular(7),
+        border: Border.all(color: const Color(0xFFD3D3D3), width: 1),
+        borderRadius: BorderRadius.circular(6),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
@@ -97,7 +103,6 @@ class _TransporterBidCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
           Row(
             children: [
               _BidDetail(label: 'Vehicle', value: job.vehicle),
@@ -105,19 +110,19 @@ class _TransporterBidCard extends StatelessWidget {
               _BidDetail(label: 'Date', value: job.date),
             ],
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 7),
-            child: Divider(height: 1, color: Color(0xFFE5E5E5)),
-          ),
+          const Divider(height: 1, color: Color(0xFFE5E5E5)),
           Row(
             children: [
               Expanded(
                 child: Text(
                   'Rs. ${job.price}',
-                  style: GoogleFonts.inter(
-                    fontSize: 10,
+                  style: const TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFF202020),
+                    height: 1,
+                    letterSpacing: 0,
+                    color: Color(0xFF000000),
                   ),
                 ),
               ),

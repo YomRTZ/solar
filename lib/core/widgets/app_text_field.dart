@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter_app/core/validation/app_form_validation.dart';
@@ -13,6 +14,7 @@ class AppTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final double bottomSpacing;
   final ValueChanged<String>? onChanged;
+  final List<TextInputFormatter>? inputFormatters;
 
   const AppTextField({
     super.key,
@@ -25,6 +27,7 @@ class AppTextField extends StatelessWidget {
     this.validator,
     this.bottomSpacing = 16,
     this.onChanged,
+    this.inputFormatters,
   });
 
   @override
@@ -79,6 +82,7 @@ class AppTextField extends StatelessWidget {
                 controller: controller,
                 keyboardType: keyboardType,
                 obscureText: obscureText,
+                inputFormatters: inputFormatters,
                 textAlignVertical: TextAlignVertical.center,
                 onChanged: (value) {
                   field.didChange(value);

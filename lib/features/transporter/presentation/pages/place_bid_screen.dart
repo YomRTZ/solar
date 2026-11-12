@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter_app/app/routing/app_routes.dart';
+import 'package:flutter_app/core/validation/app_form_validation.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/core/widgets/app_form_section.dart';
-import 'package:flutter_app/core/widgets/app_header.dart';
+import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/core/widgets/app_text_field.dart';
 import 'package:flutter_app/features/transporter/domain/entities/transporter_job.dart';
+import 'package:flutter_app/features/transporter/presentation/cubit/transporter_cubit.dart';
 
 class PlaceBidScreen extends StatefulWidget {
   final TransporterJob job;
@@ -63,12 +66,6 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
   int _amount(TextEditingController controller) =>
       int.tryParse(controller.text.replaceAll(',', '').trim()) ?? 0;
 
-  String? _validateAmount(String? value) {
-    final amount = int.tryParse((value ?? '').replaceAll(',', '').trim());
-    if (amount == null || amount < 0) return 'Enter a valid amount';
-    return null;
-  }
-
   String _formattedAmount(int amount) {
     final digits = amount.toString();
     final formatted = StringBuffer();
@@ -85,6 +82,14 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
 
   void _submitBid() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
+    context.read<TransporterCubit>().placeBid(
+      job: widget.job,
+      baseFare: _amount(_baseFareController),
+      loadingCharges: _amount(_loadingChargesController),
+      unloadingCharges: _amount(_unloadingChargesController),
+      waitingCharges: _amount(_waitingChargesController),
+      tolls: _amount(_tollsController),
+    );
     context.push(AppRoutes.transporterBidStatus);
   }
 
@@ -104,7 +109,7 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
         backgroundColor: Colors.white,
         body: Column(
           children: [
-            const AppHeader(title: 'Place Bid'),
+            const SecondAppHeader(title: 'Place Bid'),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(0, 15, 0, 25),
@@ -120,51 +125,58 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
                           label: 'Base Fare',
                           hint: 'Enter base fare',
                           controller: _baseFareController,
-                          keyboardType: TextInputType.number,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: false),
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d,]'))],
                           onChanged: _updateAmount,
-                          validator: _validateAmount,
+                          validator: (v) => AppFormValidation.positiveAmount(v, fieldName: 'Base Fare'),
                         ),
                         AppTextField(
                           label: 'Loading Charges',
                           hint: 'Enter loading charges',
                           controller: _loadingChargesController,
-                          keyboardType: TextInputType.number,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: false),
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d,]'))],
                           onChanged: _updateAmount,
-                          validator: _validateAmount,
+                          validator: (v) => AppFormValidation.nonNegativeAmount(v, fieldName: 'Loading Charges'),
                         ),
                         AppTextField(
                           label: 'Unloading Charges',
                           hint: 'Enter unloading charges',
                           controller: _unloadingChargesController,
-                          keyboardType: TextInputType.number,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: false),
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d,]'))],
                           onChanged: _updateAmount,
-                          validator: _validateAmount,
+                          validator: (v) => AppFormValidation.nonNegativeAmount(v, fieldName: 'Unloading Charges'),
                         ),
                         AppTextField(
                           label: 'Waiting Charges',
                           hint: 'Enter waiting charges',
                           controller: _waitingChargesController,
-                          keyboardType: TextInputType.number,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: false),
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d,]'))],
                           onChanged: _updateAmount,
-                          validator: _validateAmount,
+                          validator: (v) => AppFormValidation.nonNegativeAmount(v, fieldName: 'Waiting Charges'),
                         ),
                         AppTextField(
                           label: 'Tolls & Extra',
                           hint: 'Enter tolls and extra charges',
                           controller: _tollsController,
-                          keyboardType: TextInputType.number,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: false),
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d,]'))],
                           onChanged: _updateAmount,
-                          validator: _validateAmount,
+                          validator: (v) => AppFormValidation.nonNegativeAmount(v, fieldName: 'Tolls & Extra'),
                         ),
                         AppTextField(
                           label: 'Estimate Pickup',
                           hint: 'DD/MM/YYYY',
                           controller: _pickupDateController,
+                          validator: (v) => AppFormValidation.requiredText(v, fieldName: 'Estimate Pickup'),
                         ),
                         AppTextField(
                           label: 'Estimate Dropoff',
                           hint: 'DD/MM/YYYY',
                           controller: _dropoffDateController,
+                          validator: (v) => AppFormValidation.requiredText(v, fieldName: 'Estimate Dropoff'),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 12),

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,10 +11,11 @@ import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/validation/app_form_validation.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/core/widgets/app_file_upload_field.dart';
-import 'package:flutter_app/core/widgets/app_header.dart';
+import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/core/widgets/app_text_field.dart';
 import 'package:flutter_app/features/auth/presentation/cubit/otp_cubit.dart';
 import 'package:flutter_app/features/transporter/domain/entities/transporter_job.dart';
+import 'package:flutter_app/features/transporter/presentation/cubit/transporter_cubit.dart';
 
 class TransporterVerifyDeliveryScreen extends StatefulWidget {
   final TransporterTrip trip;
@@ -117,6 +119,7 @@ class _TransporterVerifyDeliveryScreenState
       setState(() => _otpError = 'Enter the 6-digit OTP.');
       return;
     }
+    context.read<TransporterCubit>().confirmDelivery(widget.trip.id);
     context.go(AppRoutes.transporterDeliveryStatus);
   }
 
@@ -148,7 +151,7 @@ class _TransporterVerifyDeliveryScreenState
         backgroundColor: Colors.white,
         body: Column(
           children: [
-            const AppHeader(title: 'Verify Delivery'),
+            const SecondAppHeader(title: 'Verify Delivery'),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(17, 15, 17, 24),

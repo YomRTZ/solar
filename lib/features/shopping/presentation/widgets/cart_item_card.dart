@@ -153,10 +153,20 @@ class _QtyStepper extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: onDecrement,
-            child: SvgPicture.asset(
-              'assets/icons/ic_delete.svg',
-              width: 16,
-              height: 16,
+            child: SizedBox(
+              width: 24,
+              height: 24,
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/icons/ic_delete.svg',
+                  width: 18,
+                  height: 18,
+                  colorFilter: const ColorFilter.mode(
+                    Color(0xFFEFEFEF),
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 10),
@@ -172,10 +182,20 @@ class _QtyStepper extends StatelessWidget {
           const SizedBox(width: 10),
           GestureDetector(
             onTap: onIncrement,
-            child: SvgPicture.asset(
-              'assets/icons/ic_add.svg',
-              width: 16,
-              height: 16,
+            child: SizedBox(
+              width: 24,
+              height: 24,
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/icons/ic_add.svg',
+                  width: 18,
+                  height: 18,
+                  colorFilter: const ColorFilter.mode(
+                    Color(0xFFEFEFEF),
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
             ),
           ),
         ],

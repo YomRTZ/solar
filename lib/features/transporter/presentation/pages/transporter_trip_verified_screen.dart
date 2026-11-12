@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter_app/app/routing/app_routes.dart';
-import 'package:flutter_app/core/widgets/app_header.dart';
+import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/transporter/domain/entities/transporter_job.dart';
 
 class TransporterTripVerifiedScreen extends StatelessWidget {
@@ -27,7 +27,7 @@ class TransporterTripVerifiedScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         body: Column(
           children: [
-            const AppHeader(title: 'Trip Verified', showBackButton: false),
+            const SecondAppHeader(title: 'Trip Verified', showBackButton: false),
             Expanded(
               child: LayoutBuilder(
                 builder: (context, constraints) {
@@ -77,27 +77,60 @@ class TransporterTripVerifiedScreen extends StatelessWidget {
                       Positioned(
                         top: 8,
                         right: 9,
-                        width: 114,
                         height: 34,
-                        child: ElevatedButton(
-                          onPressed: () => _showMapMessage(
+                        child: GestureDetector(
+                          onTap: () => _showMapMessage(
                             context,
                             'Map directions are not available yet.',
                           ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF003A8A),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.zero,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(9),
+                          child: Container(
+                            height: 34,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
                             ),
-                          ),
-                          child: Text(
-                            'Open on maps',
-                            style: GoogleFonts.inter(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              gradient: const LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Color(0x1EFFFFFF),
+                                  Color(0x00FFFFFF),
+                                ],
+                              ),
+                              color: const Color(0xFF003A8A),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color(0xFF375DFB),
+                                  offset: Offset(0, 0),
+                                  blurRadius: 0,
+                                  spreadRadius: 1,
+                                ),
+                                BoxShadow(
+                                  color: Color(0x7A253EA7),
+                                  offset: Offset(0, 1),
+                                  blurRadius: 2,
+                                  spreadRadius: 0,
+                                ),
+                              ],
+                              border: Border.all(
+                                color: const Color(0xFF375DFB),
+                                width: 1,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Open on maps',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.roboto(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.3,
+                                  letterSpacing: 0,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
                           ),
                         ),

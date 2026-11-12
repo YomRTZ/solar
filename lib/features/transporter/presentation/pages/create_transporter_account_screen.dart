@@ -207,6 +207,11 @@ class _CreateTransporterAccountScreenState
                           hint: 'Enter pincode',
                           controller: _pincodeController,
                           keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(6),
+                          ],
+                          validator: AppFormValidation.pincode,
                         ),
                         _VehicleTypesField(
                           selectedVehicles: _selectedVehicles,
@@ -309,33 +314,52 @@ class _VehicleTypesField extends StatelessWidget {
                               ),
                             )
                           : Wrap(
-                              spacing: 6,
+                              spacing: 4,
                               runSpacing: 4,
                               children: selectedVehicles
                                   .map(
-                                    (vehicle) => InputChip(
-                                      label: Text(vehicle),
-                                      onDeleted: () => onRemove(vehicle),
-                                      deleteIcon: const Icon(
-                                        Icons.close,
-                                        size: 12,
-                                      ),
-                                      deleteIconColor: Colors.white,
-                                      labelStyle: GoogleFonts.inter(
-                                        fontSize: 9,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white,
-                                      ),
-                                      backgroundColor: const Color(0xFF003A8A),
+                                    (vehicle) => Container(
+                                      height: 24,
                                       padding: const EdgeInsets.symmetric(
-                                        horizontal: 2,
+                                        horizontal: 6,
+                                        vertical: 4,
                                       ),
-                                      visualDensity: VisualDensity.compact,
-                                      materialTapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                      shape: RoundedRectangleBorder(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF003A8A),
                                         borderRadius: BorderRadius.circular(4),
-                                        side: BorderSide.none,
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            vehicle,
+                                            style: GoogleFonts.inter(
+                                              fontSize: 9,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          GestureDetector(
+                                            onTap: () => onRemove(vehicle),
+                                            child: Container(
+                                              width: 13.34,
+                                              height: 13.34,
+                                              padding: const EdgeInsets.all(4),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(2),
+                                              ),
+                                              child: const FittedBox(
+                                                child: Icon(
+                                                  Icons.close,
+                                                  color: Color(0xFF003A8A),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   )

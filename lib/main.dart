@@ -8,6 +8,7 @@ import 'package:flutter_app/core/theme/app_theme.dart';
 import 'package:flutter_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:flutter_app/features/products/data/repositories/in_memory_product_repository.dart';
 import 'package:flutter_app/features/products/domain/repositories/product_repository.dart';
+import 'package:flutter_app/features/transporter/presentation/cubit/transporter_cubit.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +32,10 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MultiBlocProvider(
-        providers: [BlocProvider<AuthCubit>(create: (_) => AuthCubit())],
+        providers: [
+          BlocProvider<AuthCubit>(create: (_) => AuthCubit()),
+          BlocProvider<TransporterCubit>(create: (_) => TransporterCubit()),
+        ],
         child: MaterialApp.router(
           title: 'SolarTradeXHub',
           debugShowCheckedModeBanner: false,

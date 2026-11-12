@@ -95,12 +95,15 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
                           hint: '123456789',
                           controller: accountNumberController,
                           keyboardType: TextInputType.number,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          validator: AppFormValidation.accountNumber,
                           onChanged: _bankDetailsCubit.updateAccountNumber,
                         ),
                         AppTextField(
                           label: 'Ifsc Code',
-                          hint: 'Hdfc1002',
+                          hint: 'HDFC0001234',
                           controller: ifscCodeController,
+                          validator: AppFormValidation.ifscCode,
                           onChanged: _bankDetailsCubit.updateIfscCode,
                         ),
                         AppTextField(

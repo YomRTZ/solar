@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
-import 'package:flutter_app/core/widgets/app_header.dart';
+import 'package:flutter_app/core/widgets/second_app_header.dart';
 
 class TransporterDeliveryStatusScreen extends StatelessWidget {
   const TransporterDeliveryStatusScreen({super.key});
@@ -24,7 +24,7 @@ class TransporterDeliveryStatusScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         body: Column(
           children: [
-            const AppHeader(title: 'Delivery Status', showBackButton: false),
+            const SecondAppHeader(title: 'Delivery Status', showBackButton: false),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(21, 28, 21, 40),

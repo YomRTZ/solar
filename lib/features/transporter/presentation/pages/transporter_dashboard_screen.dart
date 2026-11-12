@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:flutter_app/app/routing/app_routes.dart';
 import 'package:flutter_app/features/transporter/domain/entities/transporter_job.dart';
+import 'package:flutter_app/features/transporter/presentation/cubit/transporter_cubit.dart';
 
 class TransporterDashboardScreen extends StatelessWidget {
   const TransporterDashboardScreen({super.key});
@@ -14,75 +16,88 @@ class TransporterDashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top;
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Column(
-          children: [
-            _DashboardHeader(topPadding: topPadding),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(15, 20, 15, 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _MetricCard(value: '12', label: 'New Jobs'),
-                        SizedBox(width: 10),
-                        _MetricCard(value: '02', label: 'Active Trips'),
-                        SizedBox(width: 10),
-                        _MetricCard(value: '20', label: 'Completed'),
-                      ],
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(0, 26, 0, 8),
-                      child: Text(
-                        'Available Jobs',
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w700,
-                          height: 1,
-                          letterSpacing: 0,
-                          color: Color(0xFF23201C),
-                        ),
+    return BlocBuilder<TransporterCubit, TransporterState>(
+      builder: (context, state) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: Column(
+            children: [
+              _DashboardHeader(topPadding: topPadding),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(15, 20, 15, 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _MetricCard(
+                            value: '${state.newJobsCount}',
+                            label: 'New Jobs',
+                          ),
+                          const SizedBox(width: 10),
+                          _MetricCard(
+                            value: state.activeTripsCount
+                                .toString()
+                                .padLeft(2, '0'),
+                            label: 'Active Trips',
+                          ),
+                          const SizedBox(width: 10),
+                          _MetricCard(
+                            value: state.completedTripsCount
+                                .toString()
+                                .padLeft(2, '0'),
+                            label: 'Completed',
+                          ),
+                        ],
                       ),
-                    ),
-                    for (
-                      var index = 0;
-                      index < TransporterJob.sampleJobs.length;
-                      index++
-                    )
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: _AvailableJobCard(
-                          key: ValueKey('available-job-card-$index'),
-                          job: TransporterJob.sampleJobs[index],
-                          onBidNow: () => context.push(
-                            AppRoutes.transporterPlaceBid,
-                            extra: TransporterJob.sampleJobs[index],
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(0, 26, 0, 8),
+                        child: Text(
+                          'Available Jobs',
+                          style: TextStyle(
+                            fontFamily: 'Roboto',
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w700,
+                            height: 1,
+                            letterSpacing: 0,
+                            color: Color(0xFF23201C),
                           ),
                         ),
                       ),
-                  ],
+                      for (var index = 0;
+                          index < state.availableJobs.length;
+                          index++)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: _AvailableJobCard(
+                            key: ValueKey('available-job-card-$index'),
+                            job: state.availableJobs[index],
+                            onBidNow: () => context.push(
+                              AppRoutes.transporterPlaceBid,
+                              extra: state.availableJobs[index],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-        bottomNavigationBar: _TransporterNavigationBar(
-          onMyBids: () => context.push(AppRoutes.transporterMyBids),
-          onMyTrips: () => context.push(AppRoutes.transporterMyTrips),
-          onProfile: () => context.push(AppRoutes.transporterProfile),
+            ],
+          ),
+          bottomNavigationBar: _TransporterNavigationBar(
+            onMyBids: () => context.push(AppRoutes.transporterMyBids),
+            onMyTrips: () => context.push(AppRoutes.transporterMyTrips),
+            onProfile: () => context.push(AppRoutes.transporterProfile),
+          ),
         ),
       ),
     );
@@ -230,8 +245,8 @@ class _AvailableJobCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(9.82, 11, 11, 12),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: const Color(0xFFD8D8D8)),
-        borderRadius: BorderRadius.circular(7),
+        border: Border.all(color: const Color(0xFFD3D3D3)),
+        borderRadius: BorderRadius.circular(6),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -252,9 +267,9 @@ class _AvailableJobCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(
+              const Text(
                 '2 min ago',
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
@@ -285,10 +300,13 @@ class _AvailableJobCard extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'Rs. ${job.price}',
-                      style: GoogleFonts.inter(
-                        fontSize: 10,
+                      style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 12,
                         fontWeight: FontWeight.w700,
-                        color: const Color(0xFF202020),
+                        height: 1,
+                        letterSpacing: 0,
+                        color: Color(0xFF000000),
                       ),
                     ),
                   ),
@@ -319,7 +337,6 @@ class _BidNowButton extends StatelessWidget {
     final borderRadius = BorderRadius.circular(6);
     return Container(
       key: const ValueKey('available-job-bid-button'),
-      width: 74.64286,
       height: 22,
       decoration: BoxDecoration(
         color: const Color(0xFF003A8A),
@@ -337,14 +354,16 @@ class _BidNowButton extends StatelessWidget {
       child: ClipRRect(
         borderRadius: borderRadius,
         child: Stack(
-          fit: StackFit.expand,
+          fit: StackFit.loose,
           children: [
-            const DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Color(0x1FFFFFFF), Color(0x00FFFFFF)],
+            Positioned.fill(
+              child: const DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Color(0x1FFFFFFF), Color(0x00FFFFFF)],
+                  ),
                 ),
               ),
             ),
@@ -352,16 +371,20 @@ class _BidNowButton extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: onPressed,
-                child: Center(
-                  child: Text(
-                    'Bid Now',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                      height: 1.4,
-                      letterSpacing: -0.11,
-                      color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Center(
+                    child: Text(
+                      'Bid Now',
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        height: 1.4,
+                        letterSpacing: -0.11,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
@@ -508,7 +531,7 @@ class _TransporterNavigationBar extends StatelessWidget {
                             colorFilter: ColorFilter.mode(
                               index == 0
                                   ? const Color(0xFF003A8A)
-                                  : const Color(0xFF6C7278),
+                                  : const Color(0xFF030303),
                               items[index].icon is SvgPicture
                                   ? BlendMode.srcIn
                                   : BlendMode.srcATop,
