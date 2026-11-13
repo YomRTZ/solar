@@ -97,7 +97,11 @@ class TrackStatusScreen extends StatelessWidget {
                     ..._buildTimeline(),
                     const SizedBox(height: 36),
 
-                    _DashboardButton(onTap: () => context.go(AppRoutes.home)),
+                    _DashboardButton(
+                      onTap: () => context.go(
+                        isVendor ? AppRoutes.vendorMain : AppRoutes.home,
+                      ),
+                    ),
                   ],
                 ),
               ),
