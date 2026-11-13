@@ -308,40 +308,29 @@ class _TripCard extends StatelessWidget {
           ],
           const SizedBox(height: 10),
           const Divider(height: 1, color: Color(0xFFE5E5E5)),
-          SizedBox(
-            height: 35,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Rs. ${job.price}',
-                      style: const TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        height: 1,
-                        letterSpacing: 0,
-                        color: Color(0xFF000000),
-                      ),
-                    ),
+          const SizedBox(height: 8),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Text(
+                  'Rs. ${job.price}',
+                  style: const TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    height: 1,
+                    letterSpacing: 0,
+                    color: Color(0xFF000000),
                   ),
                 ),
-                if (showAction)
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 0.79, top: 20),
-                      child: _TripActionButton(
-                        label: isVerified ? 'Start Trip' : 'Verify Trip',
-                        onPressed: isVerified ? onStart : onVerify,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
+              ),
+              if (showAction)
+                _TripActionButton(
+                  label: isVerified ? 'Start Trip' : 'Verify Trip',
+                  onPressed: isVerified ? onStart : onVerify,
+                ),
+            ],
           ),
         ],
       ),
@@ -403,63 +392,24 @@ class _TripActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(6);
-    return Container(
-      height: 32,
-      constraints: const BoxConstraints(minWidth: 90),
-      decoration: BoxDecoration(
-        color: const Color(0xFF003A8A),
-        border: Border.all(color: const Color(0x1FFFFFFF), width: 1),
-        borderRadius: borderRadius,
-        boxShadow: const [
-          BoxShadow(color: Color(0xFF375DFB), spreadRadius: 1, blurRadius: 0),
-          BoxShadow(
-            color: Color(0x7A253EA7),
-            offset: Offset(0, 1),
-            blurRadius: 2,
+    return Material(
+      color: const Color(0xFF003A8A),
+      borderRadius: BorderRadius.circular(6),
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(6),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
           ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        child: Stack(
-          fit: StackFit.loose,
-          children: [
-            Positioned.fill(
-              child: const DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Color(0x1FFFFFFF), Color(0x00FFFFFF)],
-                  ),
-                ),
-              ),
-            ),
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: onPressed,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  child: Center(
-                    child: Text(
-                      label,
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      style: GoogleFonts.inter(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
-                        height: 1.4,
-                        letterSpacing: -0.11,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );
