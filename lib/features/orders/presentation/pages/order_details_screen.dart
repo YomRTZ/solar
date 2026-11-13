@@ -10,8 +10,13 @@ import 'package:flutter_app/features/orders/domain/entities/order.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
   final Order order;
+  final bool isVendor;
 
-  const OrderDetailsScreen({super.key, required this.order});
+  const OrderDetailsScreen({
+    super.key,
+    required this.order,
+    this.isVendor = false,
+  });
 
   @override
   State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
@@ -83,36 +88,50 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     _buildPricingSection(),
                     const SizedBox(height: 32),
 
-                    if (_hasShippingRequest)
+                    // Vendor route: only Track History button
+                    // Supplier route: shipping buttons + Track Order
+                    if (widget.isVendor) ...[
                       AppContinueButton(
-                        text: 'Bids Received',
-                        showArrow: false,
-                        onPressed: () => context.push(AppRoutes.bidsReceived),
-                      )
-                    else
-                      AppContinueButton(
-                        text: 'Create Shipping Request',
-                        showArrow: false,
-                        onPressed: _createShippingRequest,
-                      ),
-                    if (!_hasShippingRequest) ...[
-                      const SizedBox(height: 12),
-                      AppContinueButton(
-                        text: 'Self Pickup (My Vehicle)',
+                        text: 'Track History',
                         showArrow: false,
                         onPressed: () => context.push(
-                          AppRoutes.orderStatusUpdate,
+                          AppRoutes.vendorTrackStatus,
                           extra: order,
                         ),
                       ),
+                    ] else ...[
+                      // Supplier buttons
+                      if (_hasShippingRequest)
+                        AppContinueButton(
+                          text: 'Bids Received',
+                          showArrow: false,
+                          onPressed: () => context.push(AppRoutes.bidsReceived),
+                        )
+                      else
+                        AppContinueButton(
+                          text: 'Create Shipping Request',
+                          showArrow: false,
+                          onPressed: _createShippingRequest,
+                        ),
+                      if (!_hasShippingRequest) ...[
+                        const SizedBox(height: 12),
+                        AppContinueButton(
+                          text: 'Self Pickup (My Vehicle)',
+                          showArrow: false,
+                          onPressed: () => context.push(
+                            AppRoutes.trackStatus,
+                            extra: order,
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 12),
+                      AppContinueButton(
+                        text: 'Track Order',
+                        showArrow: false,
+                        onPressed: () =>
+                            context.push(AppRoutes.trackStatus, extra: order),
+                      ),
                     ],
-                    const SizedBox(height: 12),
-                    AppContinueButton(
-                      text: 'Track Order',
-                      showArrow: false,
-                      onPressed: () =>
-                          context.push(AppRoutes.trackStatus, extra: order),
-                    ),
                   ],
                 ),
               ),

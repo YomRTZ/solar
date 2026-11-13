@@ -4,8 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:flutter_app/app/routing/app_routes.dart';
-import 'package:flutter_app/core/widgets/app_expandable_card.dart';
-import 'package:flutter_app/core/widgets/second_app_header.dart';
+import 'package:flutter_app/core/widgets/app_expandable_card.dart';import 'package:flutter_app/core/widgets/second_app_header.dart';
 import 'package:flutter_app/features/orders/data/datasources/orders_data.dart';
 import 'package:flutter_app/features/orders/domain/entities/order.dart';
 import 'package:flutter_app/features/orders/presentation/cubit/orders_cubit.dart';
@@ -29,11 +28,13 @@ extension _FilterExt on _Filter {
 class OrdersScreen extends StatefulWidget {
   final bool showBackButton;
   final VoidCallback? onBackPressed;
+  final bool isVendor;
 
   const OrdersScreen({
     super.key,
     this.showBackButton = true,
     this.onBackPressed,
+    this.isVendor = false,
   });
 
   @override
@@ -88,7 +89,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             : ListView.builder(
                                 padding: const EdgeInsets.fromLTRB(0, 4, 0, 24),
                                 itemCount: _filteredOrders.length,
-                                itemBuilder: (context, index) =>
+      itemBuilder: (context, index) =>
                                     _buildOrderCard(_filteredOrders[index]),
                               ),
                       ),
@@ -158,7 +159,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
       statusBackgroundColor: order.status.backgroundColor,
       statusTextColor: order.status.textColor,
       maxWidth: double.infinity,
-      onTap: () => context.push(AppRoutes.orderDetails, extra: order),
+      onTap: () => context.push(
+        widget.isVendor ? AppRoutes.vendorOrderDetails : AppRoutes.orderDetails,
+        extra: order,
+      ),
     );
   }
 

@@ -40,7 +40,7 @@ class _MarketplaceBody extends StatelessWidget {
     const CatalogBrowseScreen(),
     CatalogCategoriesScreen(),
     ShoppingRfqListScreen(),
-    const OrdersScreen(showBackButton: false),
+    const OrdersScreen(showBackButton: false, isVendor: true),
     SupplierProfileScreen(
       onBackPressed: () =>
           context.read<MarketplaceNavigationCubit>().selectTab(0),

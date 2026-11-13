@@ -32,10 +32,12 @@ abstract final class AppRoutes {
   static const rfqDetail = '/rfqs/detail';
   static const orders = '/orders';
   static const orderDetails = '/orders/detail';
+  static const vendorOrderDetails = '/vendor/orders/detail';
   static const createShipment = '/orders/create-shipment';
   static const bidsReceived = '/orders/bids-received';
   static const orderStatusUpdate = '/orders/status-update';
   static const trackStatus = '/orders/track-status';
+  static const vendorTrackStatus = '/vendor/orders/track-status';
   static const profile = '/profile';
   static const updateProfile = '/profile/update';
   static const accountDetails = '/profile/account-details';

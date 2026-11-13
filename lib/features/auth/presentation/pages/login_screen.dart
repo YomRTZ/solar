@@ -146,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         child: Scaffold(
           backgroundColor: Colors.white,
-          resizeToAvoidBottomInset: true, // fix: was false, keyboard was covering field
+          resizeToAvoidBottomInset: false,
           body: SafeArea(
             child: LayoutBuilder(
               builder: (context, constraints) {

@@ -4,16 +4,40 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter_app/app/routing/app_routes.dart';
+import 'package:flutter_app/core/services/profile_image_service.dart';
 import 'package:flutter_app/core/widgets/second_app_header.dart';
 
-class TransporterProfileScreen extends StatelessWidget {
+class TransporterProfileScreen extends StatefulWidget {
   const TransporterProfileScreen({super.key});
+
+  @override
+  State<TransporterProfileScreen> createState() => _TransporterProfileScreenState();
+}
+
+class _TransporterProfileScreenState extends State<TransporterProfileScreen> {
 
   static const _blue = Color(0xFF003A8A);
   static const _avatarRing = Color(0xFFE8D0D0);
   static const _divider = Color(0xFFEDF1F3);
   static const _labelColor = Color(0xFF6C7278);
   static const _valueColor = Color(0xFF1A1C1E);
+
+  void _navigateToEdit() async {
+    await context.push(
+      AppRoutes.transporterCreateAccount,
+      extra: {
+        'fullName': 'Rishabh Khurana',
+        'vehicleNumber': 'DL 3C BB 3433',
+        'dlNumber': '1223048034909',
+        'mobileNumber': '9876546879',
+        'stateCity': 'New Delhi',
+        'pincode': '12345678',
+        'vehicles': ['Open Truck', 'Container'],
+      },
+    );
+    // Refresh the screen when returning from edit
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +79,9 @@ class TransporterProfileScreen extends StatelessWidget {
   }
 
   Widget _buildAvatarSection() {
+    final profileService = ProfileImageService();
+    final hasImage = profileService.hasProfileImage;
+    
     return Column(
       children: [
         Container(
@@ -65,14 +92,23 @@ class TransporterProfileScreen extends StatelessWidget {
             border: Border.all(color: _avatarRing, width: 3),
           ),
           child: ClipOval(
-            child: Image.asset(
-              'assets/solarimages/avater.png',
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                color: const Color(0xFFD6E4F7),
-                child: const Icon(Icons.person, color: _blue, size: 44),
-              ),
-            ),
+            child: hasImage
+                ? Image.memory(
+                    profileService.profileImageBytes!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: const Color(0xFFD6E4F7),
+                      child: const Icon(Icons.person, color: _blue, size: 44),
+                    ),
+                  )
+                : Image.asset(
+                    'assets/solarimages/avater.png',
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: const Color(0xFFD6E4F7),
+                      child: const Icon(Icons.person, color: _blue, size: 44),
+                    ),
+                  ),
           ),
         ),
         const SizedBox(height: 10),
@@ -143,7 +179,7 @@ class TransporterProfileScreen extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => context.push(AppRoutes.transporterCreateAccount),
+                  onTap: _navigateToEdit,
                   child: Text(
                     'Edit',
                     style: GoogleFonts.inter(

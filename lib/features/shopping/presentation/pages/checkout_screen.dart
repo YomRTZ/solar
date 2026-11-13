@@ -333,8 +333,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           label: 'Afterpay',
           icon: SvgPicture.asset(
             'assets/icons/ic_payment_afterpay.svg',
-            width: 20,
-            height: 20,
+            width: 24,
+            height: 24,
+            fit: BoxFit.contain,
           ),
           isSelected:
               _checkoutCubit.state.paymentMethod == PaymentMethod.afterpay,
@@ -345,8 +346,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           label: 'Klarna',
           icon: SvgPicture.asset(
             'assets/icons/ic_payment_klarna.svg',
-            width: 20,
-            height: 20,
+            width: 24,
+            height: 24,
+            fit: BoxFit.contain,
           ),
           isSelected:
               _checkoutCubit.state.paymentMethod == PaymentMethod.klarna,
@@ -561,9 +563,9 @@ class _PaymentOptionTile extends StatelessWidget {
               selected: isSelected,
               selectedColor: const Color(0xFF6254F5),
             ),
-            const SizedBox(width: 22),
+            const SizedBox(width: 20),
             icon,
-            const SizedBox(width: 8),
+            const SizedBox(width: 2),
             Text(
               label,
               style: GoogleFonts.inter(

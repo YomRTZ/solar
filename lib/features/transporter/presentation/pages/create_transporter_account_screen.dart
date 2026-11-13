@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:flutter_app/app/routing/app_routes.dart';
+import 'package:flutter_app/core/services/profile_image_service.dart';
 import 'package:flutter_app/core/validation/app_form_validation.dart';
 import 'package:flutter_app/core/widgets/app_continue_button.dart';
 import 'package:flutter_app/core/widgets/app_file_upload_field.dart';
@@ -15,7 +16,9 @@ import 'package:flutter_app/core/widgets/app_text_field.dart';
 import 'package:flutter_app/features/auth/presentation/cubit/auth_cubit.dart';
 
 class CreateTransporterAccountScreen extends StatefulWidget {
-  const CreateTransporterAccountScreen({super.key});
+  final Map<String, dynamic>? initialData;
+
+  const CreateTransporterAccountScreen({super.key, this.initialData});
 
   @override
   State<CreateTransporterAccountScreen> createState() =>
@@ -41,10 +44,28 @@ class _CreateTransporterAccountScreenState
   @override
   void initState() {
     super.initState();
-    _mobileNumberController.text = context
-        .read<AuthCubit>()
-        .state
-        .mobileNumber;
+    final mobileNumber = context.read<AuthCubit>().state.mobileNumber;
+    final profileService = ProfileImageService();
+    
+    // Populate fields with initial data if editing
+    if (widget.initialData != null) {
+      _fullNameController.text = widget.initialData!['fullName'] ?? '';
+      _vehicleNumberController.text = widget.initialData!['vehicleNumber'] ?? '';
+      _dlNumberController.text = widget.initialData!['dlNumber'] ?? '';
+      _mobileNumberController.text = widget.initialData!['mobileNumber'] ?? mobileNumber;
+      _stateCityController.text = widget.initialData!['stateCity'] ?? '';
+      _pincodeController.text = widget.initialData!['pincode'] ?? '';
+      
+      if (widget.initialData!['vehicles'] is List) {
+        _selectedVehicles = List<String>.from(widget.initialData!['vehicles']);
+      }
+      
+      // Load from service if editing
+      _profileImageBytes = profileService.profileImageBytes;
+      _profileImageName = profileService.profileImageName;
+    } else {
+      _mobileNumberController.text = mobileNumber;
+    }
   }
 
   @override
@@ -117,12 +138,10 @@ class _CreateTransporterAccountScreenState
                 ),
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Done'),
-                  ),
+                child: AppContinueButton(
+                  text: 'Done',
+                  showArrow: false,
+                  onPressed: () => Navigator.pop(context),
                 ),
               ),
             ],
@@ -138,7 +157,20 @@ class _CreateTransporterAccountScreenState
 
   void _continue() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    context.go(AppRoutes.transporterHome);
+    
+    // Save profile image to service
+    ProfileImageService().setProfileImage(_profileImageBytes, _profileImageName);
+    
+    if (widget.initialData != null) {
+      // Editing existing profile - go back
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile updated successfully')),
+      );
+    } else {
+      // Creating new account - go to home
+      context.go(AppRoutes.transporterHome);
+    }
   }
 
   @override
@@ -155,7 +187,9 @@ class _CreateTransporterAccountScreenState
         backgroundColor: Colors.white,
         body: Column(
           children: [
-            const AppHeader(title: 'Create Account'),
+            AppHeader(
+              title: widget.initialData == null ? 'Create Account' : 'Edit Profile',
+            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(0, 23, 0, 25),
@@ -223,7 +257,7 @@ class _CreateTransporterAccountScreenState
                         Padding(
                           padding: const EdgeInsets.only(top: 18),
                           child: AppContinueButton(
-                            text: 'Continue',
+                            text: widget.initialData == null ? 'Continue' : 'Save Changes',
                             showArrow: false,
                             onPressed: _continue,
                           ),

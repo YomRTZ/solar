@@ -65,8 +65,9 @@ class TrackStatusScreen extends StatelessWidget {
       'assets/solarimages/Location_screen_confirm.jpg';
 
   final Order order;
+  final bool isVendor;
 
-  const TrackStatusScreen({super.key, required this.order});
+  const TrackStatusScreen({super.key, required this.order, this.isVendor = false});
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +114,70 @@ class TrackStatusScreen extends StatelessWidget {
     final hasProgress =
         currentOrder.status == OrderStatus.dispatched ||
         currentOrder.status == OrderStatus.delivered;
-    final events = currentOrder.status == OrderStatus.delivered
+    final isDelivered = currentOrder.status == OrderStatus.delivered;
+    
+    // For vendor route only: remove image and keep "In Transit" text
+    if (isVendor) {
+      final events = isDelivered
+          ? const [
+              TrackEvent(
+                step: TrackStep.orderConfirmed,
+                dateTime: '18 Oct 2026 | 09:10 AM',
+              ),
+              TrackEvent(
+                step: TrackStep.dispatched,
+                dateTime: '20 Oct 2026 | 09:10 AM',
+              ),
+              TrackEvent(
+                step: TrackStep.inTransit,
+                dateTime: '18 Oct 2026 | 09:10 AM',
+                // No image for vendor route
+              ),
+              TrackEvent(
+                step: TrackStep.delivered,
+                subText: 'Share OTP - 3212 on delivery',
+              ),
+            ]
+          : [
+              TrackEvent(
+                step: TrackStep.orderConfirmed,
+                dateTime: currentOrder.orderDate,
+              ),
+              TrackEvent(
+                step: TrackStep.dispatched,
+                dateTime: dispatchUpdate?.dispatchDate,
+                imagePaths: dispatchUpdate?.proofImageAssetPath == null
+                    ? const []
+                    : [dispatchUpdate!.proofImageAssetPath!],
+                imageBytes: dispatchUpdate?.proofImageBytes,
+                subText: dispatchUpdate == null
+                    ? null
+                    : 'Transporter: ${dispatchUpdate.transporter} · Tracking Number: ${dispatchUpdate.trackingNumber}',
+              ),
+              TrackEvent(
+                step: TrackStep.inTransit,
+                dateTime: hasProgress ? dispatchUpdate?.dispatchDate : null,
+                // No image for vendor route
+              ),
+              const TrackEvent(step: TrackStep.delivered),
+            ];
+
+      final widgets = <Widget>[];
+      for (int i = 0; i < events.length; i++) {
+        final event = events[i];
+        final isLast = i == events.length - 1;
+        widgets.add(_TimelineRow(
+          event: event,
+          showConnector: !isLast,
+          isDeliveredStatus: isDelivered,
+          isVendor: true,
+        ));
+      }
+      return widgets;
+    }
+    
+    // Supplier route (original behavior - DO NOT CHANGE)
+    final events = isDelivered
         ? const [
             TrackEvent(
               step: TrackStep.orderConfirmed,
@@ -126,7 +190,7 @@ class TrackStatusScreen extends StatelessWidget {
             TrackEvent(
               step: TrackStep.inTransit,
               dateTime: '18 Oct 2026 | 09:10 AM',
-              imagePaths: [_inTransitMapPath],
+              // No image when delivered
             ),
             TrackEvent(
               step: TrackStep.delivered,
@@ -161,7 +225,12 @@ class TrackStatusScreen extends StatelessWidget {
     for (int i = 0; i < events.length; i++) {
       final event = events[i];
       final isLast = i == events.length - 1;
-      widgets.add(_TimelineRow(event: event, showConnector: !isLast));
+      widgets.add(_TimelineRow(
+        event: event,
+        showConnector: !isLast,
+        isDeliveredStatus: isDelivered,
+        isVendor: false,
+      ));
     }
     return widgets;
   }
@@ -171,8 +240,15 @@ class TrackStatusScreen extends StatelessWidget {
 class _TimelineRow extends StatelessWidget {
   final TrackEvent event;
   final bool showConnector;
+  final bool isDeliveredStatus;
+  final bool isVendor;
 
-  const _TimelineRow({required this.event, required this.showConnector});
+  const _TimelineRow({
+    required this.event,
+    required this.showConnector,
+    this.isDeliveredStatus = false,
+    this.isVendor = false,
+  });
 
   static const _activeBlue = Color(0xFF003A8A);
   static const _inactiveGrey = Color(0xFF808080);
@@ -271,7 +347,10 @@ class _TimelineRow extends StatelessWidget {
                   const SizedBox(height: 6),
                   // Step title
                   Text(
-                    event.step.title,
+                    // Only change text for supplier (when NOT vendor) and delivered
+                    event.step == TrackStep.inTransit && isDeliveredStatus && !isVendor
+                        ? 'Reached your nearest hub'
+                        : event.step.title,
                     style: GoogleFonts.nunito(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
@@ -310,7 +389,8 @@ class _TimelineRow extends StatelessWidget {
                   ],
 
                   if (event.step == TrackStep.inTransit &&
-                      event.imagePaths.isNotEmpty) ...[
+                      event.imagePaths.isNotEmpty &&
+                      !isDeliveredStatus) ...[
                     const SizedBox(height: 8),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(4),

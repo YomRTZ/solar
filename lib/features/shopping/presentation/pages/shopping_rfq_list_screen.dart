@@ -40,25 +40,10 @@ class _ShoppingRfqListScreenState extends State<ShoppingRfqListScreen> {
       bottomPadding: 0,
       child: _RfqDetailSheet(
         request: request,
-        onAcceptBid: () {
+        imagePath: 'assets/solarimages/vendor_brand_mark.png',
+        onProceedToCheckout: () {
           Navigator.pop(context);
           context.push(AppRoutes.vendorCheckout, extra: request);
-        },
-        onRejectBid: () {
-          if (!CatalogRfqData.updateStatus(
-            request.id,
-            CatalogRfqStatus.rejected,
-          )) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Unable to reject this bid')),
-            );
-            return;
-          }
-          Navigator.pop(context);
-          setState(() {});
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Bid rejected')),
-          );
         },
       ),
     );
@@ -148,8 +133,10 @@ class _ShoppingRfqListScreenState extends State<ShoppingRfqListScreen> {
       itemCount: items.length,
       itemBuilder: (context, i) => CatalogRfqRequestCard(
         request: items[i],
-        imagePath: 'assets/solarimages/solar_panel_product.png',
-        onTap: () => _openDetailSheet(items[i]),
+        imagePath: 'assets/solarimages/vendor_brand_mark.png',
+        onTap: items[i].status == CatalogRfqStatus.pending
+            ? null
+            : () => _openDetailSheet(items[i]),
       ),
     );
   }
@@ -195,43 +182,20 @@ class _TabChip extends StatelessWidget {
   }
 }
 
-class _RfqDetailSheet extends StatefulWidget {
+class _RfqDetailSheet extends StatelessWidget {
   final CatalogRfqRequest request;
-  final VoidCallback onAcceptBid;
-  final VoidCallback onRejectBid;
+  final String imagePath;
+  final VoidCallback onProceedToCheckout;
 
   const _RfqDetailSheet({
     required this.request,
-    required this.onAcceptBid,
-    required this.onRejectBid,
+    required this.imagePath,
+    required this.onProceedToCheckout,
   });
-
-  @override
-  State<_RfqDetailSheet> createState() => _RfqDetailSheetState();
-}
-
-class _RfqDetailSheetState extends State<_RfqDetailSheet> {
-  final _messageController = TextEditingController();
-
-  @override
-  void dispose() {
-    _messageController.dispose();
-    super.dispose();
-  }
-
-  void _sendMessage() {
-    if (_messageController.text.trim().isEmpty) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Message sent to ${widget.request.supplierName}')),
-    );
-    _messageController.clear();
-  }
 
   @override
   Widget build(BuildContext context) {
     final safeBottom = MediaQuery.of(context).padding.bottom;
-    final request = widget.request;
-    final canRespond = request.status == CatalogRfqStatus.received;
     return Container(
       padding: EdgeInsets.fromLTRB(20, 0, 20, safeBottom + 20),
       child: Column(
@@ -241,13 +205,18 @@ class _RfqDetailSheetState extends State<_RfqDetailSheet> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const CircleAvatar(
-                radius: 16,
-                backgroundColor: Color(0xFFFFE6EC),
-                child: Icon(
-                  Icons.person,
-                  size: 20,
-                  color: Color(0xFF003A8A),
+              Image.asset(
+                imagePath,
+                width: 29,
+                height: 43,
+                fit: BoxFit.contain,
+                errorBuilder: (_, _, _) => const SizedBox(
+                  width: 29,
+                  height: 43,
+                  child: Icon(
+                    Icons.image_not_supported_outlined,
+                    color: Color(0xFF6C7278),
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
@@ -255,121 +224,52 @@ class _RfqDetailSheetState extends State<_RfqDetailSheet> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    request.supplierName,
+                    'Sun Tech Sol.',
                     style: GoogleFonts.roboto(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                       color: const Color(0xFF202020),
                     ),
                   ),
+                  Text(
+                    request.dateLabel,
+                    style: GoogleFonts.nunitoSans(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xFF000000),
+                    ),
+                  ),
                 ],
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          Text(
-            'Price Breakup',
-            style: GoogleFonts.roboto(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF202020),
-            ),
-          ),
           const SizedBox(height: 18),
           _RequestDetailsTable(request: request),
-          const SizedBox(height: 10),
-          TextField(
-            controller: _messageController,
-            textInputAction: TextInputAction.send,
-            onSubmitted: (_) => _sendMessage(),
-            decoration: InputDecoration(
-              hintText: 'Send Negotiation Message...',
-              hintStyle: GoogleFonts.roboto(
-                fontSize: 11,
-                color: const Color(0xFF9AA1A8),
-              ),
-              suffixIcon: IconButton(
-                onPressed: _sendMessage,
-                icon: const Icon(
-                  Icons.send_rounded,
-                  size: 18,
-                  color: Color(0xFF1683F8),
-                ),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 8,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
           SizedBox(
-            height: 42,
-            child: Row(
-              children: [
-                Expanded(
-                  child: _BidActionButton(
-                    label: 'Reject Bid',
-                    color: const Color(0xFFF51E1E),
-                    onPressed: canRespond ? widget.onRejectBid : null,
-                  ),
+            height: 50,
+            child: ElevatedButton(
+              onPressed: request.status == CatalogRfqStatus.received
+                  ? onProceedToCheckout
+                  : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF003A8A),
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _BidActionButton(
-                    label: 'Accept Bid',
-                    color: const Color(0xFF3CCB67),
-                    onPressed: canRespond ? widget.onAcceptBid : null,
-                  ),
+              ),
+              child: Text(
+                'Proceed to checkout',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
                 ),
-              ],
+              ),
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _BidActionButton extends StatelessWidget {
-  const _BidActionButton({
-    required this.label,
-    required this.color,
-    required this.onPressed,
-  });
-
-  final String label;
-  final Color color;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 42,
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color,
-          foregroundColor: Colors.white,
-          disabledBackgroundColor: const Color(0xFFB7BEC5),
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          textStyle: GoogleFonts.roboto(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        child: Text(label),
       ),
     );
   }
@@ -381,18 +281,11 @@ class _RequestDetailsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = request.items;
     final rows = <_Row>[
-      _Row(
-        label: 'Base Fare',
-        value: items.isNotEmpty ? items.first.price : request.amount,
-      ),
-      _Row(
-        label: 'Loading Charges',
-        value: items.length > 1 ? items[1].price : 'Rs. 0',
-      ),
-      _Row(label: 'Unloading Charges', value: request.subTotal),
-      _Row(label: 'Toll / Other Charges', value: request.gst),
+      for (final item in request.items)
+        _Row(label: item.productName, detail: item.qty, value: item.price),
+      _Row(label: 'Sub Total', value: request.subTotal),
+      _Row(label: 'Gst 18%', value: request.gst),
       _Row(label: 'Total', value: request.total, isBold: true),
     ];
 
@@ -415,10 +308,12 @@ class _RequestDetailsTable extends StatelessWidget {
 class _Row {
   final String label;
   final String value;
+  final String? detail;
   final bool isBold;
   const _Row({
     required this.label,
     required this.value,
+    this.detail,
     this.isBold = false,
   });
 }
@@ -448,21 +343,29 @@ class _RowWidget extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  row.label,
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: row.isBold ? FontWeight.w700 : FontWeight.w500,
-                    color: const Color(0xFF6C7278),
-                  ),
-                ),
-              ],
+            child: Text(
+              row.label,
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                fontWeight: row.isBold ? FontWeight.w700 : FontWeight.w500,
+                color: row.detail == null
+                    ? const Color(0xFF6C7278)
+                    : const Color(0xFF1A1A1A),
+              ),
             ),
           ),
           const SizedBox(width: 12),
+          if (row.detail != null) ...[
+            Text(
+              row.detail!,
+              style: GoogleFonts.roboto(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF1A1A1A),
+              ),
+            ),
+            const SizedBox(width: 8),
+          ],
           Text(
             row.value,
             textAlign: TextAlign.right,

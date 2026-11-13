@@ -80,7 +80,9 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
       _route(AppRoutes.createAccount, (_) => const CreateAccountScreen()),
       _route(
         AppRoutes.transporterCreateAccount,
-        (_) => const CreateTransporterAccountScreen(),
+        (state) => CreateTransporterAccountScreen(
+          initialData: state.extra as Map<String, dynamic>?,
+        ),
       ),
       _route(
         AppRoutes.transporterHome,
@@ -161,6 +163,13 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
         AppRoutes.orderDetails,
         (state) => OrderDetailsScreen(order: _requiredExtra<Order>(state)),
       ),
+      _route(
+        AppRoutes.vendorOrderDetails,
+        (state) => OrderDetailsScreen(
+          order: _requiredExtra<Order>(state),
+          isVendor: true,
+        ),
+      ),
       _route(AppRoutes.createShipment, (_) => const CreateShipmentScreen()),
       _route(AppRoutes.bidsReceived, (_) => const BidsReceivedScreen()),
       _route(
@@ -170,6 +179,13 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
       _route(
         AppRoutes.trackStatus,
         (state) => TrackStatusScreen(order: _requiredExtra<Order>(state)),
+      ),
+      _route(
+        AppRoutes.vendorTrackStatus,
+        (state) => TrackStatusScreen(
+          order: _requiredExtra<Order>(state),
+          isVendor: true,
+        ),
       ),
       _route(AppRoutes.profile, (_) => const VendorProfileScreen()),
       _route(AppRoutes.updateProfile, (_) => const UpdateProfileScreen()),

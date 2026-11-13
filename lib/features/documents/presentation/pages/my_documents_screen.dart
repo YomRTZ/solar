@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter_app/core/constants/app_colors.dart';
@@ -319,75 +320,11 @@ class _DocumentField extends StatelessWidget {
 class _PdfIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return SvgPicture.asset(
+      'assets/icons/ic_uploded_document.svg',
       width: 38,
       height: 44,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            width: 34,
-            height: 42,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF5F5F5),
-              borderRadius: BorderRadius.circular(4),
-              border:
-                  Border.all(color: const Color(0xFFE0E0E0), width: 0.8),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 5, vertical: 2),
-                  child: Column(
-                    children: [
-                      _Line(),
-                      const SizedBox(height: 3),
-                      _Line(),
-                      const SizedBox(height: 3),
-                      _Line(width: 14),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-              decoration: BoxDecoration(
-                  color: const Color(0xFFE53935),
-                  borderRadius: BorderRadius.circular(2)),
-              child: Text('PDF',
-                  style: GoogleFonts.roboto(
-                      fontSize: 7,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      letterSpacing: 0.3)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Line extends StatelessWidget {
-  final double width;
-  const _Line({this.width = 20});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 2,
-      width: width,
-      decoration: BoxDecoration(
-          color: const Color(0xFFDDDDDD),
-          borderRadius: BorderRadius.circular(1)),
+      fit: BoxFit.contain,
     );
   }
 }

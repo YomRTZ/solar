@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -76,6 +77,7 @@ class _TransporterMyTripsScreenState extends State<TransporterMyTripsScreen> {
                 Expanded(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.fromLTRB(16, 24, 17, 23),
+
                     child: Column(
                       children: [
                         _TripTabs(
@@ -117,61 +119,64 @@ class _TripTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const labels = ['Upcoming', 'Past'];
-    return Row(
-      children: [
-        for (var index = 0; index < labels.length; index++) ...[
-          GestureDetector(
-            onTap: () => onSelected(index),
-            child: Container(
-              width: 158.5,
-              height: 34,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 6,
-              ),
-              decoration: BoxDecoration(
-                color: index == selectedIndex
-                    ? const Color(0xFF003A8A)
-                    : Colors.white,
-                borderRadius: BorderRadius.circular(5),
-                border: index == selectedIndex
-                    ? null
-                    : Border.all(color: const Color(0xFFD3D3D3)),
-                boxShadow: index == selectedIndex
-                    ? const [
-                        BoxShadow(
-                          color: Color(0x08000000),
-                          offset: Offset(0, -2),
-                          blurRadius: 2,
-                          spreadRadius: 0,
-                          blurStyle: BlurStyle.inner,
-                        ),
-                        BoxShadow(
-                          color: Color(0x3DE4E5E7),
-                          offset: Offset(0, 1),
-                          blurRadius: 2,
-                          spreadRadius: 0,
-                        ),
-                      ]
-                    : null,
-              ),
-              child: Center(
-                child: Text(
-                  labels[index],
-                  style: GoogleFonts.inter(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
+    return Container(
+      height: 42,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5F6F9),
+        borderRadius: BorderRadius.circular(9),
+        border: Border.all(color: const Color(0xFFF5F6F9), width: 1),
+      ),
+      child: Row(
+        children: [
+          for (var index = 0; index < labels.length; index++) ...[
+            Expanded(
+              child: GestureDetector(
+                onTap: () => onSelected(index),
+                child: Container(
+                  height: 34,
+                  decoration: BoxDecoration(
                     color: index == selectedIndex
-                        ? Colors.white
-                        : const Color(0xFF202020),
+                        ? const Color(0xFF003A8A)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(5),
+                    boxShadow: index == selectedIndex
+                        ? const [
+                            BoxShadow(
+                              color: Color(0x08000000),
+                              offset: Offset(0, -2),
+                              blurRadius: 2,
+                              spreadRadius: 0,
+                              blurStyle: BlurStyle.inner,
+                            ),
+                            BoxShadow(
+                              color: Color(0x3DE4E5E7),
+                              offset: Offset(0, 1),
+                              blurRadius: 2,
+                              spreadRadius: 0,
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Center(
+                    child: Text(
+                      labels[index],
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: index == selectedIndex
+                            ? Colors.white
+                            : const Color(0xFF202020),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          if (index < labels.length - 1) const SizedBox(width: 4),
+            if (index < labels.length - 1) const SizedBox(width: 4),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
@@ -196,7 +201,6 @@ class _TripCard extends StatelessWidget {
     final hasAddresses =
         trip.pickupAddress != null && trip.dropoffAddress != null;
     return Container(
-      height: 134,
       padding: const EdgeInsets.fromLTRB(9.82, 11, 11, 12),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -205,7 +209,6 @@ class _TripCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
@@ -235,6 +238,7 @@ class _TripCard extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 10),
           Row(
             children: [
               _TripDetail(label: 'Vehicle', value: job.vehicle),
@@ -244,7 +248,8 @@ class _TripCard extends StatelessWidget {
               _TripDetail(label: 'Date', value: job.date),
             ],
           ),
-          if (hasAddresses)
+          if (hasAddresses) ...[
+            const SizedBox(height: 10),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -259,7 +264,6 @@ class _TripCard extends StatelessWidget {
                     trip.pickupAddress!,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 8,
@@ -270,16 +274,12 @@ class _TripCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 9, right: 22),
-                  child: SizedBox(
-                    width: 15,
-                    height: 8,
-                    child: Icon(
-                      Icons.arrow_forward,
-                      size: 8,
-                      color: Color(0xFF000000),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: SvgPicture.asset(
+                    'assets/icons/ic_rightsidearrow.svg',
+                    width: 10,
+                    height: 10,
                   ),
                 ),
                 Image.asset(
@@ -293,7 +293,6 @@ class _TripCard extends StatelessWidget {
                     trip.dropoffAddress!,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 8,
@@ -306,6 +305,8 @@ class _TripCard extends StatelessWidget {
                 ),
               ],
             ),
+          ],
+          const SizedBox(height: 10),
           const Divider(height: 1, color: Color(0xFFE5E5E5)),
           SizedBox(
             height: 35,
@@ -332,9 +333,9 @@ class _TripCard extends StatelessWidget {
                   Align(
                     alignment: Alignment.topRight,
                     child: Padding(
-                      padding: const EdgeInsets.only(right: 0.79),
+                      padding: const EdgeInsets.only(right: 0.79, top: 20),
                       child: _TripActionButton(
-                        label: isVerified ? 'Start Trip' : 'Verify Delivery',
+                        label: isVerified ? 'Start Trip' : 'Verify Trip',
                         onPressed: isVerified ? onStart : onVerify,
                       ),
                     ),
@@ -372,17 +373,20 @@ class _TripDetail extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-              height: 1,
-              letterSpacing: 0,
-              color: Color(0xFF000000),
+          Padding(
+            padding: const EdgeInsets.only(top: 3),
+            child: Text(
+              value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+                height: 1,
+                letterSpacing: 0,
+                color: Color(0xFF000000),
+              ),
             ),
           ),
         ],
@@ -401,7 +405,8 @@ class _TripActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final borderRadius = BorderRadius.circular(6);
     return Container(
-      height: 22,
+      height: 32,
+      constraints: const BoxConstraints(minWidth: 90),
       decoration: BoxDecoration(
         color: const Color(0xFF003A8A),
         border: Border.all(color: const Color(0x1FFFFFFF), width: 1),
@@ -436,7 +441,7 @@ class _TripActionButton extends StatelessWidget {
               child: InkWell(
                 onTap: onPressed,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                   child: Center(
                     child: Text(
                       label,
@@ -512,21 +517,6 @@ class _VerifyTripSheetState extends State<_VerifyTripSheet> {
     return 'Resend Otp in $minutes:$seconds';
   }
 
-  void _resendOtp() {
-    setState(() {
-      _remainingSeconds = 60;
-      _errorMessage = null;
-    });
-    _resendTimer?.cancel();
-    _resendTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (_remainingSeconds == 0) {
-        _resendTimer?.cancel();
-      } else if (mounted) {
-        setState(() => _remainingSeconds--);
-      }
-    });
-  }
-
   void _verifyOtp() {
     if (!_otpCubit.state.isComplete) {
       setState(() => _errorMessage = 'Enter the 6-digit OTP.');
@@ -564,104 +554,109 @@ class _VerifyTripSheetState extends State<_VerifyTripSheet> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'An Otp has been sent to ${widget.mobileNumber}',
+                  'An OTP has been sent to ${widget.mobileNumber}',
                   style: GoogleFonts.inter(
-                    fontSize: 10,
-                    color: const Color(0xFF808080),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'OTP',
-                  style: GoogleFonts.inter(
-                    fontSize: 10,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    height: 1.5,
+                    letterSpacing: 12 * -0.01,
                     color: const Color(0xFF6C7278),
                   ),
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  children: List.generate(
-                    _controllers.length,
-                    (index) => Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          right: index == _controllers.length - 1 ? 0 : 7,
-                        ),
-                        child: SizedBox(
-                          height: 39,
-                          child: TextField(
-                            controller: _controllers[index],
-                            focusNode: _focusNodes[index],
-                            textAlign: TextAlign.center,
-                            keyboardType: TextInputType.number,
-                            maxLength: 1,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(1),
-                            ],
-                            style: GoogleFonts.inter(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            decoration: InputDecoration(
-                              counterText: '',
-                              contentPadding: EdgeInsets.zero,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(7),
-                                borderSide: const BorderSide(
-                                  color: Color(0xFFE1E4E8),
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(7),
-                                borderSide: const BorderSide(
-                                  color: Color(0xFFE1E4E8),
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(7),
-                                borderSide: const BorderSide(
-                                  color: Color(0xFF003A8A),
-                                ),
-                              ),
-                            ),
-                            onChanged: (value) {
-                              _otpCubit.updateDigit(index, value);
-                              setState(() => _errorMessage = null);
-                              if (value.isNotEmpty &&
-                                  index < _focusNodes.length - 1) {
-                                _focusNodes[index + 1].requestFocus();
-                              } else if (value.isEmpty && index > 0) {
-                                _focusNodes[index - 1].requestFocus();
-                              } else {
-                                _focusNodes[index].unfocus();
-                              }
-                            },
+                const SizedBox(height: 35),
+                Text(
+                  'OTP',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    height: 1.6,
+                    letterSpacing: 12 * -0.02,
+                    color: const Color(0xFF6C7278),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 45,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(
+                      _controllers.length,
+                      (index) => SizedBox(
+                        width: 45,
+                        height: 45,
+                        child: TextField(
+                          controller: _controllers[index],
+                          focusNode: _focusNodes[index],
+                          textAlign: TextAlign.center,
+                          textAlignVertical: TextAlignVertical.center,
+                          keyboardType: TextInputType.number,
+                          textInputAction: index == 5
+                              ? TextInputAction.done
+                              : TextInputAction.next,
+                          maxLength: 1,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(1),
+                          ],
+                          style: GoogleFonts.inter(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF1A1C1E),
                           ),
+                          decoration: InputDecoration(
+                            counterText: '',
+                            contentPadding: EdgeInsets.zero,
+                            isDense: false,
+                            filled: true,
+                            fillColor: Colors.white,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(
+                                color: Color(0x66B8B8B8),
+                                width: 1,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(
+                                color: Color(0xFF003A8A),
+                                width: 1.5,
+                              ),
+                            ),
+                          ),
+                          onChanged: (value) {
+                            _otpCubit.updateDigit(index, value);
+                            setState(() => _errorMessage = null);
+                            if (value.isNotEmpty &&
+                                index < _focusNodes.length - 1) {
+                              _focusNodes[index + 1].requestFocus();
+                            } else if (value.isEmpty && index > 0) {
+                              _focusNodes[index - 1].requestFocus();
+                            } else if (value.isNotEmpty &&
+                                index == _focusNodes.length - 1) {
+                              _focusNodes[index].unfocus();
+                            }
+                          },
                         ),
                       ),
                     ),
                   ),
                 ),
+                const SizedBox(height: 12),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: _remainingSeconds == 0 ? _resendOtp : null,
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.only(top: 3, bottom: 4),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    child: Text(
-                      _remainingSeconds == 0 ? 'Resend Otp' : _resendLabel,
-                      style: GoogleFonts.inter(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFF003A8A),
-                      ),
+                  child: Text(
+                    _remainingSeconds == 0 ? 'Resend Otp' : _resendLabel,
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      height: 1.4,
+                      letterSpacing: 11 * -0.01,
+                      color: const Color(0xFF003A8A),
                     ),
                   ),
                 ),
+                const SizedBox(height: 24),
                 if (_errorMessage != null)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8),

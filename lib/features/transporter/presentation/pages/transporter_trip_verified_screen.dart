@@ -77,7 +77,6 @@ class TransporterTripVerifiedScreen extends StatelessWidget {
                       Positioned(
                         top: 8,
                         right: 9,
-                        height: 34,
                         child: GestureDetector(
                           onTap: () => _showMapMessage(
                             context,
@@ -85,51 +84,38 @@ class TransporterTripVerifiedScreen extends StatelessWidget {
                           ),
                           child: Container(
                             height: 34,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 10,
-                            ),
+                            constraints: const BoxConstraints(minWidth: 112),
+                            padding: const EdgeInsets.symmetric(horizontal: 14),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              gradient: const LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Color(0x1EFFFFFF),
-                                  Color(0x00FFFFFF),
-                                ],
-                              ),
                               color: const Color(0xFF003A8A),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: const Color(0x1FFFFFFF),
+                                width: 1,
+                              ),
                               boxShadow: const [
                                 BoxShadow(
                                   color: Color(0xFF375DFB),
-                                  offset: Offset(0, 0),
-                                  blurRadius: 0,
                                   spreadRadius: 1,
+                                  blurRadius: 0,
                                 ),
                                 BoxShadow(
                                   color: Color(0x7A253EA7),
                                   offset: Offset(0, 1),
                                   blurRadius: 2,
-                                  spreadRadius: 0,
                                 ),
                               ],
-                              border: Border.all(
-                                color: const Color(0xFF375DFB),
-                                width: 1,
-                              ),
                             ),
-                            child: Center(
-                              child: Text(
-                                'Open on maps',
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.roboto(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  height: 1.3,
-                                  letterSpacing: 0,
-                                  color: Colors.white,
-                                ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Open on maps',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.roboto(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                height: 1.3,
+                                letterSpacing: 0,
+                                color: Colors.white,
                               ),
                             ),
                           ),
